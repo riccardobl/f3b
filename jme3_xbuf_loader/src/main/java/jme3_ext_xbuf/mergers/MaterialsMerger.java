@@ -154,27 +154,13 @@ public class MaterialsMerger implements Merger{
 					mat.setColor(name,p.getColor().toJME());
 				}else if(p.hasTexture()){
 					Texture tx=getValue(root,p.getTexture());
-//					xbuf.Primitives.Texture t=p.getTexture();
-//					// Try first to load from asset path
-//					String path=root.getName();
-//					path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
-//					try{
-//						
-//						tx=assetManager.loadTexture(path);
-//					}catch(AssetNotFoundException ex1){
-//						log.debug("failed to load texture:",path,ex1," try with asset root.");
-//
-//						// If not found load from root
-//						try{
-//							tx=assetManager.loadTexture(t.getRpath());
-//						}catch(AssetNotFoundException ex){
-//							log.warn("failed to load texture:",t.getRpath(),ex);
-//							tx=defaultTexture.clone();
-//						}
-//					}
 					if(tx!=null){
 						mat.setTexture(name,tx);
 					}
+				}else if(p.hasVec3()){
+					mat.setVector3(name,p.getVec3().toJME());
+				}else if(p.hasVec2()){
+					mat.setVector2(name,p.getVec2().toJME());
 				}
 			}
 		}
