@@ -1,6 +1,9 @@
 package jme3_ext_xbuf.mergers;
 
 
+import java.util.Collection;
+import java.util.List;
+
 import org.slf4j.Logger;
 
 import com.jme3.asset.AssetManager;
@@ -27,6 +30,7 @@ import lombok.experimental.ExtensionMethod;
 import lombok.extern.slf4j.Slf4j;
 import xbuf.Datas.Data;
 import xbuf.Materials;
+import xbuf.Materials.MatProperty;
 import xbuf.Primitives;
 import xbuf.Primitives.Color;
 import xbuf.Primitives.Texture2DInline;
@@ -64,145 +68,66 @@ public class MaterialsMerger implements Merger{
 		return t;
 	}
 
-	public Material newMaterial(Materials.Material m) {
-		boolean lightFamily=!m.getShadeless();
-		String def=lightFamily?"Common/MatDefs/Light/Lighting.j3md":"Common/MatDefs/Misc/Unshaded.j3md";
-		return new Material(assetManager,def);
-	}
-
-	public String findMaterialParamName(String[] names, VarType type, MaterialDef scope) {
-		for(String name2:names){
-			for(MatParam mp:scope.getMaterialParams()){
-				if(mp.getVarType()==type&&mp.getName().equalsIgnoreCase(name2)){ return mp.getName(); }
-			}
-		}
-		return null;
-	}
-
-	public void setColor(boolean has, Color src, Material dst, String[] names, MaterialDef scope) {
-		if(has){
-			String name=findMaterialParamName(names,VarType.Vector4,scope);
-			if(name!=null){
-				dst.setColor(name,src.toJME());
-			}else{
-				log.warn("can't find a matching name for : [{}] ({}) in {}",names,VarType.Vector4, dst.getMaterialDef().getName());
-			}
-		}
-	}
-
-	public void setBoolean(boolean has, Boolean src, Material dst, String[] names, MaterialDef scope) {
-		if(has){
-			String name=findMaterialParamName(names,VarType.Boolean,scope);
-			if(name!=null){
-				dst.setBoolean(name,src);
-			}else{
-				log.warn("can't find a matching name for : [{}] ({}) in {}",names,VarType.Vector4, dst.getMaterialDef().getName());
-			}
-		}
-	}
-
-	public Texture getValue(Primitives.Texture t) {
-		Texture tex;
-		switch(t.getDataCase()){
-			case DATA_NOT_SET:
-				tex=null;
-				break;
-			case RPATH:
-				try{
-					tex=assetManager.loadTexture(t.getRpath());
-				}catch(AssetNotFoundException ex){
-					log.warn("failed to load texture:",t.getRpath(),ex);
-					tex=defaultTexture.clone();
-				}
-				break;
-			case TEX2D:{
-				Texture2DInline t2di=t.getTex2D();
-				//TODO read ColorSpace from xbuf data
-				Image img=new Image(getValue(t2di.getFormat()),t2di.getWidth(),t2di.getHeight(),t2di.getData().asReadOnlyByteBuffer(), ColorSpace.Linear);
-				tex=new Texture2D(img);
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("doesn't support more than texture format:"+t.getDataCase());
-		}
-		tex.setWrap(WrapMode.Repeat);
-		return tex;
-	}
-
-	public Image.Format getValue(Texture2DInline.Format f) {
-		switch(f){
-			// case bgra8: return Image.Format.BGR8;
-			case rgb8:
-				return Image.Format.RGB8;
-			case rgba8:
-				return Image.Format.RGBA8;
-			default:
-				throw new UnsupportedOperationException("image format :"+f);
-		}
-	}
-
-	public void setTexture2D(boolean has, Primitives.Texture src, Material dst, String[] names, MaterialDef scope) {
-		if(has){
-			String name=findMaterialParamName(names,VarType.Texture2D,scope);
-			if(name!=null){
-				dst.setTexture(name,getValue(src));
-			}else{
-				log.warn("can't find a matching name for : [{}] ({}) in {}",names,VarType.Texture2D, dst.getMaterialDef().getName());
-			}
-		}
-	}
-
-	public void setFloat(boolean has, float src, Material dst, String[] names, MaterialDef scope) {
-		if(has){
-			String name=findMaterialParamName(names,VarType.Float,scope);
-			if(name!=null){
-				dst.setFloat(name,src);
-			}else{
-				log.warn("can't find a matching name for : [{}] ({}) in {}",names,VarType.Float, dst.getMaterialDef().getName());
-			}
-		}
-	}
-
-	public Material mergeToMaterial(Materials.Material src, Material dst) {
-		MaterialDef md=dst.getMaterialDef();
-		setColor(src.hasColor(),src.getColor(),dst,new String[]{"Color","Diffuse"},md);
-		setTexture2D(src.hasColorMap(),src.getColorMap(),dst,new String[]{"ColorMap","DiffuseMap"},md);
-		// setTexture2D(src.hasNormalMap(), src.getNormalMap(), dst, new String[]{"ColorMap", "DiffuseMap"], md, log)
-		setFloat(src.hasOpacity(),src.getOpacity(),dst,new String[]{"Alpha","Opacity"},md);
-		setTexture2D(src.hasOpacityMap(),src.getOpacityMap(),dst,new String[]{"AlphaMap","OpacityMap"},md);
-		setTexture2D(src.hasNormalMap(),src.getNormalMap(),dst,new String[]{"NormalMap"},md);
-		setFloat(src.hasRoughness(),src.getRoughness(),dst,new String[]{"Roughness"},md);
-		setTexture2D(src.hasRoughnessMap(),src.getRoughnessMap(),dst,new String[]{"RoughnessMap"},md);
-		setFloat(src.hasMetalness(),src.getMetalness(),dst,new String[]{"Metalness"},md);
-		setTexture2D(src.hasMetalnessMap(),src.getMetalnessMap(),dst,new String[]{"MetalnessMap"},md);
-		setColor(src.hasSpecular(),src.getSpecular(),dst,new String[]{"Specular"},md);
-		setTexture2D(src.hasSpecularMap(),src.getSpecularMap(),dst,new String[]{"SpecularMap"},md);
-		setFloat(src.hasSpecularPower(),src.getSpecularPower(),dst,new String[]{"SpecularPower","Shininess"},md);
-		setTexture2D(src.hasSpecularPowerMap(),src.getSpecularPowerMap(),dst,new String[]{"SpecularPowerMap","ShininessMap"},md);
-		setColor(src.hasEmission(),src.getEmission(),dst,new String[]{"Emission","GlowColor"},md);
-		setTexture2D(src.hasEmissionMap(),src.getEmissionMap(),dst,new String[]{"EmissionMap","GlowMap"},md);
-		if(!src.getShadeless()){
-			if(!src.hasColorMap()){
-				if(src.hasColor()){
-					setBoolean(true,true,dst,new String[]{"UseMaterialColors"},md);
-				}else{
-					setBoolean(true,true,dst,new String[]{"UseVertexColor"},md);
-				}
-			}
-		}
-		return dst;
-	}
-
 	public void apply(Data src, Node root, XbufContext context, Logger log) {
-		src.getMaterialsList().stream().forEach(m -> {
+		// TODO: Reimplement inline textures
+		for(xbuf.Materials.Material m:src.getMaterialsList()){
+			Material mat=new Material(assetManager,m.getMatId());
 			String id=m.getId();
-			Material mat=newMaterial(m);
 			context.put(id,mat);
 			mat.setName(m.hasName()?m.getName():m.getId());
-			mergeToMaterial(m,mat);
-//			materialReplicator.syncReplicas(mat);
-		});
+			List<MatProperty> properties=m.getPropertiesList();
+			
+			for(MatProperty p:properties){
+				String name=p.getId();
+				
+				if(p.hasValue()){
+					Double d=new Double(p.getValue());
+					MatParam param=mat.getParam(name);
+					
+					switch(param.getVarType()){
+						case Float:{
+							param.setValue(d.floatValue());
+							break;
+						}
+						case Int:{
+							param.setValue(d.intValue());
+							break;
+						}
+						case Boolean:{
+							param.setValue(d.intValue()==1);
+							break;
+						}
+						default:
+					}
+					
+				}else if(p.hasColor()){
+					mat.setColor(name,p.getColor().toJME());
+				}else if(p.hasTexture()){
+					Texture tx;
+					xbuf.Primitives.Texture t=p.getTexture();
+					// Try first to load from asset path
+					String path=root.getName();
+					path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
+					try{
+						
+						tx=assetManager.loadTexture(path);
+					}catch(AssetNotFoundException ex1){
+						log.debug("failed to load texture:",path,ex1," try with asset root.");
 
+						// If not found load from root
+						try{
+							tx=assetManager.loadTexture(t.getRpath());
+						}catch(AssetNotFoundException ex){
+							log.warn("failed to load texture:",t.getRpath(),ex);
+							tx=defaultTexture.clone();
+						}
+					}
+					if(tx!=null){
+						mat.setTexture(name,tx);
+					}
+				}
+			}
+		}
 	}
 
 

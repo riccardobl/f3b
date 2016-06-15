@@ -14,6 +14,8 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
@@ -24,7 +26,30 @@ import xbuf_rt.XbufPhysicsLoader;
 
 public class UnitTests{
 	public boolean headless=true;
+	@Test
+	public void testNewMat(){
+		boolean headless=false;
+		SimpleApplication app=TestHelpers.buildApp(headless);
+		
+		
+		TestHelpers.hijackUpdateThread(app);
+		XbufKey key=new XbufKey("unit_tests/xbuf/newmat/newmat.xbuf");
 
+		if(!headless){
+			 FilterPostProcessor fpp=new FilterPostProcessor(app.getAssetManager());
+			  BloomFilter bf=new BloomFilter(BloomFilter.GlowMode.Objects);
+			  fpp.addFilter(bf);
+			  app.getViewPort().addProcessor(fpp);
+		}
+		
+		Spatial scene=app.getAssetManager().loadModel(key);
+		app.getRootNode().attachChild(scene);
+		
+		TestHelpers.releaseUpdateThread(app);
+		if(!headless)TestHelpers.waitFor(app);
+		TestHelpers.closeApp(app);
+	}
+	
 	@Test
 	public void testConstraints(){
 //		boolean headless=false;
