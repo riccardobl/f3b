@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 
 import jme3_ext_xbuf.mergers.RelationsMerger;
@@ -31,6 +32,17 @@ public class MaterialToGeometry  implements Linker{
 		}
 
 		op2.setMaterial(op1);
+		Number bucket=((Number)data.context.get("G~"+data.ref1+"~RenderBucket"));
+		if(bucket!=null){
+			int b=bucket.intValue();
+			switch(b){
+				case 0: op2.setQueueBucket(Bucket.Opaque); break;
+				case 1: op2.setQueueBucket(Bucket.Translucent); break;
+				case 2: op2.setQueueBucket(Bucket.Transparent); break;
+				case 3: op2.setQueueBucket(Bucket.Sky); break;
+			}
+		}
+		
 		return true;
 	}
 }

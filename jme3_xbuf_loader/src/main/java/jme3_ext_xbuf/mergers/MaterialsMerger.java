@@ -68,8 +68,57 @@ public class MaterialsMerger implements Merger{
 		return t;
 	}
 
+	public Texture getValue(Node root,Primitives.Texture t) {
+		Texture tex;
+		switch(t.getDataCase()){
+			case DATA_NOT_SET:
+				tex=null;
+				break;
+			case RPATH:
+				// Try first to load from asset path
+				String path=root.getName();
+				path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
+				try{
+					
+					tex=assetManager.loadTexture(path);
+				}catch(AssetNotFoundException ex1){
+					log.debug("failed to load texture:",path,ex1," try with asset root.");
+
+					// If not found load from root
+					try{
+						tex=assetManager.loadTexture(t.getRpath());
+					}catch(AssetNotFoundException ex){
+						log.warn("failed to load texture:",t.getRpath(),ex);
+						tex=defaultTexture.clone();
+					}
+				}
+			case TEX2D:{
+				Texture2DInline t2di=t.getTex2D();
+				//TODO read ColorSpace from xbuf data
+				Image img=new Image(getValue(t2di.getFormat()),t2di.getWidth(),t2di.getHeight(),t2di.getData().asReadOnlyByteBuffer(), ColorSpace.Linear);
+				tex=new Texture2D(img);
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("doesn't support more than texture format:"+t.getDataCase());
+		}
+		tex.setWrap(WrapMode.Repeat);
+		return tex;
+	}
+
+	public Image.Format getValue(Texture2DInline.Format f) {
+		switch(f){
+			// case bgra8: return Image.Format.BGR8;
+			case rgb8:
+				return Image.Format.RGB8;
+			case rgba8:
+				return Image.Format.RGBA8;
+			default:
+				throw new UnsupportedOperationException("image format :"+f);
+		}
+	}
+	
 	public void apply(Data src, Node root, XbufContext context, Logger log) {
-		// TODO: Reimplement inline textures
 		for(xbuf.Materials.Material m:src.getMaterialsList()){
 			Material mat=new Material(assetManager,m.getMatId());
 			String id=m.getId();
@@ -79,8 +128,9 @@ public class MaterialsMerger implements Merger{
 			
 			for(MatProperty p:properties){
 				String name=p.getId();
-				
-				if(p.hasValue()){
+				if (name.equals("RenderBucket")){
+					context.put("G~"+id+"~RenderBucket",p.getValue(),id);
+				}else if(p.hasValue()){
 					Double d=new Double(p.getValue());
 					MatParam param=mat.getParam(name);
 					
@@ -103,25 +153,25 @@ public class MaterialsMerger implements Merger{
 				}else if(p.hasColor()){
 					mat.setColor(name,p.getColor().toJME());
 				}else if(p.hasTexture()){
-					Texture tx;
-					xbuf.Primitives.Texture t=p.getTexture();
-					// Try first to load from asset path
-					String path=root.getName();
-					path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
-					try{
-						
-						tx=assetManager.loadTexture(path);
-					}catch(AssetNotFoundException ex1){
-						log.debug("failed to load texture:",path,ex1," try with asset root.");
-
-						// If not found load from root
-						try{
-							tx=assetManager.loadTexture(t.getRpath());
-						}catch(AssetNotFoundException ex){
-							log.warn("failed to load texture:",t.getRpath(),ex);
-							tx=defaultTexture.clone();
-						}
-					}
+					Texture tx=getValue(root,p.getTexture());
+//					xbuf.Primitives.Texture t=p.getTexture();
+//					// Try first to load from asset path
+//					String path=root.getName();
+//					path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
+//					try{
+//						
+//						tx=assetManager.loadTexture(path);
+//					}catch(AssetNotFoundException ex1){
+//						log.debug("failed to load texture:",path,ex1," try with asset root.");
+//
+//						// If not found load from root
+//						try{
+//							tx=assetManager.loadTexture(t.getRpath());
+//						}catch(AssetNotFoundException ex){
+//							log.warn("failed to load texture:",t.getRpath(),ex);
+//							tx=defaultTexture.clone();
+//						}
+//					}
 					if(tx!=null){
 						mat.setTexture(name,tx);
 					}
