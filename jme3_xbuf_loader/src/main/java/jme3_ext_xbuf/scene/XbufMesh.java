@@ -46,11 +46,11 @@ public class XbufMesh{
 
 		if(src.hasSkin()) applySkin(src.getSkin(),dst, log);
 		// TODO optimize lazy create Tangent when needed (for normal map ?)
-		if ((dst.getBuffer(VertexBuffer.Type.Tangent) == null || dst.getBuffer(VertexBuffer.Type.Binormal) == null) &&
-			dst.getBuffer(VertexBuffer.Type.Normal) != null && dst.getBuffer(VertexBuffer.Type.TexCoord) != null) {
-			TangentBinormalGenerator.setToleranceAngle(179); // remove warnings
-			TangentBinormalGenerator.generate(dst);
-		}
+//		if ((dst.getBuffer(VertexBuffer.Type.Tangent) == null || dst.getBuffer(VertexBuffer.Type.Binormal) == null) &&
+//			dst.getBuffer(VertexBuffer.Type.Normal) != null && dst.getBuffer(VertexBuffer.Type.TexCoord) != null) {
+//			TangentBinormalGenerator.setToleranceAngle(179); // remove warnings
+//			TangentBinormalGenerator.generate(dst);
+//		}
 		dst.updateCounts();
 		dst.updateBound();
 		return dst;

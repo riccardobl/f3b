@@ -43,8 +43,7 @@ public class XbufLoader implements AssetLoader {
 		} finally {
 			if(in!=null)in.close();
 		}
-		// if
-//		MikktspaceTangentGenerator.generate(root);
+
 		//		if (root.getQuantity() == 1) { < not good. will cause inconsistent behaviour ...
 		//			return root.getChild(0);
 		//		} else {

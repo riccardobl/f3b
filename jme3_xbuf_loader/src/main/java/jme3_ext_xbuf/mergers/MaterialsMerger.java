@@ -78,20 +78,21 @@ public class MaterialsMerger implements Merger{
 				// Try first to load from asset path
 				String path=root.getName();
 				path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
-				try{
-					
-					tex=assetManager.loadTexture(path);
+				try{					
+					tex=assetManager.loadTexture(path);			
 				}catch(AssetNotFoundException ex1){
 					log.debug("failed to load texture:",path,ex1," try with asset root.");
 
 					// If not found load from root
 					try{
 						tex=assetManager.loadTexture(t.getRpath());
+							
 					}catch(AssetNotFoundException ex){
 						log.warn("failed to load texture:",t.getRpath(),ex);
 						tex=defaultTexture.clone();
 					}
 				}
+				break;
 			case TEX2D:{
 				Texture2DInline t2di=t.getTex2D();
 				//TODO read ColorSpace from xbuf data

@@ -88,8 +88,6 @@ public class PrimitiveExt{
 				return Type.Position;
 			case normal:
 				return Type.Normal;
-			case bitangent:
-				return Type.Binormal;
 			case tangent:
 				return Type.Tangent;
 			case color:
