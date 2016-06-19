@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-
 import com.jme3.export.Savable;
 import com.jme3.physicsloader.ConstraintData;
 import com.jme3.physicsloader.PhysicsLoader;
@@ -21,27 +19,27 @@ import com.jme3.scene.control.Control;
 import f3b.Physics.Constraint;
 import f3b.Physics.ConstraintGeneric;
 import lombok.experimental.ExtensionMethod;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.F3bPhysicsLoader;
 import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
+import wf.frk.f3b.physics.F3bPhysicsLoader;
 
 
-@Slf4j
+@Log4j2
 @ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
 public class PhysicsToSpatial implements Linker{
 
 	@Override
-	public boolean doLink(RelationsMerger rloader, RefData data, Logger log) {
-		if(loadRB(rloader,data,log)) return true;
+	public boolean doLink(RelationsMerger rloader, RefData data) {
+		if(loadRB(rloader,data)) return true;
 		return false;
 	}
 
-	protected boolean loadRB(RelationsMerger rloader, RefData data, Logger log) {
-		RigidBody op1=getRef1(data,RigidBody.class,log);
-		Spatial op2=getRef2(data,Spatial.class,log);
+	protected boolean loadRB(RelationsMerger rloader, RefData data) {
+		RigidBody op1=getRef1(data,RigidBody.class);
+		Spatial op2=getRef2(data,Spatial.class);
 		if(op1==null||op2==null) return false;
 		PhysicsLoader<?,?> loader=data.context.getSettings().getPhysicsLoader();
 		if(loader!=null){

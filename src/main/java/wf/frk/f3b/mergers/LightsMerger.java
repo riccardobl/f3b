@@ -1,6 +1,5 @@
 package wf.frk.f3b.mergers;
 
-import org.slf4j.Logger;
 
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -11,16 +10,17 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 
-import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.Merger;
-import wf.frk.f3b.F3bContext;
 import f3b.Datas.Data;
 import f3b.Lights;
-
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
+import lombok.experimental.ExtensionMethod;
+import lombok.extern.log4j.Log4j2;
+import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.Merger;
+@Log4j2
+@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class,wf.frk.f3b.ext.Vector4fExt.class})
 public class LightsMerger implements Merger{
 
-	public void apply(Data src, Node root, F3bContext context, Logger log) {
+	public void apply(Data src, Node root, F3bContext context) {
 		for(f3b.Lights.Light srcl:src.getLightsList()){
 			// TODO manage parent hierarchy
 			String id=srcl.getId();
@@ -31,7 +31,7 @@ public class LightsMerger implements Merger{
 			}
 
 			if(srcl.hasColor()){
-				light.setColor(srcl.getColor().toJME());
+				light.setColor(srcl.getColor().toJME().toColorRGBA());
 			}
 
 			// TODO manage attenuation
@@ -91,7 +91,7 @@ public class LightsMerger implements Merger{
 					break;
 				}
 				case directional:{
-					light.setColor(srcl.getColor().toJME().mult(srcl.getIntensity()/4f)); // Try to make the light behave like in blender.
+					light.setColor(srcl.getColor().toJME().toColorRGBA().mult(srcl.getIntensity()/4f)); // Try to make the light behave like in blender.
 					break;
 				}
 			}

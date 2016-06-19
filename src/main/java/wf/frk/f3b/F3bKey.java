@@ -5,10 +5,11 @@ import com.jme3.physicsloader.constraint.GenericConstraint;
 import com.jme3.physicsloader.impl.PhysicsLoaderModelKey;
 import com.jme3.physicsloader.impl.bullet.BulletPhysicsLoader;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
+import wf.frk.f3b.physics.F3bPhysicsLoaderSettings;
 
 
-@Slf4j
+@Log4j2
 public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsLoaderSettings{
 
 	public F3bKey(){}

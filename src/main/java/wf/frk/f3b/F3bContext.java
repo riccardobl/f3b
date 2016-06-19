@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 @SuppressWarnings("unchecked")
 public class F3bContext {
-//	public Logger log=LoggerFactory.getLogger("Xbuf");
 	private Map<String,Object> storage=new HashMap<String,Object> ();
 	private Map<String,List<String>> links=new HashMap<String,List<String>>();
 	private F3bKey settings=new F3bKey("default");

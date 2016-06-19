@@ -2,9 +2,6 @@ package wf.frk.f3b;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Function;
-
-import org.slf4j.LoggerFactory;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
@@ -37,13 +34,11 @@ public class F3bLoader implements AssetLoader {
 			}
 			in = assetInfo.openStream();
 			F3b f3b = buildF3b(assetInfo);
-			Data src = Data.parseFrom(in, f3b.registry);
+			Data src = Data.parseFrom(in, f3b.extensions);
 			F3bContext context=new F3bContext();
-			LoggerCollector log = new LoggerCollector("parse:" + assetInfo.getKey().getName());
 			context.setSettings(f3bkey);
-			f3b.merge(src, root, context, log);
-			log.debug("Context:\n{}",context.toString());
-			log.dumpTo(LoggerFactory.getLogger(this.getClass()));
+			f3b.merge(src, root, context);
+			
 		} finally {
 			if(in!=null)in.close();
 		}

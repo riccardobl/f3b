@@ -2,24 +2,22 @@ package wf.frk.f3b.mergers;
 
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.scene.Node;
 
-import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.Merger;
-import wf.frk.f3b.F3bContext;
 import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import f3b.Skeletons;
+import lombok.experimental.ExtensionMethod;
+import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.Merger;
 
 @ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
 public class SkeletonsMerger implements Merger{
 
 	@Override
-	public void apply(Data src, Node root, F3bContext context, Logger log) {
+	public void apply(Data src, Node root, F3bContext context) {
 		for(f3b.Skeletons.Skeleton e:src.getSkeletonsList()){
 			// TODO manage parent hierarchy
 			String id=e.getId();
@@ -36,7 +34,7 @@ public class SkeletonsMerger implements Merger{
 		for(int i=0;i<bones.length;i++){
 			f3b.Skeletons.Bone src=e.getBones(i);
 			Bone b=new Bone(src.getName());
-			b.setBindTransforms(src.getTransform().getTranslation().toJME(),src.getTransform().getRotation().toJME(),src.getTransform().getScale().toJME());
+			b.setBindTransforms(src.getTranslation().toJME(),src.getRotation().toJME(),src.getScale().toJME());
 			db.put(src.getId(),b);
 			bones[i]=b;
 		}

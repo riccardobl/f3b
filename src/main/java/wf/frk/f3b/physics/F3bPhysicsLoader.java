@@ -1,4 +1,4 @@
-package wf.frk.f3b;
+package wf.frk.f3b.physics;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,9 +19,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 public class F3bPhysicsLoader{
 
 	public static void load(F3bPhysicsLoaderSettings settings, Spatial root, final PhysicsSpace space) {
@@ -82,7 +82,7 @@ public class F3bPhysicsLoader{
 		log.debug("Found {} constraints",constraintsXspatials.size());
 		// Finally apply constraints to rbs...
 		for(Entry<List<?>,List<Spatial>> entity:constraintsXspatials.entrySet()){
-			List ct=entity.getKey();
+			List<?> ct=entity.getKey();
 			List<Spatial> spatials=entity.getValue();
 			if(spatials.size()>2){
 				log.warn("Constraint with more or less than 2 spatials? EXTERMINATE!1!");

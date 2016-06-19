@@ -11,7 +11,7 @@ import com.jme3.math.Vector3f;
 import lombok.Data;
 
 @Data
-public class XbufTrack{
+public class F3bAnimTrack{
 	public static final String _SPATIAL="";
 	protected final String boneName;
 	protected final float[] times;

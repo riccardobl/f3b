@@ -17,12 +17,14 @@ import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.light.Light;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.FaceCullMode;
+import com.jme3.material.TechniqueDef.LightMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
@@ -32,33 +34,37 @@ import com.jme3.texture.Texture2D;
 import com.jme3.util.TangentBinormalGenerator;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
-import jme3_ext_xbuf.XbufKey;
-import wf.frk.f3b.F3bPhysicsLoader;
+import wf.frk.f3b.F3bKey;
+import wf.frk.f3b.physics.F3bPhysicsLoader;
 
 public class UnitTests{
 	public boolean headless=true;
 	@Test
-	public void testNewMat(){
+	public void testMatNodes(){
 		boolean headless=false;
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		
 		
 		TestHelpers.hijackUpdateThread(app);
-		F3bKey key=new F3bKey("unit_tests/xbuf/test_matnodes.xbuf");
+		F3bKey key=new F3bKey("unit_tests/f3b/test_matnodes.f3b");
 		key.useLightControls(true);
+//		TestHelpers.addLights(app);
 
-		AtomicBoolean ok=new AtomicBoolean();
+		final AtomicBoolean ok=new AtomicBoolean();
 		Spatial scene=app.getAssetManager().loadModel(key);
-		scene.depthFirstTraversal(s->{
-			if(s instanceof Geometry){
-				Geometry g=(Geometry)s;
-				try{
-					MikktspaceTangentGenerator.generate(g);
-				}catch(Exception e){}
-				Material mat=g.getMaterial();
-				for(MatParam p:mat.getParams()){
-					if(p.getName().equals("ColorMap"))ok.set(true);
-				}				
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Geometry g=(Geometry)s;
+					try{
+//						MikktspaceTangentGenerator.generate(g);
+					}catch(Exception e){}
+					Material mat=g.getMaterial();
+					for(MatParam p:mat.getParams()){
+						if(p.getName().equals("ColorMap"))ok.set(true);
+					}				
+				}
 			}
 		});
 		
@@ -69,60 +75,78 @@ public class UnitTests{
 		}
 		
 		app.getRootNode().attachChild(scene);
-//		TangentBinormalGenerator.generate(app.getRootNode());
 		TestHelpers.releaseUpdateThread(app);
 		if(!headless)TestHelpers.waitFor(app);
 		TestHelpers.closeApp(app);
 	}
 	
+	
+	
+	
 	@Test
 	public void testTangents(){
 //		boolean headless=false;
-		SimpleApplication app=TestHelpers.buildApp(headless);
+		final SimpleApplication app=TestHelpers.buildApp(headless);
 		
 		
 		TestHelpers.hijackUpdateThread(app);
-		F3bKey key=new F3bKey("unit_tests/xbuf/tangents.xbuf");
+		F3bKey key=new F3bKey("unit_tests/f3b/tangents.f3b");
 
 		StringBuilder failed=new StringBuilder();
-		Spatial scene=app.getAssetManager().loadModel(key);
-		scene.depthFirstTraversal(s->{
-			if(s instanceof Geometry){
-				Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
+		Spatial scene=app.getAssetManager().loadModel(key);	
+		Spatial clone=scene.clone();
+		app.getRootNode().attachChild(scene);
 
-				Geometry g=(Geometry)s;
-//				TangentBinormalGenerator.generate(g);
-//				MikktspaceTangentGenerator.generate(g);
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
+					mat.getAdditionalRenderState().setDepthTest(false);
 
-				Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
-				normals.setMaterial(mat);
-				Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
-				tangents.setMaterial(mat);
+					Geometry g=(Geometry)s;
+					g.getMaterial().getAdditionalRenderState().setWireframe(true);
+//					TangentBinormalGenerator.generate(g);
 
-				app.getRootNode().attachChild(normals);
-				normals.setLocalTranslation(g.getWorldTranslation());
-				app.getRootNode().attachChild(tangents);
-				tangents.setLocalTranslation(g.getWorldTranslation());
-				
-//				Mesh m=g.getMesh();
-//				ArrayList<Float> tan=toArray(m.getBuffer(Type.Tangent));
-//				TangentBinormalGenerator.generate(g);
-//				ArrayList<Float> tan2=toArray(m.getBuffer(Type.Tangent));
-//				for(Float t:tan){
-//					for(Float t2:tan2){
-//						if(FastMath.abs(t-t2)>0.001f){
-//							failed.append(g.getName()).append(": ").append("Loaded ").append(tan).append(" is not equals to generated ").append(tan2);
-//							break;
-//						}
-//					}
-//					if(!failed.toString().isEmpty())break;
-//				}
+					Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
+					normals.setMaterial(mat);
+					Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
+					tangents.setMaterial(mat);
+					app.getRootNode().attachChild(normals);
+					normals.setLocalTranslation(g.getWorldTranslation());
+					app.getRootNode().attachChild(tangents);
+					tangents.setLocalTranslation(g.getWorldTranslation());
+				}
+			}
+		});
+		
+		app.getRootNode().attachChild(clone);
+		clone.setLocalTranslation(16,0,0);
+		clone.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
+					mat.getAdditionalRenderState().setDepthTest(false);
+					Geometry g=(Geometry)s;
+					g.getMaterial().getAdditionalRenderState().setWireframe(true);
+
+					TangentBinormalGenerator.generate(g);
+
+					Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
+					normals.setMaterial(mat);
+					Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
+					tangents.setMaterial(mat);
+					app.getRootNode().attachChild(normals);
+					normals.setLocalTranslation(g.getWorldTranslation());
+					app.getRootNode().attachChild(tangents);
+					tangents.setLocalTranslation(g.getWorldTranslation());
+				}
 			}
 		});
 		
 		assertTrue(failed.toString(),failed.toString().isEmpty());	
 
-		app.getRootNode().attachChild(scene);
 		
 		TestHelpers.releaseUpdateThread(app);
 		if(!headless)TestHelpers.waitFor(app);
@@ -139,14 +163,14 @@ public class UnitTests{
 		return f;
 	}
 
-//	@Test
+	@Test
 	public void testConstraints(){
 //		boolean headless=false;
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		BulletAppState bullet=TestHelpers.buildBullet(app,true);
 		
 		TestHelpers.hijackUpdateThread(app);
-		F3bKey key=new F3bKey("unit_tests/xbuf/constraints.xbuf").usePhysics(true).useEnhancedRigidbodies(true);
+		F3bKey key=new F3bKey("unit_tests/f3b/constraints.f3b").usePhysics(true).useEnhancedRigidbodies(true);
 		Spatial scene=app.getAssetManager().loadModel(key);
 		app.getRootNode().attachChild(scene);
 		scene.setLocalTranslation(0,-10,0);
@@ -165,21 +189,26 @@ public class UnitTests{
 		TestHelpers.closeApp(app);
 	}
 	
-//	@Test
+	@Test
 	public void testMultiMat() {
+		boolean headless=false;
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
-
-		Spatial scene=app.getAssetManager().loadModel("unit_tests/xbuf/multi_mat.xbuf");
+		TestHelpers.addLights(app);
+		Spatial scene=app.getAssetManager().loadModel(new F3bKey("unit_tests/f3b/multi_mat.f3b"));	
 		app.getRootNode().attachChild(scene);
-
+		
+		TangentBinormalGenerator.generate(scene);
 		// All material instances
-		LinkedList<Material> materials_instances=new LinkedList<Material>();
-		scene.depthFirstTraversal(s -> {
-			if(s instanceof Geometry){
-				Geometry geom=(Geometry)s;
-				Material mat=geom.getMaterial();
-				materials_instances.add(mat);
+		final LinkedList<Material> materials_instances=new LinkedList<Material>();
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Geometry geom=(Geometry)s;
+					Material mat=geom.getMaterial();
+					materials_instances.add(mat);
+				}
 			}
 		});
 
@@ -188,47 +217,50 @@ public class UnitTests{
 		TestHelpers.closeApp(app);
 
 	}
-	
+//	
 	@Test
 	public void testHwSkinning() {
-		boolean headless=false;
+//		boolean headless=false;
 		
-		SimpleApplication app=TestHelpers.buildApp(headless);
+		final SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
 		
 		boolean created=false;
 		try{
-			Spatial scene=app.getAssetManager().loadModel("unit_tests/xbuf/hw_skinning.xbuf");
+			Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/hw_skinning.f3b");
 			app.getRootNode().attachChild(scene);
-			scene.depthFirstTraversal(s -> {
-				SkeletonControl sk=s.getControl(SkeletonControl.class);
-				if(sk!=null){
-					System.out.println("Found skeletoncontrol: "+sk+" on "+s);
+			scene.depthFirstTraversal(new SceneGraphVisitor(){
+				@Override
+				public void visit(Spatial s) {
+					SkeletonControl sk=s.getControl(SkeletonControl.class);
+					if(sk!=null){
+						System.out.println("Found skeletoncontrol: "+sk+" on "+s);
 
-					System.out.println("Set "+sk+".hwSkinning=true");
-					sk.setHardwareSkinningPreferred(true);
+						System.out.println("Set "+sk+".hwSkinning=true");
+						sk.setHardwareSkinningPreferred(true);
 
-					SkeletonDebugger skeletonDebug=new SkeletonDebugger("skeleton",sk.getSkeleton());
-					Material mat=new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
-					mat.setColor("Color",ColorRGBA.Green);
-					mat.getAdditionalRenderState().setDepthTest(false);
-					skeletonDebug.setMaterial(mat);
-				    app.getRootNode().attachChild(skeletonDebug);
-				    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
-				}
-				
-				AnimControl ac=s.getControl(AnimControl.class);
+						SkeletonDebugger skeletonDebug=new SkeletonDebugger("skeleton",sk.getSkeleton());
+						Material mat=new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
+						mat.setColor("Color",ColorRGBA.Green);
+						mat.getAdditionalRenderState().setDepthTest(false);
+						skeletonDebug.setMaterial(mat);
+					    app.getRootNode().attachChild(skeletonDebug);
+					    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
+					}
+					
+					AnimControl ac=s.getControl(AnimControl.class);
 
-				if(ac!=null){
-				
-					System.out.println("Found animcontrol: "+ac+" on "+s);
+					if(ac!=null){
+					
+						System.out.println("Found animcontrol: "+ac+" on "+s);
 
-					Collection<String> anims=ac.getAnimationNames();
-					for(String a:anims){
-						AnimChannel channel = ac.createChannel();
-						channel.setAnim(a);
-						channel.setLoopMode(LoopMode.Cycle);
-						System.out.println("Set "+a+" to "+s);
+						Collection<String> anims=ac.getAnimationNames();
+						for(String a:anims){
+							AnimChannel channel = ac.createChannel();
+							channel.setAnim(a);
+							channel.setLoopMode(LoopMode.Cycle);
+							System.out.println("Set "+a+" to "+s);
+						}
 					}
 				}
 			});
@@ -243,8 +275,6 @@ public class UnitTests{
 
 		assertTrue("Hardware skinning cannot be used.",created);
 
-
-
 	}
 
 //	@Test
@@ -256,12 +286,15 @@ public class UnitTests{
 		app.getRootNode().attachChild(scene);
 
 		// All mesh instances
-		LinkedList<Mesh> meshes=new LinkedList<Mesh>();
-		scene.depthFirstTraversal(s -> {
-			if(s instanceof Geometry){
-				Geometry geom=(Geometry)s;
-				Mesh mesh=geom.getMesh();
-				if(!meshes.contains(mesh)) meshes.add(mesh);
+		final LinkedList<Mesh> meshes=new LinkedList<Mesh>();
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Geometry geom=(Geometry)s;
+					Mesh mesh=geom.getMesh();
+					if(!meshes.contains(mesh)) meshes.add(mesh);
+				}
 			}
 		});
 		TestHelpers.releaseUpdateThread(app);
@@ -282,12 +315,15 @@ public class UnitTests{
 		app.getRootNode().attachChild(scene);
 
 		// All material instances
-		LinkedList<Material> materials_instances=new LinkedList<Material>();
-		scene.depthFirstTraversal(s -> {
-			if(s instanceof Geometry){
-				Geometry geom=(Geometry)s;
-				Material mat=geom.getMaterial();
-				materials_instances.add(mat);
+		final LinkedList<Material> materials_instances=new LinkedList<Material>();
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Geometry geom=(Geometry)s;
+					Material mat=geom.getMaterial();
+					materials_instances.add(mat);
+				}
 			}
 		});
 

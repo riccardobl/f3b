@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
@@ -20,22 +18,23 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 
 import lombok.experimental.ExtensionMethod;
+import lombok.extern.log4j.Log4j2;
 import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
-
+@Log4j2
 @ExtensionMethod({wf.frk.f3b.ext.AnimControlExt.class})
 public class SkeletonToSpatial implements Linker{
 	// see http://hub.jmonkeyengine.org/t/skeletoncontrol-or-animcontrol-to-host-skeleton/31478/4
 
 	@Override
-	public boolean doLink(RelationsMerger loader, RefData data, Logger log) {
-		Object op1=getRef1(data,Geometry.class,log);
-		Object op2=getRef2(data,Skeleton.class,log);
+	public boolean doLink(RelationsMerger loader, RefData data) {
+		Object op1=getRef1(data,Geometry.class);
+		Object op2=getRef2(data,Skeleton.class);
 
 		if(op1==null||op2==null){
-			op2=getRef1(data,Skeleton.class,log);
-			op1=getRef2(data,Node.class,log);
+			op2=getRef1(data,Skeleton.class);
+			op1=getRef2(data,Node.class);
 		}
 
 		if(op1==null||op2==null) return false;
@@ -64,13 +63,13 @@ public class SkeletonToSpatial implements Linker{
 		// always add AnimControl else NPE when SkeletonControl.clone
 		if(!atLeastOne)v.addControl(new AnimControl(sk));
 
-		cloneMatWhenNeeded((Spatial)op1,data,log);
+		cloneMatWhenNeeded((Spatial)op1,data);
 		return true;
 	}
 
 
 
-	private void cloneMatWhenNeeded(Spatial op2, final RefData data, final Logger log) {
+	private void cloneMatWhenNeeded(Spatial op2, final RefData data) {
 		op2.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {

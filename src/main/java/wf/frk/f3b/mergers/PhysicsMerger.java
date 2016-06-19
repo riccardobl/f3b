@@ -3,24 +3,22 @@ package wf.frk.f3b.mergers;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.slf4j.Logger;
-
 import com.jme3.physicsloader.PhysicsShape;
 import com.jme3.physicsloader.rigidbody.RigidBody;
 import com.jme3.physicsloader.rigidbody.RigidBodyType;
 import com.jme3.scene.Node;
 
-import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.Merger;
-import wf.frk.f3b.F3bContext;
 import f3b.Datas.Data;
 import f3b.Physics.Constraint;
+import lombok.experimental.ExtensionMethod;
+import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.Merger;
 
 @ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
 public class PhysicsMerger implements Merger{
 
 	@Override
-	public void apply(Data src, Node root, F3bContext context, Logger log) {
+	public void apply(Data src, Node root, F3bContext context) {
 		for(f3b.Physics.PhysicsData data:src.getPhysicsList()){
 			if(data.getRigidbody()!=null)loadRB(data.getRigidbody(),context);
 			if(data.getConstraint()!=null)loadCT(data.getConstraint(),context);

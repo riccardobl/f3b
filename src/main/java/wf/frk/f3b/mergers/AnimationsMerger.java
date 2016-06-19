@@ -3,32 +3,29 @@ package wf.frk.f3b.mergers;
 import java.lang.reflect.Array;
 import java.util.List;
 
-import org.slf4j.Logger;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-import wf.frk.f3b.Merger;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.animations.XbufAnimation;
-import wf.frk.f3b.animations.XbufTrack;
-import f3b.Datas.Data;
 import f3b.AnimationsKf;
 import f3b.AnimationsKf.SampledTransform;
-
+import f3b.Datas.Data;
+import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.Merger;
+import wf.frk.f3b.animations.F3bAnimTrack;
+import wf.frk.f3b.animations.F3bAnimation;
 @SuppressWarnings("unchecked")
 public class AnimationsMerger implements Merger{
 
 	@Override
-	public void apply(Data src, Node root, F3bContext context, Logger log) {
+	public void apply(Data src, Node root, F3bContext context) {
 		for(AnimationsKf.AnimationKF e:src.getAnimationsKfList()){
 			java.lang.String id=e.getId();
 			// TODO: merge with existing
-			XbufAnimation a=new XbufAnimation(e.getName(),((float)e.getDuration())/1000f);
+			F3bAnimation a=new F3bAnimation(e.getName(),((float)e.getDuration())/1000f);
 			for(AnimationsKf.Clip clip:e.getClipsList()){
 				if(clip.hasSampledTransform()){
-					XbufTrack t=makeTrack(clip.getSampledTransform().hasBoneName(),clip.getSampledTransform());
+					F3bAnimTrack t=makeTrack(clip.getSampledTransform().hasBoneName(),clip.getSampledTransform());
 					a.getTracks().add(t);
 				}
 			}
@@ -36,7 +33,7 @@ public class AnimationsMerger implements Merger{
 		}
 	}
 
-	private XbufTrack makeTrack(boolean bone, SampledTransform bt) {
+	private F3bAnimTrack makeTrack(boolean bone, SampledTransform bt) {
 		float times[]=new float[bt.getAtCount()];
 		List<Integer> at=bt.getAtList();
 		int i=0;
@@ -63,7 +60,7 @@ public class AnimationsMerger implements Merger{
 			}
 		},bt.getScaleXList(),bt.getScaleYList(),bt.getScaleZList());
 
-		return new XbufTrack(bone?bt.getBoneName():XbufTrack._SPATIAL,times,translations,rotations,scales);
+		return new F3bAnimTrack(bone?bt.getBoneName():F3bAnimTrack._SPATIAL,times,translations,rotations,scales);
 
 	}
 

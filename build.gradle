@@ -1,6 +1,18 @@
-def DEV_MODE=false
+def DEV_MODE=true
 
+apply plugin: "maven"
 apply plugin: 'java'
+
+version="SNAPSHOT"
+group="wf.frk.f3b"
+
+if (DEV_MODE){
+	v_physicsloader="SNAPSHOT"
+	g_physicsloader="dev"
+	v_protocol="dev"
+	
+	version="dev"
+}
 
 targetCompatibility = '1.7'
 sourceCompatibility = '1.7'
@@ -17,35 +29,25 @@ repositories{
 	maven { url "https://jitpack.io" }
 }
 
-
-
-if (DEV_MODE){
-	v_physicsloader="SNAPSHOT"
-	g_physicsloader="dev"
-	v_protocol="dev"
-}
-
 dependencies {
-	compileOnly "org.jmonkeyengine:jme3-core:${v_jme3}"
-
 	compile 'com.google.protobuf:protobuf-java:2.6.1'
 	compile "wf.frk.f3b:f3b:${v_protocol}"
 	
-
 	compile "${g_physicsloader}:jme3_physicsloader:${v_physicsloader}"
-	
-	
+		
 	compileOnly "org.projectlombok:lombok:${v_lombok}"
-	compile "org.slf4j:slf4j-api:${v_slf4j}"
-
-
+	
+	compile "org.apache.logging.log4j:log4j-api:2.2"
+    compile "org.apache.logging.log4j:log4j-core:2.2"
+    
+    compileOnly "org.jmonkeyengine:jme3-core:${v_jme3}"
+    compileOnly "org.jmonkeyengine:jme3-bullet:${v_jme3}"
+    
 	testCompile "org.jmonkeyengine:jme3-lwjgl:${v_jme3}"
 	testCompile "org.jmonkeyengine:jme3-desktop:${v_jme3}"
 	testCompile "org.jmonkeyengine:jme3-bullet:${v_jme3}"
 	testCompile "org.jmonkeyengine:jme3-bullet-native:${v_jme3}"
 	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
 	testCompile 'junit:junit:4.12'
-	
-	testRuntime 'ch.qos.logback:logback-classic:1.1.2'
 }
 

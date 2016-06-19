@@ -21,7 +21,7 @@ import com.jme3.util.TempVars;
 import lombok.Getter;
 import lombok.Setter;
 
-public class XbufLightControl extends AbstractControl{
+public class F3bLightControl extends AbstractControl{
 	private static final String LIGHT_NAME="light";
 
 	protected @Setter @Getter Light light;
@@ -51,7 +51,7 @@ public class XbufLightControl extends AbstractControl{
 
 	@Override
 	public Control cloneForSpatial(Spatial newSpatial) {
-		XbufLightControl control=new XbufLightControl();
+		F3bLightControl control=new F3bLightControl();
 		control.light=light;
 		control.setSpatial(newSpatial);
 		control.setEnabled(isEnabled());

@@ -2,16 +2,14 @@ package wf.frk.f3b.ext;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.Mesh.Mode;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MagFilter;
@@ -19,58 +17,36 @@ import com.jme3.texture.Texture.MinFilter;
 import com.jme3.texture.Texture.WrapMode;
 
 import f3b.Meshes;
-import f3b.Primitives;
 import f3b.Meshes.VertexArray;
-import f3b.Primitives.Mat4;
+import f3b.Types.qtr;
+import f3b.Types.tx2d;
+import f3b.Types.vec2;
+import f3b.Types.vec3;
+import f3b.Types.vec4;
 
 public class PrimitiveExt{
 
-	public static Vector2f toJME(Primitives.Vec2 src) {
+	public static Vector2f toJME(vec2 src) {
 		if(src==null)return new Vector2f();
 		return new Vector2f(src.getX(),src.getY());
 	}
 
-	public static Vector3f toJME(Primitives.Vec3 src) {
+	public static Vector3f toJME(vec3 src) {
 		if(src==null)return new Vector3f();
 		return new Vector3f(src.getX(),src.getY(),src.getZ());
 	}
 
-	public static Vector4f toJME(Primitives.Vec4 src) {
+	public static Vector4f toJME(vec4 src) {
 		if(src==null)return new Vector4f();
 		return new Vector4f(src.getX(),src.getY(),src.getZ(),src.getW());
 	}
 
-	public static Quaternion toJME(Primitives.Quaternion src) {
+	public static Quaternion toJME(qtr src) {
 		if(src==null)return new Quaternion();
 		return new Quaternion(src.getX(),src.getY(),src.getZ(),src.getW());
 	}
 
-	public static ColorRGBA toJME(Primitives.Color src) {
-		if(src==null)return new ColorRGBA();
-		return new ColorRGBA(src.getR(),src.getG(),src.getB(),src.getA());
-	}
 
-	public static Matrix4f toJME(Mat4 src) {
-		if(src==null)return new Matrix4f();
-		Matrix4f dst=new Matrix4f();
-		dst.m00=src.getC00();
-		dst.m10=src.getC10();
-		dst.m20=src.getC20();
-		dst.m30=src.getC30();
-		dst.m01=src.getC01();
-		dst.m11=src.getC11();
-		dst.m21=src.getC21();
-		dst.m31=src.getC31();
-		dst.m02=src.getC02();
-		dst.m12=src.getC12();
-		dst.m22=src.getC22();
-		dst.m32=src.getC32();
-		dst.m03=src.getC03();
-		dst.m13=src.getC13();
-		dst.m23=src.getC23();
-		dst.m33=src.getC33();
-		return dst;
-	}
 
 	public static Mesh.Mode toJME(Meshes.Mesh.Primitive v) {
 		switch(v){
@@ -120,16 +96,13 @@ public class PrimitiveExt{
 		}
 	}
 	
-	public static Texture toJME(Primitives.Texture t,AssetManager assetManager,Node root){
+	public static Texture toJME(tx2d t,AssetManager assetManager,Node root){
 		Texture tex=null;
 		String path=root.getName();
 		path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
 		try{
 			tex=assetManager.loadTexture(path);
 		}catch(AssetNotFoundException ex1){
-//			log.debug("failed to load texture:",path,ex1," try with asset root.");
-
-			// If not found load from root
 			try{
 				tex=assetManager.loadTexture(t.getRpath());
 

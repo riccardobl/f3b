@@ -9,14 +9,14 @@ import com.jme3.animation.Skeleton;
 import lombok.Data;
 
 @Data
-public class XbufAnimation{
+public class F3bAnimation{
 	protected final String name;
 	protected final float duration;
-	protected final List<XbufTrack> tracks=new LinkedList<XbufTrack>();
+	protected final List<F3bAnimTrack> tracks=new LinkedList<F3bAnimTrack>();
 	
 	public Animation toJME(Skeleton sk){
 		Animation anim=new Animation(getName(),getDuration());
-		for(XbufTrack t:tracks)anim.addTrack(t.toJME(sk));
+		for(F3bAnimTrack t:tracks)anim.addTrack(t.toJME(sk));
 		return anim;
 	}
 }

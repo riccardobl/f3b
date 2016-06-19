@@ -3,13 +3,14 @@ package wf.frk.f3b.mergers;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.slf4j.Logger;
-
 import com.jme3.scene.Node;
 
+import f3b.Datas.Data;
+import f3b.Relations.Relation;
 import lombok.Getter;
-import wf.frk.f3b.Merger;
+import lombok.extern.log4j.Log4j2;
 import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.Merger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
 import wf.frk.f3b.mergers.relations.linkers.AnimationToSpatial;
@@ -20,9 +21,7 @@ import wf.frk.f3b.mergers.relations.linkers.MaterialToGeometry;
 import wf.frk.f3b.mergers.relations.linkers.NodeToNode;
 import wf.frk.f3b.mergers.relations.linkers.PhysicsToSpatial;
 import wf.frk.f3b.mergers.relations.linkers.SkeletonToSpatial;
-import f3b.Datas.Data;
-import f3b.Relations.Relation;
-
+@Log4j2
 public class RelationsMerger implements Merger{
 	protected @Getter final MaterialsMerger matMerger;
 	protected @Getter final Collection<Linker> linkers;
@@ -40,13 +39,13 @@ public class RelationsMerger implements Merger{
 		linkers.add(new PhysicsToSpatial());
 	}
 
-	public void apply(Data src, Node root, F3bContext components, Logger log) {
+	public void apply(Data src, Node root, F3bContext components) {
 		for(Relation r:src.getRelationsList()){
-			merge(new RefData(r.getRef1(),r.getRef2(),src,root,components),log);
+			merge(new RefData(r.getRef1(),r.getRef2(),src,root,components));
 		}
 	}
 
-	protected void merge(RefData data, Logger log) {
+	protected void merge(RefData data) {
 		if(data.ref1.equals(data.ref2)){
 			log.warn("can't link {} to itself",data.ref1);
 			return;
@@ -70,7 +69,7 @@ public class RelationsMerger implements Merger{
 				data.ref1=ref1;
 				data.ref2=ref2;
 				for(Linker linker:linkers){
-					if(linker.doLink(this,data,log)){
+					if(linker.doLink(this,data)){
 						linked=true;
 						log.info("{} linked to {} with {}",data.ref1,data.ref2,linker.getClass());
 						break;

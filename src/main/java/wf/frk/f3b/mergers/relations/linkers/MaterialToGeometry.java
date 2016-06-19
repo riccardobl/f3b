@@ -4,8 +4,6 @@ import static wf.frk.f3b.mergers.relations.LinkerHelpers.getRef2;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -15,12 +13,13 @@ import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
 
+
 public class MaterialToGeometry  implements Linker{
 
 	@Override
-	public boolean doLink(RelationsMerger loader, RefData data, Logger log) {
-		Material op1=getRef1(data,Material.class,log);
-		Geometry op2=getRef2(data,Geometry.class,log);
+	public boolean doLink(RelationsMerger loader, RefData data) {
+		Material op1=getRef1(data,Material.class);
+		Geometry op2=getRef2(data,Geometry.class);
 		if(op1==null||op2==null) return false;
 		if(op2.getControl(SkeletonControl.class)!=null){
 			op1=op1.clone();
