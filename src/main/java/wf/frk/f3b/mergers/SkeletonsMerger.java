@@ -10,10 +10,9 @@ import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import f3b.Skeletons;
 import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.Merger;
+import wf.frk.f3b.core.F3bContext;
 
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class})
 public class SkeletonsMerger implements Merger{
 
 	@Override

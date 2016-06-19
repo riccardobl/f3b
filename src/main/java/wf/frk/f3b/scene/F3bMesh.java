@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
 
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class, wf.frk.f3b.ext.FloatBufferExt.class, wf.frk.f3b.ext.UintBufferExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class, wf.frk.f3b.ext.f3b.FloatBufferExt.class, wf.frk.f3b.ext.f3b.UintBufferExt.class})
 @RequiredArgsConstructor
 @Log4j2
 public class F3bMesh{

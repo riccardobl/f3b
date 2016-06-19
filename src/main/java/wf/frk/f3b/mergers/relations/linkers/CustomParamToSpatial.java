@@ -14,7 +14,7 @@ import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
 
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class})
 @Log4j2
 public class CustomParamToSpatial implements Linker{
 

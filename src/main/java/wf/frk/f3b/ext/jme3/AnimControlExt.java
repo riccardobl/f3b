@@ -1,4 +1,4 @@
-package wf.frk.f3b.ext;
+package wf.frk.f3b.ext.jme3;
 
 import java.lang.reflect.Field;
 

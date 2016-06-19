@@ -17,11 +17,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.Merger;
+import wf.frk.f3b.core.F3bContext;
 
 
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class,wf.frk.f3b.ext.Vector4fExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class,wf.frk.f3b.ext.jme3.Vector4fExt.class})
 @Log4j2
 public class MaterialsMerger implements Merger{
 	protected final AssetManager assetManager;

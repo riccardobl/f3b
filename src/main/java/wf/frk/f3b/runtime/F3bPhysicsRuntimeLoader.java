@@ -1,4 +1,4 @@
-package wf.frk.f3b.physics;
+package wf.frk.f3b.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,9 +20,10 @@ import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 
 import lombok.extern.log4j.Log4j2;
+import wf.frk.f3b.F3bPhysicsLoaderSettings;
 
 @Log4j2
-public class F3bPhysicsLoader{
+public class F3bPhysicsRuntimeLoader{
 
 	public static void load(F3bPhysicsLoaderSettings settings, Spatial root, final PhysicsSpace space) {
 		final Map<String,List<?>> constraints=new HashMap<String,List<?>>();

@@ -6,122 +6,92 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.light.SpotLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
-import f3b.Lights;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.Merger;
+import wf.frk.f3b.core.F3bContext;
 @Log4j2
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class,wf.frk.f3b.ext.Vector4fExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class,wf.frk.f3b.ext.jme3.Vector4fExt.class})
 public class LightsMerger implements Merger{
 
 	public void apply(Data src, Node root, F3bContext context) {
-		for(f3b.Lights.Light srcl:src.getLightsList()){
-			// TODO manage parent hierarchy
-			String id=srcl.getId();
-			Light light=context.get(id);
-			if(light==null){
-				light=makeLight(srcl);
-				context.put(id,light);
-			}
-
-			if(srcl.hasColor()){
-				light.setColor(srcl.getColor().toJME().toColorRGBA());
-			}
-
-			// TODO manage attenuation
-			// TODO manage conversion of type
-			switch(srcl.getKind()){
+		for(f3b.Lights.Light l:src.getLightsList()){
+			Light lg=null;
+			switch(l.getKind()){
 				case spot:{
-					SpotLight l=(SpotLight)light;
-					if(srcl.hasSpotAngle()){
-						float max=srcl.getSpotAngle().getMax();
-						switch(srcl.getSpotAngle().getCurveCase()){
+					lg=new SpotLight();
+					SpotLight sl=(SpotLight)lg;
+					sl.setSpotRange(1000);
+					sl.setSpotInnerAngle(5f*FastMath.DEG_TO_RAD);
+					sl.setSpotOuterAngle(10f*FastMath.DEG_TO_RAD);
+					if(l.hasSpotAngle()){
+						float max=l.getSpotAngle().getMax();
+						switch(l.getSpotAngle().getCurveCase()){
 							case CURVE_NOT_SET:
-								l.setSpotOuterAngle(max);
-								l.setSpotInnerAngle(max);
+								sl.setSpotOuterAngle(max);
+								sl.setSpotInnerAngle(max);
 								break;
 							case LINEAR:
-								l.setSpotOuterAngle(max*srcl.getSpotAngle().getLinear().getEnd());
-								l.setSpotInnerAngle(max*srcl.getSpotAngle().getLinear().getBegin());
+								sl.setSpotOuterAngle(max*l.getSpotAngle().getLinear().getEnd());
+								sl.setSpotInnerAngle(max*l.getSpotAngle().getLinear().getBegin());
 								break;
 							default:{
-								l.setSpotOuterAngle(max);
-								l.setSpotInnerAngle(max);
-								log.warn("doesn't support curve like {} for spot_angle",srcl.getSpotAngle().getCurveCase());
+								sl.setSpotOuterAngle(max);
+								sl.setSpotInnerAngle(max);
+								log.warn("doesn't support curve like {} for spot_angle",l.getSpotAngle().getCurveCase());
 							}
 						}
 					}
-					if(srcl.hasRadialDistance()){
-						l.setSpotRange(srcl.getRadialDistance().getMax());
+					if(l.hasRadialDistance()){
+						sl.setSpotRange(l.getRadialDistance().getMax());
 					}
 					break;
 				}
 				case point:{
-					PointLight l=(PointLight)light;
-					if(srcl.hasRadialDistance()){
-						float max=srcl.getRadialDistance().getMax();
-						switch(srcl.getRadialDistance().getCurveCase()){
+					lg=new PointLight();
+					PointLight pl=(PointLight)lg;
+					if(l.hasRadialDistance()){
+						float max=l.getRadialDistance().getMax();
+						switch(l.getRadialDistance().getCurveCase()){
 							case CURVE_NOT_SET:{
-								l.setRadius(max);
+								pl.setRadius(max);
 								break;
 							}
 							case LINEAR:{
-								l.setRadius(max*srcl.getSpotAngle().getLinear().getEnd());
+								pl.setRadius(max*l.getSpotAngle().getLinear().getEnd());
 								break;
 							}
 							case SMOOTH:{
-								l.setRadius(max*srcl.getSpotAngle().getSmooth().getEnd());
+								pl.setRadius(max*l.getSpotAngle().getSmooth().getEnd());
 								break;
 							}
 							default:{
-								l.setRadius(max);
-								log.warn("doesn't support curve like {} for spot_angle",srcl.getSpotAngle().getCurveCase());
+								pl.setRadius(max);
+								log.warn("doesn't support curve like {} for spot_angle",l.getSpotAngle().getCurveCase());
 							}
 						}
 					}
 					break;
 				}
-				case ambient:{
-					break;
-				}
 				case directional:{
-					light.setColor(srcl.getColor().toJME().toColorRGBA().mult(srcl.getIntensity()/4f)); // Try to make the light behave like in blender.
+					lg=new DirectionalLight();
 					break;
 				}
+				case ambient:{
+					lg=new AmbientLight();
+				}
+				default:{
+					log.warn("{} light not supported",l.getKind());
+				}
+			}
+			if(lg!=null){
+				lg.setName(l.getName());
+				lg.setColor(l.getColor().toJME().toColorRGBA().mult(l.getIntensity()));
+				context.put(l.getId(),lg);
 			}
 		}
 	}
-
-	private Light makeLight(Lights.Light srcl) {
-		Light l0=null;
-		switch(srcl.getKind()){
-			case ambient:
-				l0=new AmbientLight();
-				break;
-			case directional:
-				l0=new DirectionalLight();
-				break;
-			case spot:{
-				SpotLight l=new SpotLight();
-				l.setSpotRange(1000);
-				l.setSpotInnerAngle(5f*FastMath.DEG_TO_RAD);
-				l.setSpotOuterAngle(10f*FastMath.DEG_TO_RAD);
-				l0=l;
-				break;
-			}
-			case point:
-				l0=new PointLight();
-				break;
-		}
-		l0.setColor(ColorRGBA.White);
-		l0.setName(srcl.hasName()?srcl.getName():srcl.getId());
-		return l0;
-	}
-
 }

@@ -10,10 +10,9 @@ import com.jme3.scene.Node;
 import f3b.AnimationsKf;
 import f3b.AnimationsKf.SampledTransform;
 import f3b.Datas.Data;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.Merger;
 import wf.frk.f3b.animations.F3bAnimTrack;
 import wf.frk.f3b.animations.F3bAnimation;
+import wf.frk.f3b.core.F3bContext;
 @SuppressWarnings("unchecked")
 public class AnimationsMerger implements Merger{
 

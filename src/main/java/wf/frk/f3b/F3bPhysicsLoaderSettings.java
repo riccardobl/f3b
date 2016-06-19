@@ -1,4 +1,4 @@
-package wf.frk.f3b.physics;
+package wf.frk.f3b;
 
 import com.jme3.physicsloader.PhysicsLoaderSettings;
 

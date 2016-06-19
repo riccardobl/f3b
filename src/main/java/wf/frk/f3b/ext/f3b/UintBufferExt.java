@@ -1,4 +1,4 @@
-package wf.frk.f3b.ext;
+package wf.frk.f3b.ext.f3b;
 
 import java.util.List;
 

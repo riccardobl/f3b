@@ -10,12 +10,13 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
+import wf.frk.f3b.core.F3bContext;
 
 public class F3bLoader implements AssetLoader {
 	public static void init(AssetManager am){
 		am.registerLoader(F3bLoader.class,"f3b");
 	}
-
+	
 	public F3b buildF3b(AssetInfo assetInfo){
 		return  new F3b(assetInfo.getManager());
 	}
@@ -37,12 +38,9 @@ public class F3bLoader implements AssetLoader {
 			Data src = Data.parseFrom(in, f3b.extensions);
 			F3bContext context=new F3bContext();
 			context.setSettings(f3bkey);
-			f3b.merge(src, root, context);
-			
+			f3b.merge(src, root, context);			
 		} finally {
 			if(in!=null)in.close();
 		}
 		return root;
-	}
-
-}
+	}}

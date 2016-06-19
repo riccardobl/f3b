@@ -1,10 +1,12 @@
-package wf.frk.f3b;
+package wf.frk.f3b.core;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import wf.frk.f3b.F3bKey;
 
 @SuppressWarnings("unchecked")
 public class F3bContext {

@@ -6,7 +6,6 @@ import com.jme3.physicsloader.impl.PhysicsLoaderModelKey;
 import com.jme3.physicsloader.impl.bullet.BulletPhysicsLoader;
 
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.physics.F3bPhysicsLoaderSettings;
 
 
 @Log4j2
@@ -18,12 +17,6 @@ public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsL
 		super(s);
 	}
 
-	protected boolean useLightControls = false;
-	public F3bKey useLightControls(boolean x){
-		useLightControls=x;
-		return this;
-	}
-
 	@Override
 	public F3bKey usePhysics(PhysicsLoader<?,?> l){
 		if(l!=null&&!(l instanceof BulletPhysicsLoader)){
@@ -32,11 +25,6 @@ public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsL
 		}
 		super.usePhysics(l);
 		return this;
-	}
-
-
-	public boolean useLightControls(){
-		return useLightControls;
 	}
 
 	private final static Class<?>[] supportedConstraints={

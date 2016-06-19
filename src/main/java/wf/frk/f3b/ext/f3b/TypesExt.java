@@ -1,4 +1,4 @@
-package wf.frk.f3b.ext;
+package wf.frk.f3b.ext.f3b;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -24,7 +24,7 @@ import f3b.Types.vec2;
 import f3b.Types.vec3;
 import f3b.Types.vec4;
 
-public class PrimitiveExt{
+public class TypesExt{
 
 	public static Vector2f toJME(vec2 src) {
 		if(src==null)return new Vector2f();

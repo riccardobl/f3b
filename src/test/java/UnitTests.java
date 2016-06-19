@@ -15,6 +15,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.light.Light;
+import com.jme3.light.PointLight;
+import com.jme3.light.SpotLight;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
@@ -35,31 +37,34 @@ import com.jme3.util.TangentBinormalGenerator;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import wf.frk.f3b.F3bKey;
-import wf.frk.f3b.physics.F3bPhysicsLoader;
+import wf.frk.f3b.debug.Debug;
+import wf.frk.f3b.runtime.F3bLightRuntimeLoader;
+import wf.frk.f3b.runtime.F3bPhysicsRuntimeLoader;
+import wf.frk.f3b.runtime.F3bRuntimeLoader;
 
 public class UnitTests{
 	public boolean headless=true;
 	@Test
 	public void testMatNodes(){
-		boolean headless=false;
-		SimpleApplication app=TestHelpers.buildApp(headless);
+//		boolean headless=false;
+		final SimpleApplication app=TestHelpers.buildApp(headless);
 		
 		
 		TestHelpers.hijackUpdateThread(app);
-		F3bKey key=new F3bKey("unit_tests/f3b/test_matnodes.f3b");
-		key.useLightControls(true);
-//		TestHelpers.addLights(app);
-
+		Debug.assetManager=app.getAssetManager();
+		Debug.rootNode=app.getRootNode();
 		final AtomicBoolean ok=new AtomicBoolean();
-		Spatial scene=app.getAssetManager().loadModel(key);
+		
+		Spatial scene=F3bRuntimeLoader.instance(new F3bKey("unit_tests/f3b/test_matnodes.f3b"))
+				.attachSceneTo(app.getRootNode())
+				.attachLightsTo(app.getRootNode())
+				.load(app.getAssetManager());
+		
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
 				if(s instanceof Geometry){
 					Geometry g=(Geometry)s;
-					try{
-//						MikktspaceTangentGenerator.generate(g);
-					}catch(Exception e){}
 					Material mat=g.getMaterial();
 					for(MatParam p:mat.getParams()){
 						if(p.getName().equals("ColorMap"))ok.set(true);
@@ -67,6 +72,7 @@ public class UnitTests{
 				}
 			}
 		});
+		F3bLightRuntimeLoader.load(app.getRootNode(),scene);
 		
 		assertTrue("ColorMap not found. Material is not loaded properly",ok.get());	
 		for(Light l:app.getRootNode().getLocalLightList()){
@@ -103,11 +109,8 @@ public class UnitTests{
 				if(s instanceof Geometry){
 					Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
 					mat.getAdditionalRenderState().setDepthTest(false);
-
 					Geometry g=(Geometry)s;
 					g.getMaterial().getAdditionalRenderState().setWireframe(true);
-//					TangentBinormalGenerator.generate(g);
-
 					Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
 					normals.setMaterial(mat);
 					Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
@@ -153,15 +156,15 @@ public class UnitTests{
 		TestHelpers.closeApp(app);
 	}
 	
-	private ArrayList<Float> toArray(VertexBuffer buffer) {
-		ArrayList<Float> f=new ArrayList<Float>();
-		for(int i=0;i<buffer.getNumElements();i++){
-			for(int j=0;j<buffer.getNumComponents();j++){
-				f.add((Float)buffer.getElementComponent(i,j));
-			}
-		}
-		return f;
-	}
+//	private ArrayList<Float> toArray(VertexBuffer buffer) {
+//		ArrayList<Float> f=new ArrayList<Float>();
+//		for(int i=0;i<buffer.getNumElements();i++){
+//			for(int j=0;j<buffer.getNumComponents();j++){
+//				f.add((Float)buffer.getElementComponent(i,j));
+//			}
+//		}
+//		return f;
+//	}
 
 	@Test
 	public void testConstraints(){
@@ -174,7 +177,7 @@ public class UnitTests{
 		Spatial scene=app.getAssetManager().loadModel(key);
 		app.getRootNode().attachChild(scene);
 		scene.setLocalTranslation(0,-10,0);
-		F3bPhysicsLoader.load(key,scene,bullet.getPhysicsSpace());
+		F3bPhysicsRuntimeLoader.load(key,scene,bullet.getPhysicsSpace());
 		
 		int i=0;
 		Collection<PhysicsJoint> joints=bullet.getPhysicsSpace().getJointList();
@@ -191,14 +194,15 @@ public class UnitTests{
 	
 	@Test
 	public void testMultiMat() {
-		boolean headless=false;
+//		boolean headless=false;
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
-		TestHelpers.addLights(app);
 		Spatial scene=app.getAssetManager().loadModel(new F3bKey("unit_tests/f3b/multi_mat.f3b"));	
 		app.getRootNode().attachChild(scene);
+		F3bRuntimeLoader.instance(new F3bKey("unit_tests/f3b/test_matnodes.f3b"))
+		.attachLightsTo(app.getRootNode())
+		.load(scene);
 		
-		TangentBinormalGenerator.generate(scene);
 		// All material instances
 		final LinkedList<Material> materials_instances=new LinkedList<Material>();
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
@@ -212,16 +216,18 @@ public class UnitTests{
 			}
 		});
 
+		
+		assertTrue("Found "+materials_instances.size()+" materials, 2 expected",materials_instances.size()==2);	
+
 		TestHelpers.releaseUpdateThread(app);
 		if(!headless)TestHelpers.waitFor(app);
 		TestHelpers.closeApp(app);
 
 	}
-//	
+
 	@Test
 	public void testHwSkinning() {
 //		boolean headless=false;
-		
 		final SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
 		
@@ -277,12 +283,12 @@ public class UnitTests{
 
 	}
 
-//	@Test
+	@Test
 	public void testMeshSharing() {
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
 
-		Spatial scene=app.getAssetManager().loadModel("unit_tests/xbuf/shared_mesh.xbuf");
+		Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/shared_mesh.f3b");
 		app.getRootNode().attachChild(scene);
 
 		// All mesh instances
@@ -306,12 +312,12 @@ public class UnitTests{
 
 	
 	
-//	@Test
+	@Test
 	public void testMatSharing() {
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
 
-		Spatial scene=app.getAssetManager().loadModel("unit_tests/xbuf/shared_mat.xbuf");
+		Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/shared_mat.f3b");
 		app.getRootNode().attachChild(scene);
 
 		// All material instances

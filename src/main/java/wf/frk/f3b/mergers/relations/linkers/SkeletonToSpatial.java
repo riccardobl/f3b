@@ -23,7 +23,7 @@ import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
 @Log4j2
-@ExtensionMethod({wf.frk.f3b.ext.AnimControlExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.jme3.AnimControlExt.class})
 public class SkeletonToSpatial implements Linker{
 	// see http://hub.jmonkeyengine.org/t/skeletoncontrol-or-animcontrol-to-host-skeleton/31478/4
 

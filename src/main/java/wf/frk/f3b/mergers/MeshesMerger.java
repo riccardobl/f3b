@@ -5,8 +5,7 @@ import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
 import lombok.RequiredArgsConstructor;
-import wf.frk.f3b.F3bContext;
-import wf.frk.f3b.Merger;
+import wf.frk.f3b.core.F3bContext;
 import wf.frk.f3b.scene.F3bMesh;
 
 @RequiredArgsConstructor

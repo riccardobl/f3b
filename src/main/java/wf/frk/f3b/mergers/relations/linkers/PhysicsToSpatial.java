@@ -20,15 +20,15 @@ import f3b.Physics.Constraint;
 import f3b.Physics.ConstraintGeneric;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.F3bContext;
+import wf.frk.f3b.core.F3bContext;
 import wf.frk.f3b.mergers.RelationsMerger;
 import wf.frk.f3b.mergers.relations.Linker;
 import wf.frk.f3b.mergers.relations.RefData;
-import wf.frk.f3b.physics.F3bPhysicsLoader;
+import wf.frk.f3b.runtime.F3bPhysicsRuntimeLoader;
 
 
 @Log4j2
-@ExtensionMethod({wf.frk.f3b.ext.PrimitiveExt.class})
+@ExtensionMethod({wf.frk.f3b.ext.f3b.TypesExt.class})
 public class PhysicsToSpatial implements Linker{
 
 	@Override
@@ -122,7 +122,7 @@ public class PhysicsToSpatial implements Linker{
 		}
 		try{
 			log.debug("Store constraint {} [{}-{}] in scene",ct_data,a,b);
-			Spatial constraint_node=F3bPhysicsLoader.storeConstraintInScene(ctx.getSettings(),a,b,ct_data);
+			Spatial constraint_node=F3bPhysicsRuntimeLoader.storeConstraintInScene(ctx.getSettings(),a,b,ct_data);
 			root.attachChild(constraint_node);
 		}catch(Exception e){
 			e.printStackTrace();
