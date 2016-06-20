@@ -23,10 +23,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.util.TangentBinormalGenerator;
 
-import wf.frk.f3b.F3bKey;
-import wf.frk.f3b.debug.Debug;
-import wf.frk.f3b.runtime.F3bPhysicsRuntimeLoader;
-import wf.frk.f3b.runtime.F3bRuntimeLoader;
+import wf.frk.f3b.jme3.F3bKey;
+import wf.frk.f3b.jme3.debug.Debug;
+import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
+import wf.frk.f3b.jme3.runtime.F3bRuntimeLoader;
 
 public class UnitTests{
 	public boolean headless=true;

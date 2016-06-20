@@ -13,7 +13,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
 
-import wf.frk.f3b.F3bLoader;
+import wf.frk.f3b.jme3.F3bLoader;
 
 public class TestHelpers{
 	private static  Map<SimpleApplication,Object> run_tab=new ConcurrentHashMap<SimpleApplication,Object>();
