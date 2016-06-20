@@ -7,13 +7,14 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod({wf.frk.f3b.ext.jme3.LightExt.class})
 @RequiredArgsConstructor
 public class F3bLightControl extends AbstractControl{
-	protected final Light light;
+	protected @Getter final Light light;
 
 	@Override
 	public void controlUpdate(float tpf) {
@@ -25,9 +26,11 @@ public class F3bLightControl extends AbstractControl{
 //
 //	Spatial debug;
 
+	
 	@Override
 	public void setSpatial(Spatial sp) {
 		super.setSpatial(sp);
+	
 //		debug=Debug.makeCube(0.4f,ColorRGBA.Red);
 	}
 

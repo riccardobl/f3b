@@ -24,12 +24,17 @@ import wf.frk.f3b.F3bPhysicsLoaderSettings;
 
 @Log4j2
 public class F3bPhysicsRuntimeLoader{
+	public static void unload(Spatial scene, final PhysicsSpace space) {
+		space.removeAll(scene);
+	}
 
-	public static void load(F3bPhysicsLoaderSettings settings, Spatial root, final PhysicsSpace space) {
+	public static void load(F3bPhysicsLoaderSettings settings, Spatial scene, final PhysicsSpace space) {
+		log.debug("Load physics for {}",scene);
+
 		final Map<String,List<?>> constraints=new HashMap<String,List<?>>();
 
 		// Extract constraint definitions
-		root.depthFirstTraversal(new SceneGraphVisitor(){
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
 				if(s.getName().equals("Xbuf::Constraint")){
@@ -50,12 +55,12 @@ public class F3bPhysicsRuntimeLoader{
 		});
 
 		// Add scene to physpace
-		space.addAll(root);
+		space.addAll(scene);
 
 		final Map<List<?>,List<Spatial>> constraintsXspatials=new HashMap<List<?>,List<Spatial>>();
 
 		// Find constraintsXspatials associations
-		root.depthFirstTraversal(new SceneGraphVisitor(){
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
 				Collection<String> ctsr=getConstraints(s,false);

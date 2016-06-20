@@ -1,6 +1,5 @@
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,31 +13,18 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.light.Light;
-import com.jme3.light.PointLight;
-import com.jme3.light.SpotLight;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.FaceCullMode;
-import com.jme3.material.TechniqueDef.LightMode;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.debug.SkeletonDebugger;
-import com.jme3.shader.VarType;
-import com.jme3.texture.Texture2D;
 import com.jme3.util.TangentBinormalGenerator;
-import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import wf.frk.f3b.F3bKey;
 import wf.frk.f3b.debug.Debug;
-import wf.frk.f3b.runtime.F3bLightRuntimeLoader;
 import wf.frk.f3b.runtime.F3bPhysicsRuntimeLoader;
 import wf.frk.f3b.runtime.F3bRuntimeLoader;
 
@@ -55,10 +41,10 @@ public class UnitTests{
 		Debug.rootNode=app.getRootNode();
 		final AtomicBoolean ok=new AtomicBoolean();
 		
-		Spatial scene=F3bRuntimeLoader.instance(new F3bKey("unit_tests/f3b/test_matnodes.f3b"))
+		Spatial scene=F3bRuntimeLoader.instance()
 				.attachSceneTo(app.getRootNode())
 				.attachLightsTo(app.getRootNode())
-				.load(app.getAssetManager());
+				.load(app.getAssetManager(),new F3bKey("unit_tests/f3b/test_matnodes.f3b"));
 		
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
@@ -72,15 +58,10 @@ public class UnitTests{
 				}
 			}
 		});
-		F3bLightRuntimeLoader.load(app.getRootNode(),scene);
+		
 		
 		assertTrue("ColorMap not found. Material is not loaded properly",ok.get());	
-		for(Light l:app.getRootNode().getLocalLightList()){
-			System.out.println("Remove "+l);
-			app.getRootNode().removeLight(l);
-		}
-		
-		app.getRootNode().attachChild(scene);
+
 		TestHelpers.releaseUpdateThread(app);
 		if(!headless)TestHelpers.waitFor(app);
 		TestHelpers.closeApp(app);
@@ -197,11 +178,11 @@ public class UnitTests{
 //		boolean headless=false;
 		SimpleApplication app=TestHelpers.buildApp(headless);
 		TestHelpers.hijackUpdateThread(app);
-		Spatial scene=app.getAssetManager().loadModel(new F3bKey("unit_tests/f3b/multi_mat.f3b"));	
-		app.getRootNode().attachChild(scene);
-		F3bRuntimeLoader.instance(new F3bKey("unit_tests/f3b/test_matnodes.f3b"))
+		
+		Spatial scene=F3bRuntimeLoader.instance()
 		.attachLightsTo(app.getRootNode())
-		.load(scene);
+		.attachSceneTo(	app.getRootNode())
+		.load(app.getAssetManager(),new F3bKey("unit_tests/f3b/multi_mat.f3b"));
 		
 		// All material instances
 		final LinkedList<Material> materials_instances=new LinkedList<Material>();
