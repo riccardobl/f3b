@@ -1,0 +1,53 @@
+def DEV_MODE=true
+
+apply plugin: "maven"
+apply plugin: 'java'
+
+version="SNAPSHOT"
+group="wf.frk.f3b"
+
+if (DEV_MODE){
+	v_physicsloader="SNAPSHOT"
+	g_physicsloader="dev"
+	v_protocol="dev"
+	
+	version="dev"
+}
+
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+repositories{
+	jcenter()
+	mavenLocal()
+	mavenCentral()
+	maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
+	maven{ url "http://dl.bintray.com/riccardo/f3b" }
+	maven { url "https://jitpack.io" }
+}
+
+dependencies {
+	compile 'com.google.protobuf:protobuf-java:2.6.1'
+	compile "wf.frk.f3b:f3b:${v_protocol}"
+	
+	compile "${g_physicsloader}:jme3_physicsloader:${v_physicsloader}"
+		
+	compileOnly "org.projectlombok:lombok:${v_lombok}"
+	
+	compile "org.apache.logging.log4j:log4j-api:2.2"
+    compile "org.apache.logging.log4j:log4j-core:2.2"
+    
+    compileOnly "org.jmonkeyengine:jme3-core:${v_jme3}"
+    compileOnly "org.jmonkeyengine:jme3-bullet:${v_jme3}"
+    
+	testCompile "org.jmonkeyengine:jme3-lwjgl:${v_jme3}"
+	testCompile "org.jmonkeyengine:jme3-desktop:${v_jme3}"
+	testCompile "org.jmonkeyengine:jme3-bullet:${v_jme3}"
+	testCompile "org.jmonkeyengine:jme3-bullet-native:${v_jme3}"
+	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+	testCompile 'junit:junit:4.12'
+}
+
