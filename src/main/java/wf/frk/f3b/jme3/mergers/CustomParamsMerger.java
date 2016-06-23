@@ -5,7 +5,7 @@ import com.jme3.scene.Node;
 
 import f3b.CustomParams;
 import f3b.Datas.Data;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 
 public class CustomParamsMerger implements Merger{
 

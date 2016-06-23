@@ -10,7 +10,7 @@ import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import f3b.Skeletons;
 import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class})
 public class SkeletonsMerger implements Merger{

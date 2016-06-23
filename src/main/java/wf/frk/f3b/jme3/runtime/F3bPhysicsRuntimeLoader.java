@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -142,9 +143,9 @@ public class F3bPhysicsRuntimeLoader{
 			}
 		});
 	}
-
+	public static AtomicInteger LAST_CONTRAINT_ID=new AtomicInteger();
 	public static Spatial storeConstraintInScene(F3bPhysicsLoaderSettings settings, Spatial s1, Spatial s2, ConstraintData constraint) throws IOException {
-		String id=constraint.hashCode()+"_"+System.currentTimeMillis();
+		String id=constraint.hashCode()+"_"+LAST_CONTRAINT_ID.getAndIncrement();
 		applyConstraintID(s1,id,true);
 		applyConstraintID(s2,id,false);
 

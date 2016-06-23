@@ -20,7 +20,7 @@ import f3b.Physics.Constraint;
 import f3b.Physics.ConstraintGeneric;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 import wf.frk.f3b.jme3.mergers.RelationsMerger;
 import wf.frk.f3b.jme3.mergers.relations.Linker;
 import wf.frk.f3b.jme3.mergers.relations.RefData;
@@ -30,6 +30,7 @@ import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
 @Log4j2
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class})
 public class PhysicsToSpatial implements Linker{
+	protected long LAST_CLONE_ID=0;
 
 	@Override
 	public boolean doLink(RelationsMerger rloader, RefData data) {
@@ -47,7 +48,7 @@ public class PhysicsToSpatial implements Linker{
 			log.debug("Load rigidbody {}",data.ref1);
 			if(pc!=null&&pc instanceof Control){
 				op2.addControl((Control)pc);
-				String linkRef="G~slink4phy~"+System.currentTimeMillis()+"~"+data.ref1;
+				String linkRef="G~slink4phy~"+(LAST_CLONE_ID++)+"~"+data.ref1;
 				data.context.put(linkRef,op2,data.ref1);
 				applyCTs(op2,data.ref1,data.context,data.root);
 			}

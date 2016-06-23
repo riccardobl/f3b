@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 
@@ -17,14 +18,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 
 
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class,wf.frk.f3b.jme3.ext.jme3.Vector4fExt.class})
 @Log4j2
 public class MaterialsMerger implements Merger{
 	protected final AssetManager assetManager;
-	protected @Setter @Getter Texture defaultTexture;
 	protected @Setter @Getter Material defaultMaterial;
 
 
@@ -36,6 +36,7 @@ public class MaterialsMerger implements Merger{
 	
 	public Material newDefaultMaterial() {
 		Material m=new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+		m.setColor("Color",ColorRGBA.Pink);
 		m.setName("DEFAULT");
 		return m;
 	}

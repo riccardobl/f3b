@@ -26,6 +26,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 @ExtensionMethod({wf.frk.f3b.jme3.ext.jme3.AnimControlExt.class})
 public class SkeletonToSpatial implements Linker{
 	// see http://hub.jmonkeyengine.org/t/skeletoncontrol-or-animcontrol-to-host-skeleton/31478/4
+	protected long LAST_CLONE_ID=0;
 
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
@@ -84,7 +85,7 @@ public class SkeletonToSpatial implements Linker{
 					int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
 					if(n>1){
 						Material clone=m.clone();
-						data.context.put("G~"+matref+"~cloned~"+System.currentTimeMillis(),clone,matref);
+						data.context.put("G~"+matref+"~cloned~"+(LAST_CLONE_ID++),clone,matref);
 						s.setMaterial(clone);
 					}
 				}

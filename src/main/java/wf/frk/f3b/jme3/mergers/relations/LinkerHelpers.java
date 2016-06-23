@@ -4,8 +4,9 @@ package wf.frk.f3b.jme3.mergers.relations;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 
+import lombok.extern.log4j.Log4j2;
 import wf.frk.f3b.jme3.scene.F3bMesh;
-
+@Log4j2
 public class LinkerHelpers{
 	public static <T> T getRef1(RefData data, Class<T> as) {
 		return getRef(false,data,as);
@@ -44,11 +45,14 @@ public class LinkerHelpers{
 			if(m==null||!(m instanceof F3bMesh)) return null;
 
 			F3bMesh f3bm=(F3bMesh)m;
-			geo=new Geometry("",f3bm.toJME());
-			geo.setName(f3bm.getName());
-			geo.setMaterial(f3bm.material);
+			log.debug("Geometry {} is not cached. Generate...",f3bm.getName());
+
+			geo=new Geometry(f3bm.getName(),f3bm.toJME());
+		    geo.setMaterial(f3bm.material);
 
 			data.context.put("G~"+ref,geo);
+		}else{
+			log.debug("Geometry {} is cached. ",geo.getName());
 		}
 		return geo;
 	}

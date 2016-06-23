@@ -12,7 +12,7 @@ import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 @Log4j2
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class,wf.frk.f3b.jme3.ext.jme3.Vector4fExt.class})
 public class LightsMerger implements Merger{

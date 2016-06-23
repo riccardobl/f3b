@@ -1,4 +1,4 @@
-package wf.frk.f3b.jme3.core;
+package wf.frk.f3b.jme3;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import wf.frk.f3b.jme3.F3bKey;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @SuppressWarnings("unchecked")
 public class F3bContext {
 	private Map<String,Object> storage=new HashMap<String,Object> ();
@@ -36,12 +37,15 @@ public class F3bContext {
 
 	public synchronized <T> T put(String ref,Object val){
 		T t=(T)storage.put(ref,val);
+		log.debug("Add  {} to context",ref);
 		return t;
 	}
 
 	public synchronized <T> T put(String ref,Object val,String link_to){
 		T out=put(ref,val);
 		linkedRefs(link_to).add(ref);
+		log.debug("Link  {} to {}",ref,link_to);
+
 		return out;
 	}
 

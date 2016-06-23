@@ -15,6 +15,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 
 
 public class MaterialToGeometry  implements Linker{
+	protected long LAST_CLONE_ID=0;
 
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
@@ -23,7 +24,7 @@ public class MaterialToGeometry  implements Linker{
 		if(op1==null||op2==null) return false;
 		if(op2.getControl(SkeletonControl.class)!=null){
 			op1=op1.clone();
-			data.context.put("G~"+data.ref1+"~cloned~"+System.currentTimeMillis(),op1,data.ref1);
+			data.context.put("G~"+data.ref1+"~cloned~"+(LAST_CLONE_ID++),op1,data.ref1);
 		}else{
 			String refusage="G~usage~"+data.ref1;
 			int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);

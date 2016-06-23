@@ -291,7 +291,44 @@ public class UnitTests{
 		assertTrue("Two different meshes are used, but loaded "+meshes.size(),meshes.size()==2);
 	}
 
+
 	
+	@Test
+	public void testSharedMatAndMesh() {
+//		boolean headless=false;
+		SimpleApplication app=TestHelpers.buildApp(headless);
+		TestHelpers.hijackUpdateThread(app);
+
+		Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/shared_matAndmesh.f3b");
+		app.getRootNode().attachChild(scene);
+
+		// All material instances
+		final LinkedList<Material> materials=new LinkedList<Material>();
+		final LinkedList<Mesh> meshes=new LinkedList<Mesh>();
+
+		scene.depthFirstTraversal(new SceneGraphVisitor(){
+			@Override
+			public void visit(Spatial s) {
+				if(s instanceof Geometry){
+					Geometry geom=(Geometry)s;
+					Material mat=geom.getMaterial();
+					if(!materials.contains(mat))materials.add(mat);
+					Mesh mesh=geom.getMesh();
+					if(!meshes.contains(mesh))meshes.add(mesh);
+				}
+			}
+		});
+
+		
+		TestHelpers.releaseUpdateThread(app);
+		if(!headless)TestHelpers.waitFor(app);
+		TestHelpers.closeApp(app);
+		assertTrue(meshes.size()+" meshes found, 1 expected.",meshes.size()==1);
+		assertTrue(materials.size()+" materials found, 1 expected.",materials.size()==1);
+
+	}
+//}
+//
 	
 	@Test
 	public void testMatSharing() {

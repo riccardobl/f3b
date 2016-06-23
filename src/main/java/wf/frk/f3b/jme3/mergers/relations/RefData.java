@@ -4,7 +4,7 @@ import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
 import lombok.AllArgsConstructor;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 
 @AllArgsConstructor
 public class RefData {

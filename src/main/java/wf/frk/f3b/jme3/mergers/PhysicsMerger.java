@@ -11,7 +11,7 @@ import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Physics.Constraint;
 import lombok.experimental.ExtensionMethod;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class})
 public class PhysicsMerger implements Merger{

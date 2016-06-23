@@ -9,7 +9,7 @@ import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import wf.frk.f3b.jme3.core.F3bContext;
+import wf.frk.f3b.jme3.F3bContext;
 import wf.frk.f3b.jme3.mergers.relations.Linker;
 import wf.frk.f3b.jme3.mergers.relations.RefData;
 import wf.frk.f3b.jme3.mergers.relations.linkers.AnimationToSpatial;
@@ -55,7 +55,7 @@ public class RelationsMerger implements Merger{
 		// Linkers work with one relation per time, we want to process also linked generated relations, so we will do this:
 		LinkedList<String> refs1=new LinkedList<String>();
 		refs1.add(r1);
-		refs1.addAll(data.context.linkedRefs(r1));
+//		refs1.addAll(data.context.linkedRefs(r1)); < NONSENSE
 
 		LinkedList<String> refs2=new LinkedList<String>();
 		refs2.add(r2);
@@ -70,7 +70,7 @@ public class RelationsMerger implements Merger{
 				for(Linker linker:linkers){
 					if(linker.doLink(this,data)){
 						linked=true;
-						log.info("{} linked to {} with {}",data.ref1,data.ref2,linker.getClass());
+						log.info("{} linked to {} with {} [original ref  {} -> {}]",data.ref1,data.ref2,linker.getClass(),r1,r2);
 						break;
 					}
 				}

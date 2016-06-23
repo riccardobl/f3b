@@ -10,7 +10,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
-import wf.frk.f3b.jme3.core.F3bContext;
 
 public class F3bLoader implements AssetLoader {
 	public static void init(AssetManager am){
