@@ -125,6 +125,10 @@ public class MaterialsMerger implements Merger{
 							mat.setTexture(name,p.getTexture().toJME(assetManager,root));
 							break;
 						}
+						case TextureCubeMap:{
+							mat.setTexture(name,p.getTexture().toJME(assetManager,root));
+							break;
+						}
 						default:
 					}					
 				}
