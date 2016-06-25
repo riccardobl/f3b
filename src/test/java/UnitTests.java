@@ -22,6 +22,7 @@ import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.util.TangentBinormalGenerator;
+import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import wf.frk.f3b.jme3.F3bKey;
 import wf.frk.f3b.jme3.debug.Debug;
@@ -81,54 +82,25 @@ public class UnitTests{
 
 		StringBuilder failed=new StringBuilder();
 		Spatial scene=app.getAssetManager().loadModel(key);	
-		Spatial clone=scene.clone();
 		app.getRootNode().attachChild(scene);
+		
+		final Material mat=new Material(app.getAssetManager(),"MatDefs/TangentsViewer.j3md");
 
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
-				if(s instanceof Geometry){
-					Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
-					mat.getAdditionalRenderState().setDepthTest(false);
-					Geometry g=(Geometry)s;
-					g.getMaterial().getAdditionalRenderState().setWireframe(true);
-					Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
-					normals.setMaterial(mat);
-					Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
-					tangents.setMaterial(mat);
-					app.getRootNode().attachChild(normals);
-					normals.setLocalTranslation(g.getWorldTranslation());
-					app.getRootNode().attachChild(tangents);
-					tangents.setLocalTranslation(g.getWorldTranslation());
+				if (s.getUserData("tgbn_gen")!=null){
+					TangentBinormalGenerator.generate(s);
+					s.setMaterial(mat);
+				}else if(s.getUserData("mikkt_gen")!=null){
+					MikktspaceTangentGenerator.generate(s);
+					s.setMaterial(mat);
+				}else if(s.getUserData("imported")!=null){
+					s.setMaterial(mat);
 				}
 			}
 		});
-		
-		app.getRootNode().attachChild(clone);
-		clone.setLocalTranslation(16,0,0);
-		clone.depthFirstTraversal(new SceneGraphVisitor(){
-			@Override
-			public void visit(Spatial s) {
-				if(s instanceof Geometry){
-					Material mat=app.getAssetManager().loadMaterial("Common/Materials/VertexColor.j3m");
-					mat.getAdditionalRenderState().setDepthTest(false);
-					Geometry g=(Geometry)s;
-					g.getMaterial().getAdditionalRenderState().setWireframe(true);
-
-					TangentBinormalGenerator.generate(g);
-
-					Geometry normals=new  Geometry("Normals",TangentBinormalGenerator.genNormalLines(g.getMesh(),2f));
-					normals.setMaterial(mat);
-					Geometry tangents=new  Geometry("Tangents",TangentBinormalGenerator.genTbnLines(g.getMesh(),2f));
-					tangents.setMaterial(mat);
-					app.getRootNode().attachChild(normals);
-					normals.setLocalTranslation(g.getWorldTranslation());
-					app.getRootNode().attachChild(tangents);
-					tangents.setLocalTranslation(g.getWorldTranslation());
-				}
-			}
-		});
-		
+			
 		assertTrue(failed.toString(),failed.toString().isEmpty());	
 
 		

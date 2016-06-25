@@ -1,0 +1,13 @@
+MaterialDef Show tangents {
+  MaterialParameters {
+    
+  }
+  Technique {
+    VertexShader GLSL100 : MatDefs/TangentsViewer.glsl
+    FragmentShader GLSL100 : MatDefs/TangentsViewer.glsl
+    WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+       }
+  }
+}
