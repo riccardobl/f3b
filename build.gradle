@@ -1,4 +1,4 @@
-def DEV_MODE=true
+def DEV_MODE=false
 
 apply plugin: "maven"
 apply plugin: 'java'
