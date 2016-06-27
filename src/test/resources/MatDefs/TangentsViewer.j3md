@@ -1,13 +1,30 @@
 MaterialDef Show tangents {
   MaterialParameters {
-    
+    	Boolean ComputeInFrag
+    	Boolean ComputeInVert
   }
   Technique {
-    VertexShader GLSL100 : MatDefs/TangentsViewer.glsl
-    FragmentShader GLSL100 : MatDefs/TangentsViewer.glsl
-    WorldParameters {
-            WorldViewProjectionMatrix
-            WorldMatrix
-       }
+	    VertexShader GLSL400 : MatDefs/TangentsViewer.glsl
+	    FragmentShader GLSL400 : MatDefs/TangentsViewer.glsl
+	    Defines {         
+	    	COMPUTE_TANGENTS_IN_FRAGMENT: ComputeInFrag
+	    	COMPUTE_TANGENTS_IN_VERTEX: ComputeInVert    	
+	    }
+	    WorldParameters {
+	            WorldViewProjectionMatrix
+	            WorldMatrix            
+	       }
+  }
+    Technique {
+	    VertexShader GLSL150 : MatDefs/TangentsViewer.glsl
+	    FragmentShader GLSL150 : MatDefs/TangentsViewer.glsl
+	    Defines {         
+	    	COMPUTE_TANGENTS_IN_FRAGMENT: ComputeInFrag
+	    	COMPUTE_TANGENTS_IN_VERTEX: ComputeInVert    	
+	    }
+	    WorldParameters {
+	            WorldViewProjectionMatrix
+	            WorldMatrix            
+	       }
   }
 }

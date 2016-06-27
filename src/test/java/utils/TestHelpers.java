@@ -1,3 +1,4 @@
+package utils;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -66,6 +67,7 @@ public class TestHelpers{
 		settings.setSamples(4);
 		settings.setVSync(true);
 		app.setSettings(settings);
+		
 		app.start(headless?JmeContext.Type.Headless:JmeContext.Type.Display);
 		while(run_tab.get(app)==null){
 			try{

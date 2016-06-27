@@ -24,6 +24,7 @@ import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.util.TangentBinormalGenerator;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
+import utils.TestHelpers;
 import wf.frk.f3b.jme3.F3bKey;
 import wf.frk.f3b.jme3.debug.Debug;
 import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
@@ -97,6 +98,14 @@ public class UnitTests{
 					s.setMaterial(mat);
 				}else if(s.getUserData("imported")!=null){
 					s.setMaterial(mat);
+				}else if(s.getUserData("frag")!=null){
+					Material m=mat.clone();
+					m.setBoolean("ComputeInFrag",true);
+					s.setMaterial(m);
+				}else if(s.getUserData("vert")!=null){
+					Material m=mat.clone();
+					m.setBoolean("ComputeInVert",true);
+					s.setMaterial(m);
 				}
 			}
 		});
