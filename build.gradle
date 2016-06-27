@@ -3,14 +3,12 @@ def DEV_MODE=true
 apply plugin: "maven"
 apply plugin: 'java'
 
-version="SNAPSHOT"
 group="wf.frk.f3b"
-
+v_protocol="0.3"
 if (DEV_MODE){
 	v_physicsloader="SNAPSHOT"
 	g_physicsloader="dev"
-	v_protocol="dev"
-	
+	v_protocol="dev"	
 	version="dev"
 }
 
