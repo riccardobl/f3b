@@ -47,10 +47,6 @@
 
 #ifdef FRAGMENT_SHADER
 
-	#if  defined(COMPUTE_TANGENTS_IN_FRAGMENT) && __VERSION__ < 400 
-		#extension OES_standard_derivatives : enable
-#endif
-
     varying vec2 texCoord;   
     varying vec4 tangent;
     varying vec3 normal;
@@ -59,7 +55,7 @@
     void main(){
     	vec3 tg=tangent.xyz;
     
-		#if defined(COMPUTE_TANGENTS_IN_FRAGMENT) && (defined(OES_standard_derivatives) || __VERSION__ >= 400) 
+		#if defined(COMPUTE_TANGENTS_IN_FRAGMENT) 
 				// http://www.thetenthplanet.de/archives/1180		
 			    // get edge vectors of the pixel triangle
 			    vec3 dp1 = dFdx( position );

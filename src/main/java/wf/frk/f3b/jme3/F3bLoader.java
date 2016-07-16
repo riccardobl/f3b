@@ -3,6 +3,7 @@ package wf.frk.f3b.jme3;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.protobuf.CodedInputStream;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
@@ -18,12 +19,15 @@ public class F3bLoader implements AssetLoader {
 	
 	public F3b buildF3b(AssetInfo assetInfo){
 		return  new F3b(assetInfo.getManager());
+
 	}
 	
 	@Override
 	public Object load(AssetInfo assetInfo) throws IOException {
+
 		Node root = new Node(assetInfo.getKey().getName());
 		InputStream in = null ;
+		CodedInputStream cin;
 		try {
 			F3bKey f3bkey=null;
 			AssetKey<?> key=assetInfo.getKey();
@@ -32,9 +36,11 @@ public class F3bLoader implements AssetLoader {
 			}else{
 				f3bkey=new F3bKey(key.getName());
 			}
-			in = assetInfo.openStream();
-			F3b f3b = buildF3b(assetInfo);
-			Data src = Data.parseFrom(in, f3b.extensions);
+			in=assetInfo.openStream();
+			F3b f3b=buildF3b(assetInfo);
+			cin=CodedInputStream.newInstance(in);
+			cin.setSizeLimit(Integer.MAX_VALUE);
+			Data src=Data.parseFrom(cin,f3b.extensions);
 			F3bContext context=new F3bContext();
 			context.setSettings(f3bkey);
 			f3b.merge(src, root, context);			

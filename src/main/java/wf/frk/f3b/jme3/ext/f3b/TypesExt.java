@@ -107,9 +107,9 @@ public class TypesExt{
 				tex=assetManager.loadTexture(t.getRpath());
 
 				// TODO: make an option for this in the model key
-				tex.setMagFilter(MagFilter.Bilinear);
-				tex.setMinFilter(MinFilter.Trilinear);
-				tex.setAnisotropicFilter(4);
+//				tex.setMagFilter(MagFilter.Bilinear);
+//				tex.setMinFilter(MinFilter.Trilinear);
+//				tex.setAnisotropicFilter(4);
 			}catch(AssetNotFoundException ex){
 //				log.warn("failed to load texture:",t.getRpath(),ex);
 //				tex=defaultTexture.clone();
