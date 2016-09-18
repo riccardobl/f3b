@@ -14,12 +14,12 @@ public class LightExt{
 		if(light instanceof PointLight){
 			if(!((PointLight)light).getPosition().equals(pos)){
 				((PointLight)light).setPosition(pos);
-				log.debug("Set position {} for light {}",pos,light);
+//				log.debug("Set position {} for light {}",pos,light);
 			}
 		}else if(light instanceof SpotLight){
 			if(!((SpotLight)light).getPosition().equals(pos)){
 				((SpotLight)light).setPosition(pos);
-				log.debug("Set position {} for light {}",pos,light);
+//				log.debug("Set position {} for light {}",pos,light);
 			}
 		}
 	}
@@ -28,12 +28,12 @@ public class LightExt{
 		if(light instanceof DirectionalLight){
 			if(!((DirectionalLight)light).getDirection().equals(dir)){
 				((DirectionalLight)light).setDirection(dir);
-				log.debug("Set direction {} for light {}",dir,light);
+//				log.debug("Set direction {} for light {}",dir,light);
 			}
 		}else if(light instanceof SpotLight){
 			if(!((SpotLight)light).getDirection().equals(dir)){
 				((SpotLight)light).setDirection(dir);
-				log.debug("Set direction {} for light {}",dir,light);
+//				log.debug("Set direction {} for light {}",dir,light);
 			}
 
 		}
