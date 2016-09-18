@@ -99,7 +99,9 @@ public class TypesExt{
 	public static Texture toJME(tx2d t,AssetManager assetManager,Node root){
 		Texture tex=null;
 		String path=root.getName();
-		path=path.substring(0,path.lastIndexOf("/"))+"/"+t.getRpath();
+		int last_sep_i=path.lastIndexOf("/");
+		if(last_sep_i==-1)path="/"+t.getRpath();
+		else	path=path.substring(0,last_sep_i)+"/"+t.getRpath();
 		try{
 			tex=assetManager.loadTexture(path);
 		}catch(AssetNotFoundException ex1){
