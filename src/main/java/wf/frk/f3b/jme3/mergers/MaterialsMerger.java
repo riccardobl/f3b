@@ -20,7 +20,6 @@ import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
 import wf.frk.f3b.jme3.F3bContext;
 
-
 @ExtensionMethod({wf.frk.f3b.jme3.ext.f3b.TypesExt.class,wf.frk.f3b.jme3.ext.jme3.Vector4fExt.class})
 @Log4j2
 public class MaterialsMerger implements Merger{
@@ -62,9 +61,20 @@ public class MaterialsMerger implements Merger{
 
 	public void apply(Data src, Node root, F3bContext context) {
 		for(f3b.Materials.Material m:src.getMaterialsList()){
-			Material mat=new Material(assetManager,m.getMatId());
+			Material mat;
+			try{
+				mat=new Material(assetManager,m.getMatId());
+			}catch(Exception e){
+				log.debug("Can't load material",e);
+				mat=defaultMaterial;
+				String id=m.getId();
+				context.put(id,mat);
+				continue;
+			}
+		
 			String id=m.getId();
 			context.put(id,mat);
+			
 			mat.setName(m.hasName()?m.getName():m.getId());
 			List<MatProperty> properties=m.getPropertiesList();
 			
