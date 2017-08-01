@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 
@@ -38,7 +39,11 @@ public class MaterialToGeometry  implements Linker{
 			switch(b){
 				case 0: op2.setQueueBucket(Bucket.Opaque); break;
 				case 1: op2.setQueueBucket(Bucket.Translucent); break;
-				case 2: op2.setQueueBucket(Bucket.Transparent); break;
+				case 2: {					
+					op2.setQueueBucket(Bucket.Transparent); 
+					op1.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+					break;
+				}
 				case 3: op2.setQueueBucket(Bucket.Sky); break;
 			}
 		}
