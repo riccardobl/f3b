@@ -38,9 +38,9 @@ public class F3bPhysicsRuntimeLoader{
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
-				if(s.getName().equals("Xbuf::Constraint")){
-					List<?> constraint=s.getUserData("Xbuf::Constraints::Data");
-					String id=s.getUserData("Xbuf::Constraints::ID");
+				if(s.getName().equals("F3b::Constraint")){
+					List<?> constraint=s.getUserData("F3b::Constraints::Data");
+					String id=s.getUserData("F3b::Constraints::ID");
 
 					constraints.put(id,constraint);
 				}
@@ -134,11 +134,11 @@ public class F3bPhysicsRuntimeLoader{
 		scene.depthFirstTraversal(new SceneGraphVisitor(){
 			@Override
 			public void visit(Spatial s) {
-				if(s.getName().startsWith("Xbuf::Constraint")) s.removeFromParent();
+				if(s.getName().startsWith("F3b::Constraint")) s.removeFromParent();
 				else{
 					String[] ukeys=s.getUserDataKeys().toArray(new String[0]);
 					for(String ukey:ukeys)
-						if(ukey.startsWith("Xbuf::Constraints::")) s.setUserData(ukey,null);
+						if(ukey.startsWith("F3b::Constraints::")) s.setUserData(ukey,null);
 				}
 			}
 		});
@@ -168,26 +168,26 @@ public class F3bPhysicsRuntimeLoader{
 		for(int i=0;i<data.length;i++)
 			dataO.add(data[i]);
 
-		Node constraint_node=new Node("Xbuf::Constraint");
-		constraint_node.setUserData("Xbuf::Constraints::Data",dataO);
-		constraint_node.setUserData("Xbuf::Constraints::ID",id);
+		Node constraint_node=new Node("F3b::Constraint");
+		constraint_node.setUserData("F3b::Constraints::Data",dataO);
+		constraint_node.setUserData("F3b::Constraints::ID",id);
 		return constraint_node;
 	}
 
 	private static Collection<String> getConstraints(Spatial s, boolean createMapIfRequired) {
-		Collection<String> constraints=s.getUserData("Xbuf::Constraints::Apply");
+		Collection<String> constraints=s.getUserData("F3b::Constraints::Apply");
 		if(constraints==null){
 			constraints=new LinkedList<String>();
-			if(createMapIfRequired) s.setUserData("Xbuf::Constraints::Apply",constraints);
+			if(createMapIfRequired) s.setUserData("F3b::Constraints::Apply",constraints);
 		}
 		return constraints;
 	}
 
 	private static List<Byte> getConstraintsOrder(Spatial s, boolean createMapIfRequired) {
-		List<Byte> constraints=s.getUserData("Xbuf::Constraints::Order");
+		List<Byte> constraints=s.getUserData("F3b::Constraints::Order");
 		if(constraints==null){
 			constraints=new ArrayList<Byte>();
-			if(createMapIfRequired) s.setUserData("Xbuf::Constraints::Order",constraints);
+			if(createMapIfRequired) s.setUserData("F3b::Constraints::Order",constraints);
 		}
 		return constraints;
 	}
