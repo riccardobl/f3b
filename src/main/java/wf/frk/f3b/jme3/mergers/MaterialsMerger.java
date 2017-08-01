@@ -30,14 +30,19 @@ public class MaterialsMerger implements Merger{
 	public MaterialsMerger(AssetManager assetManager) {
 		this.assetManager = assetManager;
 //		defaultTexture = newDefaultTexture();
-		defaultMaterial = newDefaultMaterial();
+//		defaultMaterial = newDefaultMaterial();
 	}
 	
 	public Material newDefaultMaterial() {
-		Material m=new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-		m.setColor("Color",ColorRGBA.Pink);
-		m.setName("DEFAULT");
-		return m;
+		if(defaultMaterial!=null)return defaultMaterial.clone();
+		else{
+			Material m=new Material(assetManager,"f3b_resources/MatCap.j3md");
+			m.setTexture("DiffuseMap",assetManager.loadTexture("f3b_resources/generator8.jpg"));
+			m.setColor("Multiply_Color",ColorRGBA.Pink);
+			m.setFloat("ChessSize",0.5f);
+			m.setName("DEFAULT");
+			return m;
+		}
 	}
 
 //	public Material newDefaultMaterial() {
@@ -63,10 +68,15 @@ public class MaterialsMerger implements Merger{
 		for(f3b.Materials.Material m:src.getMaterialsList()){
 			Material mat;
 			try{
-				mat=new Material(assetManager,m.getMatId());
+				if(!m.hasMatId()){
+					throw new Exception("Material is empty");
+				}else{
+					mat=new Material(assetManager,m.getMatId());
+				}
 			}catch(Exception e){
 				log.debug("Can't load material",e);
-				mat=defaultMaterial;
+				mat=newDefaultMaterial();
+				mat.setName(m.getName());
 				String id=m.getId();
 				context.put(id,mat);
 				continue;
