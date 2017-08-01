@@ -15,7 +15,7 @@ public class MeshesMerger implements Merger{
 	@Override
 	public void apply(Data src, Node root, F3bContext context) {
 		for(f3b.Meshes.Mesh g:src.getMeshesList())
-			context.put(g.getId(),new F3bMesh(g, loader4Materials.getDefaultMaterial()));
+			context.put(g.getId(),new F3bMesh(g, loader4Materials.newDefaultMaterial()));
 	}
 
 }

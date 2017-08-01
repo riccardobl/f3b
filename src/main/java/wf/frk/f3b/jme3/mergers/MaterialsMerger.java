@@ -24,7 +24,7 @@ import wf.frk.f3b.jme3.F3bContext;
 @Log4j2
 public class MaterialsMerger implements Merger{
 	protected final AssetManager assetManager;
-	protected @Setter @Getter Material defaultMaterial;
+	protected @Setter  Material defaultMaterial;
 
 
 	public MaterialsMerger(AssetManager assetManager) {
@@ -76,8 +76,8 @@ public class MaterialsMerger implements Merger{
 			}catch(Exception e){
 				log.debug("Can't load material",e);
 				mat=newDefaultMaterial();
-				mat.setName(m.getName());
 				String id=m.getId();
+				mat.setName(m.hasName()?m.getName():m.getId());
 				context.put(id,mat);
 				continue;
 			}
@@ -86,6 +86,8 @@ public class MaterialsMerger implements Merger{
 			context.put(id,mat);
 			
 			mat.setName(m.hasName()?m.getName():m.getId());
+			log.debug("Material loaded {}",mat.getName());
+
 			List<MatProperty> properties=m.getPropertiesList();
 			
 			for(MatProperty p:properties){
