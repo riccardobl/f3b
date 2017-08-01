@@ -5,7 +5,10 @@ package wf.frk.f3b.jme3.scene;
 import com.jme3.material.Material;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.VertexBuffer.Usage;
+import com.jme3.util.BufferUtils;
 
 import f3b.Meshes.IndexArray;
 import f3b.Meshes.Skin;
@@ -33,15 +36,27 @@ public class F3bMesh{
 
 		//		context.put("G~meshName~"+dst.hashCode(),src.getName());
 		dst.setMode(src.getPrimitive().toJME());
-
 		for(VertexArray va:src.getVertexArraysList()){
-			Type type=va.getAttrib().toJME();
-			dst.setBuffer(type,va.getFloats().getStep(),va.getFloats().array());
-			log.debug("add {}",dst.getBuffer(type));
+			try{
+				Type type=va.getAttrib().toJME();
+
+				VertexBuffer vb=new VertexBuffer(type);
+				vb.setupData(Usage.Static,va.getFloats().getStep(),Format.Float,BufferUtils.createFloatBuffer(va.getFloats().array()));
+				dst.setBuffer(vb);
+
+				//dst.setBuffer(type,va.getFloats().getStep(),va.getFloats().array());
+				log.debug("add {}",dst.getBuffer(type));
+			}catch(IllegalArgumentException ex){
+				log.warn("{} not supported. Skip.",va.getAttrib());
+			}
 		}
 
 		for(IndexArray va:src.getIndexArraysList()){
-			dst.setBuffer(VertexBuffer.Type.Index,va.getInts().getStep(),va.getInts().array());
+
+			VertexBuffer vb=new VertexBuffer(VertexBuffer.Type.Index);
+			vb.setupData(Usage.Static,va.getInts().getStep(),Format.UnsignedInt,BufferUtils.createIntBuffer(va.getInts().array()));
+			dst.setBuffer(vb);
+//			dst.setBuffer(VertexBuffer.Type.Index,va.getInts().getStep(),va.getInts().array());
 		}
 
 		if(src.hasSkin()) applySkin(src.getSkin(),dst);
