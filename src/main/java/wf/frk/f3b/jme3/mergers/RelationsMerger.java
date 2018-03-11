@@ -55,7 +55,6 @@ public class RelationsMerger implements Merger{
 		// Linkers work with one relation per time, we want to process also linked generated relations, so we will do this:
 		LinkedList<String> refs1=new LinkedList<String>();
 		refs1.add(r1);
-//		refs1.addAll(data.context.linkedRefs(r1)); < NONSENSE
 
 		LinkedList<String> refs2=new LinkedList<String>();
 		refs2.add(r2);

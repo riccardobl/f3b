@@ -43,7 +43,7 @@ public class F3bLoader implements AssetLoader {
 			Data src=Data.parseFrom(cin,f3b.extensions);
 			F3bContext context=new F3bContext();
 			context.setSettings(f3bkey);
-			f3b.merge(src, root, context);	
+			f3b.merge(f3bkey.executor(),src, root, context);	
 		} finally {
 			if(in!=null)in.close();
 		}

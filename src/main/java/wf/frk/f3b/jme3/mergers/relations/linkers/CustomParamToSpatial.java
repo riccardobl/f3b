@@ -19,7 +19,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 public class CustomParamToSpatial implements Linker{
 
 	@Override
-	public boolean doLink(RelationsMerger loader,RefData data) {
+	public boolean doLink(RelationsMerger loader,RefData data) {		
 		CustomParamList op1=getRef1(data,CustomParamList.class);
 		Spatial op2=getRef2(data,Spatial.class);
 		if(op1==null||op2==null) return false;

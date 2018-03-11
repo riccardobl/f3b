@@ -18,11 +18,10 @@ public class NodesMerger implements Merger{
 				String id=n.getId();
 				Spatial child=(Spatial)context.get(id);
 				if(child==null){
-					child=new Node("");
+					child=context.getSettings().getNodeBuilder().build(n.hasName()?n.getName():n.getId());
 					root.attachChild(child);
 					context.put(id,child);
 				}
-				child.setName(n.hasName()?n.getName():n.getId());
 				child.setLocalRotation(n.getRotation().toJME());
 				child.setLocalTranslation(n.getTranslation().toJME());
 				child.setLocalScale(n.getScale().toJME());

@@ -1,7 +1,11 @@
 package wf.frk.f3b.jme3;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import com.google.protobuf.ExtensionRegistry;
 import com.jme3.asset.AssetManager;
@@ -42,9 +46,35 @@ public class F3b{
 		extensions=ExtensionRegistry.newInstance();
 	}
 
-	public void merge(Data src, Node root, F3bContext context) {
-		for(Merger m:mergers){
-			m.apply(src,root,context);
+	public void merge(ExecutorService executor,final Data src, final Node root, final F3bContext context) {
+		Collection<Future> wait_for=new ArrayList<Future>();
+		for(int i=0;i<mergers.size()-1;i++){
+			final Merger merger= mergers.get(i);
+			Runnable r=new Runnable(){
+				@Override
+				public void run() {
+					merger.apply(src,root,context);
+				}				
+			};
+			if(executor!=null){
+				Future f=executor.submit(r);
+				wait_for.add(f);
+			}else{
+				r.run();
+			}
 		}
+		if(executor!=null){
+			while(true){
+				try{
+					for(Future f:wait_for){
+						f.get();
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+		mergers.get(mergers.size()-1).apply(src,root,context);
 	}
 }

@@ -32,6 +32,7 @@ public class LightToNode implements Linker{
 		////			op2.addControl(lc);
 		//			data.root.addLight(op1);
 		//		}else{
+		op1=op1.clone();
 		op1.setPosition(op2.getWorldTranslation());
 		op1.setDirection(op2.getWorldRotation().mult(Vector3f.UNIT_Z));
 		op2.addLight(op1);
