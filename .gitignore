@@ -40,3 +40,4 @@ build/
 cache/
 gradle/
 gradlew.bat
+dist/

@@ -11,7 +11,7 @@ function build {
 
 
     # Build
-    gradle -Dmaven.repo.local=dist/maven build publishToMavenLocal $1 
+    gradle -Dmaven.repo.local=dist/maven build publishToMavenLocal $@
     # gradle -x test build
 }
 

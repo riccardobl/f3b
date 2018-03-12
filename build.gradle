@@ -18,14 +18,19 @@ def g_physicsloader="com.github.riccardobl"
 
 if(project.hasProperty('in_v_physicsloader') ){
 	v_physicsloader=project.getProperty('in_v_physicsloader')
+    println("Use physics loader v"+v_physicsloader)
 }
 
 if(project.hasProperty('in_v_protocol') ){
 	v_protocol=project.getProperty('in_v_protocol')
+        println("Use protocol v"+v_protocol)
+
 }
 
 if(project.hasProperty('in_g_physicsloader') ){
 	g_physicsloader=project.getProperty('in_g_physicsloader')
+            println("Use physics loader from group "+g_physicsloader)
+
 }
 
 
