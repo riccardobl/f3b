@@ -16,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.util.clone.Cloner;
 
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +42,7 @@ public class SkeletonToSpatial implements Linker{
 		if(op1==null||op2==null) return false;
 		Spatial v=(Spatial)op1;
 		Skeleton sk=(Skeleton)op2;
-
+		sk=Cloner.deepClone(sk);
 		// TODO: update skel w/o remove
 		v.removeControl(SkeletonControl.class);
 

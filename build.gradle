@@ -46,7 +46,7 @@ repositories{
         url "http://127.0.0.1:48889/"
     }
     maven {
-        url "https://192.168.2.20:8000/"
+        url "http://192.168.2.20:8000/"
     }
     maven {
         url "https://maven.frk.wf/"
