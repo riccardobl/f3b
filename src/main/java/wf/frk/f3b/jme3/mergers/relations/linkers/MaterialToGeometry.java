@@ -27,9 +27,9 @@ public class MaterialToGeometry  implements Linker{
 			op1=op1.clone();
 			data.context.put("G~"+data.ref1+"~cloned~"+(LAST_CLONE_ID++),op1,data.ref1);
 		}else{
-			String refusage="G~usage~"+data.ref1;
-			int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
-			data.context.put(refusage,n++);
+//			String refusage="G~usage~"+data.ref1;
+//			int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
+//			data.context.put(refusage,n++);
 		}
 
 		op2.setMaterial(op1);

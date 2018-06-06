@@ -46,6 +46,8 @@ public class SkeletonToSpatial implements Linker{
 		v.removeControl(SkeletonControl.class);
 
 		SkeletonControl skc=new SkeletonControl(sk);
+		skc.setHardwareSkinningPreferred(true);
+
 		v.addControl(skc);
 
 		Collection<AnimControl> controls=new LinkedList<AnimControl>();
@@ -81,13 +83,13 @@ public class SkeletonToSpatial implements Linker{
 						log.error("Mat is not referred?");
 						return;
 					}
-					String refusage="G~usage~"+matref;
-					int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
-					if(n>1){
+//					String refusage="G~usage~"+matref;
+//					int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
+//					if(n>1){
 						Material clone=m.clone();
-						data.context.put("G~"+matref+"~cloned~"+(LAST_CLONE_ID++),clone,matref);
+						data.context.put("G~"+matref+"~cloned~4sk"+(LAST_CLONE_ID++),clone,matref);
 						s.setMaterial(clone);
-					}
+//					}
 				}
 			}
 		});
