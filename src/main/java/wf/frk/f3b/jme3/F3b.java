@@ -13,6 +13,7 @@ import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.mergers.AnimationsMerger;
+import wf.frk.f3b.jme3.mergers.AudioMerger;
 import wf.frk.f3b.jme3.mergers.CustomParamsMerger;
 import wf.frk.f3b.jme3.mergers.LightsMerger;
 import wf.frk.f3b.jme3.mergers.MaterialsMerger;
@@ -39,6 +40,7 @@ public class F3b{
 		mergers.add(new AnimationsMerger());
 		mergers.add(new CustomParamsMerger());
 		mergers.add(new PhysicsMerger());
+		mergers.add(new AudioMerger(assetManager));
 
 		// relations should be the last because it reuse data provide by other (put in components)
 		mergers.add( new RelationsMerger(mat_merger));

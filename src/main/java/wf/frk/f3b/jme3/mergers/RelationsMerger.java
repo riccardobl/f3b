@@ -18,6 +18,7 @@ import wf.frk.f3b.jme3.mergers.relations.linkers.GeometryToNode;
 import wf.frk.f3b.jme3.mergers.relations.linkers.LightToNode;
 import wf.frk.f3b.jme3.mergers.relations.linkers.MaterialToGeometry;
 import wf.frk.f3b.jme3.mergers.relations.linkers.NodeToNode;
+import wf.frk.f3b.jme3.mergers.relations.linkers.AudioToNode;
 import wf.frk.f3b.jme3.mergers.relations.linkers.PhysicsToSpatial;
 import wf.frk.f3b.jme3.mergers.relations.linkers.SkeletonToSpatial;
 @Log4j2
@@ -34,6 +35,7 @@ public class RelationsMerger implements Merger{
 		linkers.add(new MaterialToGeometry());
 		linkers.add(new GeometryToNode());
 		linkers.add(new SkeletonToSpatial());
+		linkers.add(new AudioToNode());
 		linkers.add(new NodeToNode());
 		linkers.add(new PhysicsToSpatial());
 	}
