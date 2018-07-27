@@ -39,6 +39,11 @@ public class SkeletonToSpatial implements Linker{
 			op1=getRef2(data,Node.class);
 		}
 
+		if(op1==null||op2==null){
+			op1=getRef1(data,Node.class);
+			op2=getRef2(data,Skeleton.class);
+		}
+
 		if(op1==null||op2==null) return false;
 		Spatial v=(Spatial)op1;
 		Skeleton sk=(Skeleton)op2;
