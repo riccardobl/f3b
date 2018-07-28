@@ -76,6 +76,32 @@ javadoc {
 // }
 
 
+// task delombok{
+//     description 'Delomboks the entire source code tree'
+//     def srcDelomboked = 'build/src-delomboked'
+//     def srcJava = 'src'
+
+//     inputs.files file( srcJava )
+//     outputs.dir file( srcDelomboked )
+
+//     doLast {
+//         def collection = files( configurations.compile + configurations.testCompile )
+//         def sumTree = collection + fileTree( dir: 'bin' )
+
+//         ant.taskdef( name: 'delombok', classname: 'lombok.delombok.ant.Tasks$Delombok', 
+//             classpath: configurations.compile.asPath +
+//                        configurations.testCompile.asPath )
+//         ant.delombok( from:srcJava, to:srcDelomboked, classpath: sumTree.asPath )
+
+
+//         // Replace current src directory with delomboked source
+//         copy {
+//             from srcDelomboked
+//             into srcJava
+//         }
+//     }
+// }
+
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava
@@ -106,8 +132,7 @@ dependencies {
 	
 	compile "${g_physicsloader}:jme3_physicsloader:${v_physicsloader}"
 		
-	compileOnly "org.projectlombok:lombok:${v_lombok}"
-	
+//  compile group:'org.projectlombok', name: 'lombok', version: '1.18.0'	
 	compile "org.apache.logging.log4j:log4j-api:2.2"
     compile "org.apache.logging.log4j:log4j-core:2.2"
     
