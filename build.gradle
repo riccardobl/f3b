@@ -1,5 +1,6 @@
 apply plugin: "maven"
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 
@@ -11,9 +12,9 @@ def v_jme3="-SNAPSHOT"
 def v_slf4j="1.7.7"
 def v_lombok="1.16.8"
 
-def v_protocol="0.3"
-def v_physicsloader="0.6.1"
-def g_physicsloader="com.github.riccardobl"
+def v_protocol="dev"
+def v_physicsloader="dev"
+def g_physicsloader="wf.frk.jme3"
 
 
 if(project.hasProperty('in_v_physicsloader') ){
@@ -63,6 +64,16 @@ javadoc {
   source = sourceSets.main.allJava
   classpath = configurations.compileClasspath
 }
+
+
+// task dumper(type: JavaExec) {
+//      standardInput = System.in
+
+//     main ='wf.frk.f3b.tools.F3bDumper'
+//     classpath file("${rootDir}/build/classes/java/main")
+//     classpath  sourceSets.main.compileClasspath
+  
+// }
 
 
 
