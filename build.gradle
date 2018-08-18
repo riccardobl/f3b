@@ -12,8 +12,8 @@ def v_jme3="-SNAPSHOT"
 def v_slf4j="1.7.7"
 def v_lombok="1.16.8"
 
-def v_protocol="dev"
-def v_physicsloader="dev"
+def v_protocol="-SNAPSHOT"
+def v_physicsloader="-SNAPSHOT"
 def g_physicsloader="wf.frk.jme3"
 
 
@@ -66,14 +66,14 @@ javadoc {
 }
 
 
-// task dumper(type: JavaExec) {
-//      standardInput = System.in
+task dumper(type: JavaExec) {
+     standardInput = System.in
 
-//     main ='wf.frk.f3b.tools.F3bDumper'
-//     classpath file("${rootDir}/build/classes/java/main")
-//     classpath  sourceSets.main.compileClasspath
+    main ='wf.frk.f3b.tools.F3bDumper'
+    classpath file("${rootDir}/build/classes/java/main")
+    classpath  sourceSets.main.compileClasspath
   
-// }
+}
 
 
 // task delombok{

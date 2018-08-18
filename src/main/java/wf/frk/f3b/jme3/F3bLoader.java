@@ -2,6 +2,7 @@ package wf.frk.f3b.jme3;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 
 import com.google.protobuf.CodedInputStream;
 import com.jme3.asset.AssetInfo;
@@ -11,15 +12,19 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
+import wf.frk.f3b.jme3.mergers.Merger;
 
-public class F3bLoader implements AssetLoader {
+public class F3bLoader implements AssetLoader{
+	public static LinkedList<Merger> mergers=new LinkedList<Merger>();
 	public static void init(AssetManager am){
 		am.registerLoader(F3bLoader.class,"f3b");
 	}
 	
 	public F3b buildF3b(AssetInfo assetInfo){
-		return  new F3b(assetInfo.getManager());
-
+		F3b f3b=  new F3b(assetInfo.getManager());
+		// F3bKey f3bkey=(F3bKey)assetInfo.getKey();
+		f3b.mergers.addAll(f3b.mergers.size()-2,mergers);
+		return f3b;
 	}
 	
 	@Override

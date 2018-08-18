@@ -19,13 +19,14 @@ public class LinkerHelpers {
 
 	@SuppressWarnings("unchecked")
 	private static <T> T getRef(boolean id, RefData data, Class<T> as) {
-		Object op1_o = data.context.get(!id ? data.ref1 : data.ref2);
-		if (op1_o == null || !(as.isAssignableFrom(op1_o.getClass()))) {
+		Object op1_o=data.context.get(!id?data.ref1:data.ref2);
+		if(op1_o==null||!(as.isInstance(op1_o))){
 			// If we are picking a mesh as if it were a geometry, return a geometry automagically.
-			if (op1_o instanceof F3bMesh && (as.isAssignableFrom(Spatial.class) || as.isAssignableFrom(Geometry.class))) {
-				op1_o = getGeometry(id, data);
-			} else op1_o = null;
+			if(op1_o instanceof F3bMesh&&(as.isAssignableFrom(Spatial.class)||as.isAssignableFrom(Geometry.class))){
+				op1_o=getGeometry(id,data);
+			}else op1_o=null;
 		}
+
 		return (T) op1_o;
 	}
 

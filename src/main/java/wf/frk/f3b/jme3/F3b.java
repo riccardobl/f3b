@@ -11,6 +11,7 @@ import com.google.protobuf.ExtensionRegistry;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
+import f3b.Datas;
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.mergers.AnimationsMerger;
 import wf.frk.f3b.jme3.mergers.AudioMerger;

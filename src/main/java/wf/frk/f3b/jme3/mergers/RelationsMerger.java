@@ -73,7 +73,7 @@ public class RelationsMerger implements Merger {
 				}
 			}
 		}
-		if (!linked) log.warn("can\'t link:   {} -- {}\n", data.ref1, data.ref2);
+		if(!linked) log.warn("can\'t link:   {}({}) -- {}({})\n",data.ref1,data.context.get(data.ref1),data.ref2,data.context.get(data.ref2));
 	}
 
 	@java.lang.SuppressWarnings("all")

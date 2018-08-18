@@ -14,8 +14,9 @@ public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsL
 	protected NodeBuilder NODE_BUILDER = new DefaultNodeBuilder();
 	protected ExecutorService EXECUTOR;
 
-	public F3bKey() {
-	}
+	public F3bKey(){}
+	
+
 
 	public F3bKey(String s) {
 		super(s);
