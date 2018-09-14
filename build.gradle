@@ -12,10 +12,10 @@ def v_jme3="-SNAPSHOT"
 def v_slf4j="1.7.7"
 def v_lombok="1.16.8"
 
-def v_protocol="-SNAPSHOT"
+def v_protocol="0.4"
 def v_physicsloader="-SNAPSHOT"
-def g_physicsloader="wf.frk.jme3"
-
+def g_physicsloader="com.github.riccardobl"
+ 
 
 if(project.hasProperty('in_v_physicsloader') ){
 	v_physicsloader=project.getProperty('in_v_physicsloader')
@@ -43,15 +43,7 @@ configurations.all {
 
 repositories{
 	mavenLocal()
-	maven {
-        url "http://127.0.0.1:48889/"
-    }
-    maven {
-        url "http://192.168.2.20:8000/"
-    }
-    maven {
-        url "https://maven.frk.wf/"
-    }
+
 	jcenter()
 
 	mavenCentral()
