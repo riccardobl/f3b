@@ -13,17 +13,22 @@ import com.jme3.scene.Node;
 
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.mergers.Merger;
+import wf.frk.f3b.jme3.mergers.relations.Linker;
 
 public class F3bLoader implements AssetLoader{
 	public static LinkedList<Merger> mergers=new LinkedList<Merger>();
+	public static LinkedList<Linker> linkers=new LinkedList<Linker>();
+
+	
 	public static void init(AssetManager am){
 		am.registerLoader(F3bLoader.class,"f3b");
 	}
 	
 	public F3b buildF3b(AssetInfo assetInfo){
-		F3b f3b=  new F3b(assetInfo.getManager());
+		F3b f3b=new F3b(assetInfo.getManager());
+		f3b.relations.getLinkers().addAll(linkers);
 		// F3bKey f3bkey=(F3bKey)assetInfo.getKey();
-		f3b.mergers.addAll(f3b.mergers.size()-2,mergers);
+		f3b.mergers.addAll(mergers);
 		return f3b;
 	}
 	
@@ -48,7 +53,7 @@ public class F3bLoader implements AssetLoader{
 			Data src=Data.parseFrom(cin,f3b.extensions);
 			F3bContext context=new F3bContext();
 			context.setSettings(f3bkey);
-			f3b.merge(f3bkey.executor(),src, root, context);	
+			f3b.merge(src, root, context);	
 		} finally {
 			if(in!=null)in.close();
 		}

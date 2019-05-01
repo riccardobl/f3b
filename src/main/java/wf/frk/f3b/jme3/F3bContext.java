@@ -15,51 +15,51 @@ public class F3bContext {
 	private Map<String, List<String>> links = new HashMap<String, List<String>>();
 	private F3bKey settings = new F3bKey("default");
 
-	public synchronized void setSettings(F3bKey s) {
+	public  void setSettings(F3bKey s) {
 		settings = s;
 	}
 
-	public synchronized F3bKey getSettings() {
+	public  F3bKey getSettings() {
 		return settings;
 	}
 
-	public synchronized <T> T get(String ref) {
+	public  <T> T get(String ref) {
 		return (T) storage.get(ref);
 	}
 
-	public synchronized String idOf(Object val) {
+	public  String idOf(Object val) {
 		for (Entry<String, Object> entry : storage.entrySet()) {
 			if (entry.getValue() == val) return entry.getKey();
 		}
 		return null;
 	}
 
-	public synchronized <T> T put(String ref, Object val) {
+	public  <T> T put(String ref, Object val) {
 		T t = (T) storage.put(ref, val);
 		log.debug("Add  {} to context", ref);
 		return t;
 	}
 
-	public synchronized <T> T put(String ref, Object val, String link_to) {
+	public  <T> T put(String ref, Object val, String link_to) {
 		T out = put(ref, val);
 		linkedRefs(link_to).add(ref);
 		log.debug("Link  {} to {}", ref, link_to);
 		return out;
 	}
 
-	public synchronized <T> T removeWithLinks(String ref) {
+	public  <T> T removeWithLinks(String ref) {
 		List<String> ls = links.get(ref);
 		T out = (T) storage.remove(ref);
 		for (String l : ls) remove(l);
 		return out;
 	}
 
-	public synchronized <T> T remove(String ref) {
+	public  <T> T remove(String ref) {
 		links.remove(ref);
 		return (T) storage.remove(ref);
 	}
 
-	public synchronized List<String> linkedRefs(String ref) {
+	public  List<String> linkedRefs(String ref) {
 		List<String> linked = links.get(ref);
 		if (linked == null) {
 			linked = new LinkedList<String>();
@@ -68,7 +68,7 @@ public class F3bContext {
 		return linked;
 	}
 
-	public synchronized String toString() {
+	public  String toString() {
 		StringBuilder sb = new StringBuilder();
 		LinkedList<String> ignore = new LinkedList<String>();
 		for (Entry<String, Object> entry : storage.entrySet()) {

@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import com.jme3.export.Savable;
-import com.jme3.physicsloader.ConstraintData;
-import com.jme3.physicsloader.PhysicsLoader;
-import com.jme3.physicsloader.constraint.GenericConstraint;
-import com.jme3.physicsloader.rigidbody.RigidBody;
+import wf.frk.f3b.jme3.physicsloader.ConstraintData;
+import wf.frk.f3b.jme3.physicsloader.PhysicsLoader;
+import wf.frk.f3b.jme3.physicsloader.constraint.GenericConstraint;
+import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBody;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -36,13 +36,13 @@ public class PhysicsToSpatial implements Linker {
 	protected boolean loadRB(RelationsMerger rloader, RefData data) {
 		RigidBody op1 = getRef1(data, RigidBody.class);
 		Spatial op2 = getRef2(data, Spatial.class);
-		if (op1 == null || op2 == null) return false;
-		PhysicsLoader<?, ?> loader = data.context.getSettings().getPhysicsLoader();
+		if (op1 == null || op2 == null) return false; 
+		PhysicsLoader<Savable, Savable> loader = (PhysicsLoader<Savable,Savable>)data.context.getSettings().getPhysicsLoader();
 		if (loader != null) {
 			Savable pc = loader.load(data.context.getSettings(), op2, op1);
 			log.debug("Load rigidbody {}", data.ref1);
-			if (pc != null && pc instanceof Control) {
-				op2.addControl((Control) pc);
+			if(pc!=null&&pc instanceof Control){
+				loader.attachToSpatial(pc,op2);
 				String linkRef = "G~slink4phy~" + (LAST_CLONE_ID++) + "~" + data.ref1;
 				data.context.put(linkRef, op2, data.ref1);
 				applyCTs(op2, data.ref1, data.context, data.root);

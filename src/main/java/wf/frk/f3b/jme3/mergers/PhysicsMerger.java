@@ -3,9 +3,9 @@ package wf.frk.f3b.jme3.mergers;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import com.jme3.physicsloader.PhysicsShape;
-import com.jme3.physicsloader.rigidbody.RigidBody;
-import com.jme3.physicsloader.rigidbody.RigidBodyType;
+import wf.frk.f3b.jme3.physicsloader.PhysicsShape;
+import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBody;
+import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBodyType;
 import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Physics.Constraint;

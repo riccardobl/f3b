@@ -28,6 +28,7 @@ import wf.frk.f3b.jme3.mergers.SkeletonsMerger;
 public class F3b{
 	public final ExtensionRegistry extensions;
 	public final List<Merger> mergers;
+	public final RelationsMerger relations;
 
 	
 	public F3b(AssetManager assetManager){
@@ -44,40 +45,46 @@ public class F3b{
 		mergers.add(new AudioMerger(assetManager));
 
 		// relations should be the last because it reuse data provide by other (put in components)
-		mergers.add( new RelationsMerger(mat_merger));
+		relations= new RelationsMerger(mat_merger);
+		// mergers.add(relations);//
 
 		extensions=ExtensionRegistry.newInstance();
 	}
 
-	public void merge(ExecutorService executor,final Data src, final Node root, final F3bContext context) {
-		Collection<Future> wait_for=new ArrayList<Future>();
+	public void merge(final Data src, final Node root, final F3bContext context) {
+		// Collection<Future> wait_for=new ArrayList<Future>();
 		for(int i=0;i<mergers.size()-1;i++){
-			final Merger merger= mergers.get(i);
-			Runnable r=new Runnable(){
-				@Override
-				public void run() {
-					merger.apply(src,root,context);
-				}				
-			};
-			if(executor!=null){
-				Future f=executor.submit(r);
-				wait_for.add(f);
-			}else{
-				r.run();
-			}
+			final Merger merger=mergers.get(i);
+			// Runnable r=new Runnable(){
+			// 	@Override
+			// 	public void run() {
+			merger.apply(src,root,context);
+				// }
+			// };
+			// if(executor!=null){
+			// 	Future f=executor.submit(r);
+			// 	wait_for.add(f);
+			// }else{
+			// 	r.run();
+			// }
 		}
-		if(executor!=null){
-			while(true){
-				try{
-					for(Future f:wait_for){
-						f.get();
-					}
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				break;
-			}
-		}
+		
+
+		relations.apply(src,root,context);
+		
+
+		// if(executor!=null){
+		// 	while(true){
+		// 		try{
+		// 			for(Future f:wait_for){
+		// 				f.get();
+		// 			}
+		// 		}catch(Exception e){
+		// 			e.printStackTrace();
+		// 		}
+		// 		break;
+		// 	}
+		// }
 		mergers.get(mergers.size()-1).apply(src,root,context);
 	}
 }

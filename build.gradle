@@ -9,8 +9,10 @@ group = "wf.frk.f3b"
 
 
 def v_jme3="-SNAPSHOT"
+def g_jme3="com.github.jMonkeyEngine.jmonkeyengine"
+
 def v_slf4j="1.7.7"
-def v_lombok="1.16.8"
+// def v_lombok="1.16.8"
 
 def v_protocol="0.4"
 def v_physicsloader="-SNAPSHOT"
@@ -121,20 +123,18 @@ publishing {
 dependencies {
 	compile 'com.google.protobuf:protobuf-java:2.6.1'
 	compile "wf.frk.f3b:f3b:${v_protocol}"
-	
-	compile "${g_physicsloader}:jme3_physicsloader:${v_physicsloader}"
 		
-//  compile group:'org.projectlombok', name: 'lombok', version: '1.18.0'	
 	compile "org.apache.logging.log4j:log4j-api:2.2"
     compile "org.apache.logging.log4j:log4j-core:2.2"
+    compile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+
+    compileOnly "${g_jme3}:jme3-core:${v_jme3}"
+    compileOnly "${g_jme3}:jme3-bullet:${v_jme3}"
     
-    compileOnly "org.jmonkeyengine:jme3-core:${v_jme3}"
-    compileOnly "org.jmonkeyengine:jme3-bullet:${v_jme3}"
-    
-	testCompile "org.jmonkeyengine:jme3-lwjgl:${v_jme3}"
-	testCompile "org.jmonkeyengine:jme3-desktop:${v_jme3}"
-	testCompile "org.jmonkeyengine:jme3-bullet:${v_jme3}"
-	testCompile "org.jmonkeyengine:jme3-bullet-native:${v_jme3}"
+	testCompile "${g_jme3}:jme3-lwjgl:${v_jme3}"
+	testCompile "${g_jme3}:jme3-desktop:${v_jme3}"
+	testCompile "${g_jme3}:jme3-bullet:${v_jme3}"
+	testCompile "${g_jme3}:jme3-bullet-native:${v_jme3}"
 	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
 	testCompile 'junit:junit:4.12'
 }

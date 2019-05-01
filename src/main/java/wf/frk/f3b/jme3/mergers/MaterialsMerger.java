@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
@@ -69,7 +70,10 @@ public class MaterialsMerger implements Merger{
 		List<MatProperty> properties=m.getPropertiesList();
 		for(MatProperty p:properties){
 			String name=p.getId();
-			if(name.equals("RenderBucket")){
+			if(name.equals("FaceCullMode")){
+				FaceCullMode mode=FaceCullMode.values()[((Number)(p.hasVint()?p.getVint():p.getVfloat())).intValue()];
+				mat.getAdditionalRenderState().setFaceCullMode(mode);					
+			}else if(name.equals("RenderBucket")){
 				out.renderbucket=p.hasVint()?p.getVint():p.getVfloat();
 			}else{
 				Collection<MatParam> params=mat.getMaterialDef().getMaterialParams();

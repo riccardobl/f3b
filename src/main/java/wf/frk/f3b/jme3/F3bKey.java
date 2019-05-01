@@ -3,16 +3,15 @@ package wf.frk.f3b.jme3;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.jme3.physicsloader.PhysicsLoader;
-import com.jme3.physicsloader.constraint.GenericConstraint;
-import com.jme3.physicsloader.impl.PhysicsLoaderModelKey;
-import com.jme3.physicsloader.impl.bullet.BulletPhysicsLoader;
+import wf.frk.f3b.jme3.physicsloader.PhysicsLoader;
+import wf.frk.f3b.jme3.physicsloader.constraint.GenericConstraint;
+import wf.frk.f3b.jme3.physicsloader.impl.PhysicsLoaderModelKey;
+import wf.frk.f3b.jme3.physicsloader.impl.bullet.BulletPhysicsLoader;
 
 public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsLoaderSettings {
 	@java.lang.SuppressWarnings("all")
 	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bKey.class);
 	protected NodeBuilder NODE_BUILDER = new DefaultNodeBuilder();
-	protected ExecutorService EXECUTOR;
 
 	public F3bKey(){}
 	
@@ -22,14 +21,6 @@ public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsL
 		super(s);
 	}
 
-	public ExecutorService executor() {
-		return EXECUTOR;
-	}
-
-	public F3bKey useExecutor(ExecutorService executor) {
-		EXECUTOR = executor;
-		return this;
-	}
 
 	public F3bKey useNodeBuilder(NodeBuilder b) {
 		NODE_BUILDER = b;

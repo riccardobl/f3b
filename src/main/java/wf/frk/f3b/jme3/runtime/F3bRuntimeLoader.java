@@ -43,10 +43,9 @@ public class F3bRuntimeLoader{
 	
 	protected static Map<Spatial,F3bRuntimeLoader>  loaded=new WeakHashMap<Spatial,F3bRuntimeLoader> ();
 	public void unload(Spatial s){
-		synchronized(loaded){
 			F3bRuntimeLoader rt=loaded.get(s);
 			rt.i_unload(s);
-		}		
+			
 	}
 
 	public Spatial load(F3bKey key,Spatial spatialToLoad) {
@@ -56,9 +55,8 @@ public class F3bRuntimeLoader{
 		if(rootNode!=null){
 			if(!rootNode.hasChild(spatialToLoad))	rootNode.attachChild(spatialToLoad);
 		}
-		synchronized(loaded){
 			loaded.put(spatialToLoad,this);
-		}
+		
 		return spatialToLoad;
 	}
 

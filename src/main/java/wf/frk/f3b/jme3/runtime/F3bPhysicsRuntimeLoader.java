@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.physicsloader.ConstraintData;
+import wf.frk.f3b.jme3.physicsloader.ConstraintData;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
