@@ -14,7 +14,7 @@ def g_jme3="com.github.jMonkeyEngine.jmonkeyengine"
 def v_slf4j="1.7.7"
 // def v_lombok="1.16.8"
 
-def v_protocol="0.4"
+def v_protocol="0.5"
 def v_physicsloader="-SNAPSHOT"
 def g_physicsloader="com.github.riccardobl"
  
