@@ -12,6 +12,7 @@ public class NodeToNode implements Linker{
 
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
+		if(data.ref2Ext)return false;
 		Node op1=getRef1(data,Node.class);
 		Node op2=getRef2(data,Node.class);
 		if(op1==null||op2==null) return false;

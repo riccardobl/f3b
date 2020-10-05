@@ -7,13 +7,17 @@ import java.util.Map.Entry;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import f3b.Datas.Data;
 import f3b.Materials.MatProperty;
+import f3b.Materials.Material.Blending;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class MaterialsMerger implements Merger{
 	@java.lang.SuppressWarnings("all")
@@ -58,6 +62,7 @@ public class MaterialsMerger implements Merger{
 	public static class JMEMaterialSettings{
 		public Material mat;
 		public Number renderbucket;
+		public Number renderbucket2;
 }
 
 	public static JMEMaterialSettings toJME(AssetManager assetManager,Node root, f3b.Materials.Material m) {
@@ -67,13 +72,48 @@ public class MaterialsMerger implements Merger{
 		out.mat=mat;
 		mat.setName(m.hasName()?m.getName():m.getId());
 		log.debug("Material loaded {}",mat.getName());
+		
+		boolean backfaceCulling=!m.hasBackfaceCulling()||m.getBackfaceCulling();
+		mat.getAdditionalRenderState().setFaceCullMode(backfaceCulling?FaceCullMode.Back:FaceCullMode.Off);
+
+		if(m.hasBlendMode()){
+			Blending b=m.getBlendMode();
+			switch(b){
+				case opaque:{
+					mat.getAdditionalRenderState().setBlendMode(BlendMode.Off);
+					out.renderbucket2=Bucket.Opaque.ordinal();
+					break;
+				}
+				case alpha_blend:{
+					mat.getAdditionalRenderState().setBlendMode(BlendMode.AlphaSumA);
+					out.renderbucket2=Bucket.Transparent.ordinal();
+					break;
+				}
+				case alpha_dithering:{
+					out.renderbucket2=Bucket.Opaque.ordinal();
+					mat.getAdditionalRenderState().setBlendMode(BlendMode.Off);
+					if(mat.getMaterialDef().getMaterialParam("AlphaDiscardThreshold")!=null)mat.setFloat("AlphaDiscardThreshold", 0.01f);				
+					if(mat.getMaterialDef().getMaterialParam("AlphaDithering")!=null)mat.setBoolean("AlphaDithering",true);
+					break;
+				}
+				case alpha_clip:{
+					out.renderbucket2=Bucket.Opaque.ordinal();
+					mat.getAdditionalRenderState().setBlendMode(BlendMode.Off);
+					if(mat.getMaterialDef().getMaterialParam("AlphaDiscardThreshold")!=null)mat.setFloat("AlphaDiscardThreshold", 0.01f);
+					break;
+				}
+			}
+		}
+
+
 		List<MatProperty> properties=m.getPropertiesList();
 		for(MatProperty p:properties){
 			String name=p.getId();
 			if(name.equals("FaceCullMode")){
 				FaceCullMode mode=FaceCullMode.values()[((Number)(p.hasVint()?p.getVint():p.getVfloat())).intValue()];
 				mat.getAdditionalRenderState().setFaceCullMode(mode);					
-			}else if(name.equals("RenderBucket")){
+			}else if(name.equals("RenderBucket")){		// deprecated
+
 				out.renderbucket=p.hasVint()?p.getVint():p.getVfloat();
 			}else{
 				Collection<MatParam> params=mat.getMaterialDef().getMaterialParams();
@@ -146,7 +186,8 @@ public class MaterialsMerger implements Merger{
 		return out;
 	}
 
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for(f3b.Materials.Material m:src.getMaterialsList()){
 			JMEMaterialSettings sett;
 			try{
@@ -168,7 +209,8 @@ public class MaterialsMerger implements Merger{
 			}
 			String id=m.getId();
 			context.put(id,sett.mat);
-			if(sett.renderbucket!=null)context.put("G~"+id+"~RenderBucket",sett.renderbucket,id);
+			if(sett.renderbucket!=null)context.put("G~"+id+"~RenderBucket",sett.renderbucket,id);		// deprecated
+			if(sett.renderbucket2!=null)context.put("G~"+id+"~RenderBucket2",sett.renderbucket2,id);
 
 		}
 	}

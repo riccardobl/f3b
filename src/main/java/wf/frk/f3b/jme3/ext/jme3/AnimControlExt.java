@@ -2,8 +2,9 @@
 package wf.frk.f3b.jme3.ext.jme3;
 
 import java.lang.reflect.Field;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.Skeleton;
+
+import wf.frk.f3banimation.AnimControl;
+import wf.frk.f3banimation.Skeleton;
 
 public class AnimControlExt {
 	@java.lang.SuppressWarnings("all")

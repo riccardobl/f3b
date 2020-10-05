@@ -10,10 +10,12 @@ import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Physics.Constraint;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class PhysicsMerger implements Merger {
 	@Override
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for (f3b.Physics.PhysicsData data : src.getPhysicsList()) {
 			if (data.getRigidbody() != null) loadRB(data.getRigidbody(), context);
 			if (data.getConstraint() != null) loadCT(data.getConstraint(), context);

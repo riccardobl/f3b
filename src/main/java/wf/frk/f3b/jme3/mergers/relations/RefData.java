@@ -4,20 +4,25 @@ package wf.frk.f3b.jme3.mergers.relations;
 import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bHeaders;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class RefData {
 	public String ref1;
 	public String ref2;
+	public boolean ref2Ext;
 	public Data src;
 	public Node root;
-	public F3bContext context;
+	public F3bKey key;
 
 	@java.lang.SuppressWarnings("all")
-	public RefData(final String ref1, final String ref2, final Data src, final Node root, final F3bContext context) {
+	public RefData(final String ref1, final String ref2,boolean ref2Ext, final Data src, 
+	final Node root, final F3bKey key) {
 		this.ref1 = ref1;
 		this.ref2 = ref2;
 		this.src = src;
 		this.root = root;
-		this.context = context;
+		this.key = key;
+		this.ref2Ext=ref2Ext;
 	}
 }

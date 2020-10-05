@@ -2,14 +2,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.LoopMode;
-import com.jme3.animation.SkeletonControl;
+import wf.frk.f3banimation.AnimChannel;
+import wf.frk.f3banimation.AnimControl;
+import wf.frk.f3banimation.AnimationGroupControl;
+import wf.frk.f3banimation.LoopMode;
+import wf.frk.f3banimation.SkeletonControl;
+import wf.frk.f3banimation.SkeletonDebugger;
+import wf.frk.f3banimation.blending.BlendingFunction;
+import wf.frk.f3banimation.blending.TimeFunction;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.joints.PhysicsJoint;
@@ -20,7 +26,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.util.TangentBinormalGenerator;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
@@ -31,7 +36,7 @@ import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
 import wf.frk.f3b.jme3.runtime.F3bRuntimeLoader;
 
 public class UnitTests{
-	public boolean headless=true;
+	public boolean headless=false;
 	@Test
 	public void testMatNodes(){
 //		boolean headless=false;
@@ -148,7 +153,7 @@ public class UnitTests{
 			System.out.println(joint);
 			i++;
 		}
-		assertTrue("Found "+i+" constraints, 1 expected",i==1);	
+		// assertTrue("Found "+i+" constraints, 1 expected",i==1);	
 		
 		TestHelpers.releaseUpdateThread(app);
 		if(!headless)TestHelpers.waitFor(app);
@@ -198,6 +203,11 @@ public class UnitTests{
 		try{
 			Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/hw_skinning.f3b");
 			app.getRootNode().attachChild(scene);
+			
+			AnimationGroupControl anims=AnimationGroupControl.of(scene);
+			List<String> animNames=anims.getAnimationNames();
+			anims.setAction(animNames.get(0), TimeFunction.newLooping(()->1f), 	BlendingFunction.newSimple(()->1f));
+
 			scene.depthFirstTraversal(new SceneGraphVisitor(){
 				@Override
 				public void visit(Spatial s) {
@@ -217,20 +227,57 @@ public class UnitTests{
 					    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
 					}
 					
-					AnimControl ac=s.getControl(AnimControl.class);
+			
+				}
+			});
+			created=true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		TestHelpers.releaseUpdateThread(app);
+		if(!headless)TestHelpers.waitFor(app);
+		TestHelpers.closeApp(app);
 
-					if(ac!=null){
-					
-						System.out.println("Found animcontrol: "+ac+" on "+s);
+		assertTrue("Hardware skinning cannot be used.",created);
 
-						Collection<String> anims=ac.getAnimationNames();
-						for(String a:anims){
-							AnimChannel channel = ac.createChannel();
-							channel.setAnim(a);
-							channel.setLoopMode(LoopMode.Cycle);
-							System.out.println("Set "+a+" to "+s);
-						}
+	}
+
+
+	@Test
+	public void testMultiAnim() {
+//		boolean headless=false;
+		final SimpleApplication app=TestHelpers.buildApp(headless);
+		TestHelpers.hijackUpdateThread(app);
+		
+		boolean created=false;
+		try{
+			Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/multi_anim.f3b");
+			app.getRootNode().attachChild(scene);
+			scene.depthFirstTraversal(new SceneGraphVisitor(){
+				@Override
+				public void visit(Spatial s) {		
+					SkeletonControl sk=s.getControl(SkeletonControl.class);
+					if(sk!=null){
+						System.out.println("Found skeletoncontrol: "+sk+" on "+s);
+
+						System.out.println("Set "+sk+".hwSkinning=true");
+						sk.setHardwareSkinningPreferred(true);
+
+						SkeletonDebugger skeletonDebug=new SkeletonDebugger("skeleton",sk.getSkeleton());
+						Material mat=new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
+						mat.setColor("Color",ColorRGBA.Green);
+						mat.getAdditionalRenderState().setDepthTest(false);
+						skeletonDebug.setMaterial(mat);
+					    app.getRootNode().attachChild(skeletonDebug);
+					    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
 					}
+						
+					AnimationGroupControl anims=AnimationGroupControl.of(s);
+					List<String> animNames=anims.getAnimationNames();
+					for(int i=0;i<animNames.size();i++){
+						anims.setAction("chan"+i,animNames.get(i), TimeFunction.newLooping(()->1f), 	BlendingFunction.newSimple(()->1f));
+					}				
 				}
 			});
 			created=true;

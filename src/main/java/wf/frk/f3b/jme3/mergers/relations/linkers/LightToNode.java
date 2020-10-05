@@ -29,8 +29,8 @@ public class LightToNode implements Linker {
 		//			data.root.addLight(op1);
 		//		}else{
 		op1 = op1.clone();
-		wf.frk.f3b.jme3.ext.jme3.LightExt.setPosition(op1, op2.getWorldTranslation());
-		wf.frk.f3b.jme3.ext.jme3.LightExt.setDirection(op1, op2.getWorldRotation().mult(Vector3f.UNIT_Z));
+		// wf.frk.f3b.jme3.ext.jme3.LightExt.setPosition(op1, op2.getWorldTranslation());
+		// wf.frk.f3b.jme3.ext.jme3.LightExt.setDirection(op1, op2.getWorldRotation().mult(Vector3f.UNIT_Z));
 		op2.addLight(op1);
 		//		}
 		return true;

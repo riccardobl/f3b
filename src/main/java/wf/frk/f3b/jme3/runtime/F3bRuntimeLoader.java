@@ -11,7 +11,7 @@ import com.jme3.scene.Spatial;
 import wf.frk.f3b.jme3.F3bKey;
 
 public class F3bRuntimeLoader{
-	
+
 	protected PhysicsSpace physicsSpace;
 
 	public F3bRuntimeLoader attachPhysicsTo(PhysicsSpace p) {

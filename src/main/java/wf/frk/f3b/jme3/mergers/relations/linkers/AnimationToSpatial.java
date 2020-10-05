@@ -3,8 +3,8 @@ package wf.frk.f3b.jme3.mergers.relations.linkers;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef1;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.SkeletonControl;
+import wf.frk.f3banimation.AnimControl;
+import wf.frk.f3banimation.SkeletonControl;
 import com.jme3.scene.Spatial;
 
 import wf.frk.f3b.jme3.animations.F3bAnimation;

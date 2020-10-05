@@ -37,15 +37,15 @@ public class PhysicsToSpatial implements Linker {
 		RigidBody op1 = getRef1(data, RigidBody.class);
 		Spatial op2 = getRef2(data, Spatial.class);
 		if (op1 == null || op2 == null) return false; 
-		PhysicsLoader<Savable, Savable> loader = (PhysicsLoader<Savable,Savable>)data.context.getSettings().getPhysicsLoader();
+		PhysicsLoader<Savable, Savable> loader = (PhysicsLoader<Savable,Savable>)data.key.getContext().getSettings().getPhysicsLoader();
 		if (loader != null) {
-			Savable pc = loader.load(data.context.getSettings(), op2, op1);
+			Savable pc = loader.load(data.key.getContext().getSettings(), op2, op1);
 			log.debug("Load rigidbody {}", data.ref1);
 			if(pc!=null&&pc instanceof Control){
 				loader.attachToSpatial(pc,op2);
 				String linkRef = "G~slink4phy~" + (LAST_CLONE_ID++) + "~" + data.ref1;
-				data.context.put(linkRef, op2, data.ref1);
-				applyCTs(op2, data.ref1, data.context, data.root);
+				data.key.getContext().put(linkRef, op2, data.ref1);
+				applyCTs(op2, data.ref1, data.key.getContext(), data.root);
 			}
 		}
 		return true;

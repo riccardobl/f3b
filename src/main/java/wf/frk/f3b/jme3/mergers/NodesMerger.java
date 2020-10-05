@@ -5,22 +5,38 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import f3b.Datas.Data;
 import f3b.Tobjects.TObject;
+import wf.frk.f3b.jme3.Const;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class NodesMerger implements Merger {
 	@Override
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for (TObject n : src.getTobjectsList()) {
 			String id = n.getId();
 			Spatial child = (Spatial) context.get(id);
+
 			if (child == null) {
 				child = context.getSettings().getNodeBuilder().build(n.hasName() ? n.getName() : n.getId());
 				root.attachChild(child);
 				context.put(id, child);
 			}
+			
+			if(n.hasHoldout()&&n.getHoldout()){
+				child.setUserData(Const.f3b_holdOut,true);
+			}
+
+			if(n.hasAttachedToBone()){
+				String bone=n.getAttachedToBone();
+				child.setUserData("_AttachToBone",bone);
+			}
+
 			child.setLocalRotation(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(n.getRotation()));
 			child.setLocalTranslation(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(n.getTranslation()));
 			child.setLocalScale(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(n.getScale()));
+			child.setUserData(Const.f3b_id,n.getId());
+
 		}
 	}
 }

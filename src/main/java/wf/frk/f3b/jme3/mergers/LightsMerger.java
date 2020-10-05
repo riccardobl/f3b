@@ -10,14 +10,18 @@ import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class LightsMerger implements Merger {
 	@java.lang.SuppressWarnings("all")
 	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(LightsMerger.class);
 
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for (f3b.Lights.Light l : src.getLightsList()) {
 			Light lg = null;
+			float intensity=l.getIntensity();
+
 			switch (l.getKind()) {
 			case spot: 
 				{
@@ -57,34 +61,8 @@ public class LightsMerger implements Merger {
 				{
 					lg = new PointLight();
 					PointLight pl = (PointLight) lg;
-					if (l.hasRadialDistance()) {
-						float max = l.getRadialDistance().getMax();
-						switch (l.getRadialDistance().getCurveCase()) {
-						case CURVE_NOT_SET: 
-							{
-								pl.setRadius(max);
-								break;
-							}
-
-						case LINEAR: 
-							{
-								pl.setRadius(max * l.getSpotAngle().getLinear().getEnd());
-								break;
-							}
-
-						case SMOOTH: 
-							{
-								pl.setRadius(max * l.getSpotAngle().getSmooth().getEnd());
-								break;
-							}
-
-						default: 
-							{
-								pl.setRadius(max);
-								log.warn("doesn\'t support curve like {} for spot_angle", l.getSpotAngle().getCurveCase());
-							}
-						}
-					}
+					pl.setRadius(0f);			
+					intensity*=0.1;
 					break;
 				}
 
@@ -97,6 +75,7 @@ public class LightsMerger implements Merger {
 			case ambient: 
 				{
 					lg = new AmbientLight();
+					break;
 				}
 
 			default: 
@@ -106,7 +85,7 @@ public class LightsMerger implements Merger {
 			}
 			if (lg != null) {
 				lg.setName(l.getName());
-				lg.setColor(wf.frk.f3b.jme3.ext.jme3.Vector4fExt.toColorRGBA(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(l.getColor())).mult(l.getIntensity()));
+				lg.setColor(wf.frk.f3b.jme3.ext.jme3.Vector4fExt.toColorRGBA(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(l.getColor())).mult(intensity));
 				context.put(l.getId(), lg);
 			}
 		}

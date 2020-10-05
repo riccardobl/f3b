@@ -7,11 +7,14 @@ import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bHeaders;
+import wf.frk.f3b.jme3.F3bKey;
 import wf.frk.f3b.jme3.mergers.relations.Linker;
 import wf.frk.f3b.jme3.mergers.relations.RefData;
 import wf.frk.f3b.jme3.mergers.relations.linkers.AnimationToSpatial;
 import wf.frk.f3b.jme3.mergers.relations.linkers.CustomParamToSpatial;
-import wf.frk.f3b.jme3.mergers.relations.linkers.GeometryToNode;
+import wf.frk.f3b.jme3.mergers.relations.linkers.MeshLinker;
+import wf.frk.f3b.jme3.mergers.relations.linkers.NodeToExternalCollection;
 import wf.frk.f3b.jme3.mergers.relations.linkers.LightToNode;
 import wf.frk.f3b.jme3.mergers.relations.linkers.MaterialToGeometry;
 import wf.frk.f3b.jme3.mergers.relations.linkers.NodeToNode;
@@ -32,16 +35,17 @@ public class RelationsMerger implements Merger {
 		linkers.add(new CustomParamToSpatial());
 		linkers.add(new LightToNode());
 		linkers.add(new MaterialToGeometry());
-		linkers.add(new GeometryToNode());
+		linkers.add(new MeshLinker());
 		linkers.add(new SkeletonToSpatial());
 		linkers.add(new AudioToNode());
 		linkers.add(new NodeToNode());
 		linkers.add(new PhysicsToSpatial());
+		linkers.add(new NodeToExternalCollection());
 	}
 
-	public void apply(Data src, Node root, F3bContext components) {
+	public void apply(Data src, Node root, F3bKey key) {
 		for (Relation r : src.getRelationsList()) {
-			merge(new RefData(r.getRef1(), r.getRef2(), src, root, components));
+			merge(new RefData(r.getRef1(), r.getRef2(),r.hasExtRef2()&&r.getExtRef2(), src, root, key));
 		}
 	}
 
@@ -58,7 +62,7 @@ public class RelationsMerger implements Merger {
 		refs1.add(r1);
 		LinkedList<String> refs2 = new LinkedList<String>();
 		refs2.add(r2);
-		refs2.addAll(data.context.linkedRefs(r2));
+		refs2.addAll(data.key.getContext().linkedRefs(r2));
 		// Every possible combination
 		for (String ref1 : refs1) {
 			for (String ref2 : refs2) {
@@ -73,7 +77,7 @@ public class RelationsMerger implements Merger {
 				}
 			}
 		}
-		if(!linked) log.warn("can\'t link:   {}({}) -- {}({})\n",data.ref1,data.context.get(data.ref1),data.ref2,data.context.get(data.ref2));
+		if(!linked) log.warn("can\'t link:   {}({}) -- {}({})\n",data.ref1,data.key.getContext().get(data.ref1),data.ref2,data.key.getContext().get(data.ref2));
 	}
 
 	@java.lang.SuppressWarnings("all")

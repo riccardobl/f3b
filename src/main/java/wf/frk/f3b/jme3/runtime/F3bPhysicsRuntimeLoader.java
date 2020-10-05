@@ -45,7 +45,7 @@ public class F3bPhysicsRuntimeLoader {
 				RigidBodyControl rb = s.getControl(RigidBodyControl.class);
 				if (rb != null) {
 					// Clear broken constraints...
-					Collection<PhysicsJoint> joints = rb.getJoints();
+					PhysicsJoint[] joints = rb.getJoints().toArray(new PhysicsJoint[0]);
 					for (PhysicsJoint j : joints) rb.removeJoint(j);
 				}
 			}

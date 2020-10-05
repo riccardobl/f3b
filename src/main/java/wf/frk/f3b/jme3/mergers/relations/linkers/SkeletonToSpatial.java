@@ -6,9 +6,9 @@ import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
+import wf.frk.f3banimation.AnimControl;
+import wf.frk.f3banimation.Skeleton;
+import wf.frk.f3banimation.SkeletonControl;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -69,7 +69,7 @@ public class SkeletonToSpatial implements Linker {
 			public void visit(Spatial s) {
 				if (s instanceof Geometry) {
 					Material m = ((Geometry) s).getMaterial();
-					String matref = data.context.idOf(m);
+					String matref = data.key.getContext().idOf(m);
 					if (matref == null) {
 						// should never happen!
 						log.error("Mat is not referred?");
@@ -79,7 +79,7 @@ public class SkeletonToSpatial implements Linker {
 //					int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
 //					if(n>1){
 					Material clone = m.clone();
-					data.context.put("G~" + matref + "~cloned~4sk" + (LAST_CLONE_ID++), clone, matref);
+					data.key.getContext().put("G~" + matref + "~cloned~4sk" + (LAST_CLONE_ID++), clone, matref);
 					s.setMaterial(clone);
 				}
 //					}

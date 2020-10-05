@@ -4,7 +4,7 @@ import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 
 import java.util.Optional;
 
-import com.jme3.animation.SkeletonControl;
+import wf.frk.f3banimation.SkeletonControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -25,7 +25,7 @@ public class MaterialToGeometry  implements Linker{
 		if(op1==null||op2==null) return false;
 		if(op2.getControl(SkeletonControl.class)!=null){
 			op1=op1.clone();
-			data.context.put("G~"+data.ref1+"~cloned~"+(LAST_CLONE_ID++),op1,data.ref1);
+			data.key.getContext().put("G~"+data.ref1+"~cloned~"+(LAST_CLONE_ID++),op1,data.ref1);
 		}else{
 //			String refusage="G~usage~"+data.ref1;
 //			int n=(int)Optional.ofNullable(data.context.get(refusage)).orElse(0);
@@ -33,7 +33,14 @@ public class MaterialToGeometry  implements Linker{
 		}
 
 		op2.setMaterial(op1);
-		Number bucket=((Number)data.context.get("G~"+data.ref1+"~RenderBucket"));
+		
+		Number bucket=((Number)data.key.getContext().get("G~"+data.ref1+"~RenderBucket2"));
+		if(bucket!=null){
+			op2.setQueueBucket(Bucket.values()[bucket.intValue()]);
+		}
+
+		// deprecated
+		bucket=((Number)data.key.getContext().get("G~"+data.ref1+"~RenderBucket"));
 		if(bucket!=null){
 			int b=bucket.intValue();
 			switch(b){
@@ -41,7 +48,7 @@ public class MaterialToGeometry  implements Linker{
 				case 1: op2.setQueueBucket(Bucket.Translucent); break;
 				case 2: {					
 					op2.setQueueBucket(Bucket.Transparent); 
-					op1.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+					op1.getAdditionalRenderState().setBlendMode(BlendMode.AlphaSumA);
 					break;
 				}
 				case 3: op2.setQueueBucket(Bucket.Sky); break;

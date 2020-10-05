@@ -24,7 +24,7 @@ public class F3bMesh {
 
 	public Mesh toJME() throws IllegalArgumentException {
 		if (src.getIndexArraysCount() > 1) throw new IllegalArgumentException("doesn\'t support more than 1 index array");
-		if (src.getLod() > 1) throw new IllegalArgumentException("doesn\'t support lod > 1 : " + src.getLod());
+		// if (src.getLod() > 1) throw new IllegalArgumentException("doesn\'t support lod > 1 : " + src.getLod());
 		Mesh dst = new Mesh();
 		//		context.put("G~meshName~"+dst.hashCode(),src.getName());
 		dst.setMode(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getPrimitive()));
@@ -50,6 +50,14 @@ public class F3bMesh {
 		dst.updateCounts();
 		dst.updateBound();
 		return dst;
+	}
+
+	public int getLodLevel(){
+		return src.getLod();
+	}
+
+	public String getId(){
+		return src.getId();
 	}
 
 	protected Mesh applySkin(Skin skin, Mesh dst) {

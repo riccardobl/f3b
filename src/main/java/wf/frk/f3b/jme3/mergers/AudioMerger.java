@@ -16,6 +16,7 @@ import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Physics.Constraint;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class AudioMerger implements Merger {
     @java.lang.SuppressWarnings("all")
@@ -38,7 +39,8 @@ public class AudioMerger implements Merger {
     }
 
     @Override
-    public void apply(Data src, Node root, F3bContext context) {
+    public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
         for (f3b.Audio.Speaker data : src.getSpeakersList()) {
             AudioNode an = new AudioNode(AM, toAMPath(data.getRpath(), AM, root), DataType.Buffer);
             an.setName(data.getName());

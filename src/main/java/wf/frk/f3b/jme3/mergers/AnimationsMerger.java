@@ -11,22 +11,25 @@ import f3b.AnimationsKf;
 import f3b.AnimationsKf.SampledTransform;
 import f3b.Datas.Data;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 import wf.frk.f3b.jme3.animations.F3bAnimTrack;
 import wf.frk.f3b.jme3.animations.F3bAnimation;
 @SuppressWarnings("unchecked")
 public class AnimationsMerger implements Merger{
 
 	@Override
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for(AnimationsKf.AnimationKF e:src.getAnimationsKfList()){
 			java.lang.String id=e.getId();
+			int index=e.getIndex();
 			// TODO: merge with existing
-			F3bAnimation a=new F3bAnimation(e.getName(),((float)e.getDuration())/1000f);
+			F3bAnimation a=new F3bAnimation(e.getName(),((float)e.getDuration())/1000f,index);
 			for(AnimationsKf.Clip clip:e.getClipsList()){
 				if(clip.hasSampledTransform()){
 					F3bAnimTrack t=makeTrack(clip.getSampledTransform().hasBoneName(),clip.getSampledTransform());
 					a.getTracks().add(t);
-				}
+				} 
 			}
 			context.put(id,a);
 		}

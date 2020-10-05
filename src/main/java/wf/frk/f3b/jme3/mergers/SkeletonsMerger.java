@@ -2,17 +2,20 @@
 package wf.frk.f3b.jme3.mergers;
 
 import java.util.HashMap;
-import com.jme3.animation.Bone;
-import com.jme3.animation.Skeleton;
+import wf.frk.f3banimation.Bone;
+import wf.frk.f3banimation.Skeleton;
+import com.jme3.math.Transform;
 import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Relations.Relation;
 import f3b.Skeletons;
 import wf.frk.f3b.jme3.F3bContext;
+import wf.frk.f3b.jme3.F3bKey;
 
 public class SkeletonsMerger implements Merger {
 	@Override
-	public void apply(Data src, Node root, F3bContext context) {
+	public void apply(Data src, Node root, F3bKey key) {
+		F3bContext context=key.getContext();
 		for (f3b.Skeletons.Skeleton e : src.getSkeletonsList()) {
 			// TODO manage parent hierarchy
 			String id = e.getId();
@@ -29,7 +32,11 @@ public class SkeletonsMerger implements Merger {
 		for (int i = 0; i < bones.length; i++) {
 			f3b.Skeletons.Bone src = e.getBones(i);
 			Bone b = new Bone(src.getName());
-			b.setBindTransforms(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getTranslation()), wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getRotation()), wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getScale()));
+			Transform tr=new Transform(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getTranslation()), 
+			wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getRotation()), 
+			wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getScale()));
+
+			b.setRestTransform(tr);
 			db.put(src.getId(), b);
 			bones[i] = b;
 		}
@@ -39,7 +46,8 @@ public class SkeletonsMerger implements Merger {
 			parent.addChild(child);
 		}
 		Skeleton sk = new Skeleton(bones);
-		sk.setBindingPose();
+		sk.updateRestPose();
+
 		return sk;
 	}
 }

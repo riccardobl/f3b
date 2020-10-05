@@ -3,24 +3,29 @@ package wf.frk.f3b.jme3.animations;
 
 import java.util.LinkedList;
 import java.util.List;
-import com.jme3.animation.Animation;
-import com.jme3.animation.Skeleton;
+
+import wf.frk.f3banimation.Animation;
+import wf.frk.f3banimation.Skeleton;
 
 public class F3bAnimation {
 	protected final String name;
 	protected final float duration;
 	protected final List<F3bAnimTrack> tracks = new LinkedList<F3bAnimTrack>();
+	protected final int priority;
 
 	public Animation toJME(Skeleton sk) {
 		Animation anim = new Animation(getName(), getDuration());
+		System.out.println("Load anim "+getName());
 		for (F3bAnimTrack t : tracks) anim.addTrack(t.toJME(sk));
+		anim.setPriority(priority);
 		return anim;
 	}
 
 	@java.lang.SuppressWarnings("all")
-	public F3bAnimation(final String name, final float duration) {
+	public F3bAnimation(final String name, final float duration,final int priority) {
 		this.name = name;
 		this.duration = duration;
+		this.priority=priority;
 	}
 
 	@java.lang.SuppressWarnings("all")

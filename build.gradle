@@ -8,16 +8,14 @@ version= project.hasProperty('in_version') ? project.getProperty('in_version') :
 group = "wf.frk.f3b"
 
 
-def v_jme3="-SNAPSHOT"
-def g_jme3="com.github.jMonkeyEngine.jmonkeyengine"
+def v_jme3="3.3.2-stable"
+def g_jme3="org.jmonkeyengine"
 
 def v_slf4j="1.7.7"
 // def v_lombok="1.16.8"
 
 def v_protocol="0.5"
-def v_physicsloader="-SNAPSHOT"
-def g_physicsloader="com.github.riccardobl"
- 
+
 
 if(project.hasProperty('in_v_physicsloader') ){
 	v_physicsloader=project.getProperty('in_v_physicsloader')
@@ -37,17 +35,15 @@ if(project.hasProperty('in_g_physicsloader') ){
 }
 
 
-targetCompatibility = '1.7'
-sourceCompatibility = '1.7'
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
 configurations.all {
 	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 repositories{
 	mavenLocal()
-
 	jcenter()
-
 	mavenCentral()
 	maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
 	maven{ url "http://dl.bintray.com/riccardo/f3b" }
@@ -68,34 +64,6 @@ task dumper(type: JavaExec) {
     classpath  sourceSets.main.compileClasspath
   
 }
-
-
-// task delombok{
-//     description 'Delomboks the entire source code tree'
-//     def srcDelomboked = 'build/src-delomboked'
-//     def srcJava = 'src'
-
-//     inputs.files file( srcJava )
-//     outputs.dir file( srcDelomboked )
-
-//     doLast {
-//         def collection = files( configurations.compile + configurations.testCompile )
-//         def sumTree = collection + fileTree( dir: 'bin' )
-
-//         ant.taskdef( name: 'delombok', classname: 'lombok.delombok.ant.Tasks$Delombok', 
-//             classpath: configurations.compile.asPath +
-//                        configurations.testCompile.asPath )
-//         ant.delombok( from:srcJava, to:srcDelomboked, classpath: sumTree.asPath )
-
-
-//         // Replace current src directory with delomboked source
-//         copy {
-//             from srcDelomboked
-//             into srcJava
-//         }
-//     }
-// }
-
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava
