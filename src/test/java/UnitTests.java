@@ -12,7 +12,7 @@ import wf.frk.f3banimation.AnimControl;
 import wf.frk.f3banimation.AnimationGroupControl;
 import wf.frk.f3banimation.LoopMode;
 import wf.frk.f3banimation.SkeletonControl;
-import wf.frk.f3banimation.SkeletonDebugger;
+import wf.frk.f3banimation.SkeletonViewer;
 import wf.frk.f3banimation.blending.BlendingFunction;
 import wf.frk.f3banimation.blending.TimeFunction;
 
@@ -22,6 +22,7 @@ import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.SceneGraphVisitor;
@@ -192,6 +193,51 @@ public class UnitTests{
 		TestHelpers.closeApp(app);
 
 	}
+	
+
+
+	@Test
+	public void attachedNodeToBone() {
+//		boolean headless=false;
+		final SimpleApplication app=TestHelpers.buildApp(headless);
+		TestHelpers.hijackUpdateThread(app);
+		
+		boolean created=false;
+		try{
+			Spatial scene=app.getAssetManager().loadModel("unit_tests/f3b/node_attached_to_bone.f3b");
+			app.getRootNode().attachChild(scene);
+			
+			scene.depthFirstTraversal(new SceneGraphVisitor(){
+				@Override
+				public void visit(Spatial s) {
+					SkeletonControl sk=s.getControl(SkeletonControl.class);
+					if(sk!=null){
+						System.out.println("Found skeletoncontrol: "+sk+" on "+s);
+
+						System.out.println("Set "+sk+".hwSkinning=true");
+						sk.setHardwareSkinningPreferred(true);
+
+						SkeletonViewer skeletonDebug=new SkeletonViewer(app.getAssetManager(),true,app.getRootNode());
+						s.addControl(skeletonDebug);
+					}
+					
+			
+				}
+			});
+			AnimationGroupControl c=AnimationGroupControl.of(scene);
+			c.setAction("idle",TimeFunction.newLooping(() -> 1f),BlendingFunction.newSimple(() -> 1f));
+			created=true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		TestHelpers.releaseUpdateThread(app);
+		if(!headless)TestHelpers.waitFor(app);
+		TestHelpers.closeApp(app);
+
+		assertTrue("Hardware skinning cannot be used.",created);
+
+	}
 
 	@Test
 	public void testHwSkinning() {
@@ -218,13 +264,9 @@ public class UnitTests{
 						System.out.println("Set "+sk+".hwSkinning=true");
 						sk.setHardwareSkinningPreferred(true);
 
-						SkeletonDebugger skeletonDebug=new SkeletonDebugger("skeleton",sk.getSkeleton());
-						Material mat=new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
-						mat.setColor("Color",ColorRGBA.Green);
-						mat.getAdditionalRenderState().setDepthTest(false);
-						skeletonDebug.setMaterial(mat);
-					    app.getRootNode().attachChild(skeletonDebug);
-					    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
+						SkeletonViewer skeletonDebug=new SkeletonViewer(app.getAssetManager(),true,app.getRootNode());
+						s.addControl(skeletonDebug);
+				
 					}
 					
 			
@@ -264,13 +306,8 @@ public class UnitTests{
 						System.out.println("Set "+sk+".hwSkinning=true");
 						sk.setHardwareSkinningPreferred(true);
 
-						SkeletonDebugger skeletonDebug=new SkeletonDebugger("skeleton",sk.getSkeleton());
-						Material mat=new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
-						mat.setColor("Color",ColorRGBA.Green);
-						mat.getAdditionalRenderState().setDepthTest(false);
-						skeletonDebug.setMaterial(mat);
-					    app.getRootNode().attachChild(skeletonDebug);
-					    skeletonDebug.setLocalTranslation(s.getWorldTranslation());
+						SkeletonViewer skeletonDebug=new SkeletonViewer(app.getAssetManager(),true,app.getRootNode());
+						s.addControl(skeletonDebug);
 					}
 						
 					AnimationGroupControl anims=AnimationGroupControl.of(s);

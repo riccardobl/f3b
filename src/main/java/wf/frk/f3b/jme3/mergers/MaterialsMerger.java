@@ -35,9 +35,7 @@ public class MaterialsMerger implements Merger{
 		if(defaultMaterial!=null) return defaultMaterial.clone();
 		else{
 			Material m=new Material(assetManager,"f3b_resources/MatCap.j3md");
-			m.setTexture("DiffuseMap",assetManager.loadTexture("f3b_resources/generator0.jpg"));
-			m.setColor("Multiply_Color",new ColorRGBA(137.0F/255.0F,171.0F/255.0F,249.0F/255.0F,1.0F));
-			m.setFloat("ChessSize",1.0F);
+				m.setFloat("CheckBoardSize",0.4F);
 			m.setName("DEFAULT");
 			return m;
 		}

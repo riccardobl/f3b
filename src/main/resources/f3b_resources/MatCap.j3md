@@ -2,10 +2,10 @@ MaterialDef MatCap {
  
     MaterialParameters {
         // MatCap
-        Color Multiply_Color
-        Texture2D DiffuseMap
-        Texture2D NormalMap
-        Float ChessSize
+        Color Color : 1.0 0.70 0.0 1.0
+        Texture2D MatCap : MinTrilinear MagBilinear "f3b_resources/matcap2.png"
+        Float CheckBoardSize 
+        Boolean WorldSpaceMatCap : True
 
         // For hardware skinning
         Int NumberOfBones
@@ -48,34 +48,21 @@ MaterialDef MatCap {
         FragmentShader GLSL150: f3b_resources/MatCap.frag
  
         WorldParameters {
+            WorldMatrix
+            NormalMatrix            
+            ViewMatrix
+            WorldNormalMatrix
+            ViewProjectionMatrix
             WorldViewProjectionMatrix
-            NormalMatrix
-            WorldViewMatrix
+            CameraPosition
         }
  
         Defines {
-            NORMALMAP : NormalMap
-            CHESS_SIZE : ChessSize
-            MULTIPLY_COLOR : Multiply_Color
+            WORLD_SPACE: WorldSpaceMatCap
+            CHECKBOARD : CheckBoardSize
             NUM_BONES : NumberOfBones
         }
+
     }
 
-    Technique {
-        VertexShader GLSL110:   f3b_resources/MatCap.vert
-        FragmentShader GLSL110: f3b_resources/MatCap.frag
- 
-        WorldParameters {
-            WorldViewProjectionMatrix
-            NormalMatrix
-            WorldViewMatrix
-        }
- 
-        Defines {
-            NORMALMAP : NormalMap
-            CHESS_SIZE : ChessSize
-            MULTIPLY_COLOR : Multiply_Color
-            NUM_BONES : NumberOfBones
-        }
-    }
 }

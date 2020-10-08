@@ -71,7 +71,7 @@ public class Commons{
 	public static void initApp(SimpleApplication simpleapp) {
 		loadTestData(simpleapp.getAssetManager());
 		
-		simpleapp.getFlyByCamera().setMoveSpeed(100f);
+		simpleapp.getFlyByCamera().setMoveSpeed(1f);
 		simpleapp.setPauseOnLostFocus(false);		
 		BulletAppState bullet=new BulletAppState();
 		bullet.setThreadingType(ThreadingType.PARALLEL);

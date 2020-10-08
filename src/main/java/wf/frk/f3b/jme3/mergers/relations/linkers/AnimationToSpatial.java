@@ -3,8 +3,14 @@ package wf.frk.f3b.jme3.mergers.relations.linkers;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef1;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 
+import wf.frk.f3banimation.AnimChannel;
 import wf.frk.f3banimation.AnimControl;
+import wf.frk.f3banimation.Animation;
+import wf.frk.f3banimation.AnimationGroupControl;
 import wf.frk.f3banimation.SkeletonControl;
+import wf.frk.f3banimation.blending.BlendingFunction;
+import wf.frk.f3banimation.blending.TimeFunction;
+
 import com.jme3.scene.Spatial;
 
 import wf.frk.f3b.jme3.animations.F3bAnimation;
@@ -24,7 +30,11 @@ public class AnimationToSpatial implements Linker{
 			c=sc!=null?new AnimControl(sc.getSkeleton()):new AnimControl();
 			op2.addControl(c);
 		}
-		c.addAnim(op1.toJME(c.getSkeleton()));
+
+		Animation anim=op1.toJME(c.getSkeleton());
+		c.addAnim(anim);
+
+	
 		return true;
 	}
 

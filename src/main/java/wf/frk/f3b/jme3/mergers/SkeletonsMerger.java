@@ -32,10 +32,10 @@ public class SkeletonsMerger implements Merger {
 		for (int i = 0; i < bones.length; i++) {
 			f3b.Skeletons.Bone src = e.getBones(i);
 			Bone b = new Bone(src.getName());
+			if(src.hasLength())b.setLength(src.getLength());
 			Transform tr=new Transform(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getTranslation()), 
 			wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getRotation()), 
 			wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(src.getScale()));
-
 			b.setRestTransform(tr);
 			db.put(src.getId(), b);
 			bones[i] = b;

@@ -8,6 +8,8 @@ import f3b.Tobjects.TObject;
 import wf.frk.f3b.jme3.Const;
 import wf.frk.f3b.jme3.F3bContext;
 import wf.frk.f3b.jme3.F3bKey;
+import wf.frk.f3banimation.AttachedToBoneControl;
+import wf.frk.f3banimation.AttachedToBoneControl.Attachment;
 
 public class NodesMerger implements Merger {
 	@Override
@@ -29,7 +31,9 @@ public class NodesMerger implements Merger {
 
 			if(n.hasAttachedToBone()){
 				String bone=n.getAttachedToBone();
-				child.setUserData("_AttachToBone",bone);
+				AttachedToBoneControl actrl=new AttachedToBoneControl(bone,n.hasAttachedToBoneTail()&&n.getAttachedToBoneTail()?Attachment.Tail:Attachment.Head);
+				child.addControl(actrl);
+				// child.setUserData("_AttachToBone",bone);
 			}
 
 			child.setLocalRotation(wf.frk.f3b.jme3.ext.f3b.TypesExt.toJME(n.getRotation()));

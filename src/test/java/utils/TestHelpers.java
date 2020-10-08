@@ -58,14 +58,16 @@ public class TestHelpers{
 //				dl=new DirectionalLight(new Vector3f(0f, 1f, 0),new ColorRGBA(.72f,.97f,1f,1f).mult(1.4f));
 //				rootNode.addLight(dl);
 				F3bLoader.init(assetManager);
-				flyCam.setMoveSpeed(200f);
+				flyCam.setMoveSpeed(10f);
 				flyCam.setDragToRotate(true);
 				run_tab.put(this,new Object());
 			}
 		};
 		AppSettings settings=new AppSettings(true);
 		settings.setSamples(4);
+		settings.setGammaCorrection(true);
 		settings.setVSync(true);
+		if(!headless)settings.setRenderer(AppSettings.LWJGL_OPENGL32);
 		app.setSettings(settings);
 		
 		app.start(headless?JmeContext.Type.Headless:JmeContext.Type.Display);

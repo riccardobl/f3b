@@ -1,31 +1,27 @@
 #import "Common/ShaderLib/GLSLCompat.glsllib"
+#import "Common/ShaderLib/Skinning.glsllib"
+#import "Common/ShaderLib/Instancing.glsllib"
 
-uniform mat4 g_WorldViewProjectionMatrix;
-uniform mat4 g_WorldViewMatrix;
-uniform mat3 g_NormalMatrix;
+in vec3 inPosition;
+in vec3 inNormal;
 
-attribute vec3 inPosition;
-attribute vec2 inTexCoord;
-attribute vec3 inNormal;
-attribute vec3 inTangent;
-
-varying vec3 vNormal;
-varying vec2 texCoord;
-
-varying vec3 vPositionM;
-varying vec3 vViewDir;
+out vec3 Normal;
+out vec3 Position;
 
 void main() {
 
    vec4 modelSpacePos = vec4(inPosition, 1.0);
-   vec3 modelSpaceNorm = inNormal;
-   vec3 modelSpaceTan  = inTangent.xyz;
+   vec3 modelSpaceNormal = inNormal;
+    Position = modelSpacePos.xyz;
 
-    gl_Position = g_WorldViewProjectionMatrix * modelSpacePos;
-    texCoord = inTexCoord;
+    #ifdef NUM_BONES
+        Skinning_Compute(modelSpacePos, modelSpaceNormal);
+    #endif
+   
+   Normal = normalize(TransformWorldNormal(modelSpaceNormal.xyz));
+    
+    vec4 pos = TransformWorld(modelSpacePos);
+    
+    gl_Position=g_ViewProjectionMatrix*pos;
 
-    vec3 vPosition = (g_WorldViewMatrix * modelSpacePos).xyz;
-    vNormal = normalize(g_NormalMatrix * modelSpaceNorm);
-    vViewDir = normalize(-vPosition);
-    vPositionM = inPosition;
 }

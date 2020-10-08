@@ -171,7 +171,8 @@ public class BoneTrack implements JmeCloneable, Track {
         
 
         
-        int lastFrame = times.length - 1;
+        int lastFrame = times.length - (loop?2:1);
+        if(lastFrame<0)lastFrame=0;
 
         float fractTime;
         if(loop){

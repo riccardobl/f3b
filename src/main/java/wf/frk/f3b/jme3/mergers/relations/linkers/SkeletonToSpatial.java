@@ -45,7 +45,6 @@ public class SkeletonToSpatial implements Linker {
 		// TODO: update skel w/o remove
 		v.removeControl(SkeletonControl.class);
 		SkeletonControl skc = new SkeletonControl(sk);
-		skc.setHardwareSkinningPreferred(true);
 		v.addControl(skc);
 		Collection<AnimControl> controls = new LinkedList<AnimControl>();
 		for (int i = 0; i < v.getNumControls(); i++) {

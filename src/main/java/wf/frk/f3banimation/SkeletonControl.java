@@ -324,7 +324,6 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
 
     @Override
     protected void controlUpdate(float tpf) {
-        updateAttachedNode();
         wasMeshUpdated = false;
      }
 
@@ -408,43 +407,6 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
         this.materials = newMaterials;
     }
          
-    /**
-     * Access the attachments node of the named bone. If the bone doesn't
-     * already have an attachments node, create one and attach it to the scene
-     * graph. Models and effects attached to the attachments node will follow
-     * the bone's motions.
-     *
-     * @param boneName the name of the bone
-     * @return the attachments node of the bone
-     */
-    public Node getAttachmentsNode(String boneName) {
-        
-        Bone b = skeleton.getBone(boneName);
-        if (b == null) {
-            for(int i=0;i<skeleton.getBoneCount();i++){
-                System.out.println("Bone: "+skeleton.getBone(i).getName());            
-            }
-            
-            throw new IllegalArgumentException("Given bone name does not exist "
-                    + "in the skeleton.");
-        }
-
-        updateTargetsAndMaterials(spatial);
-        int boneIndex = skeleton.getBoneIndex(b);
-        Node n = b.getAttachmentsNode(boneIndex, targets);
-        /*
-         * Select a node to parent the attachments node.
-         */
-        Node parent;
-        if (spatial instanceof Node) {
-            parent = (Node) spatial; // the usual case
-        } else {
-            parent = spatial.getParent();
-        }
-        parent.attachChild(n);
-
-        return n;
-    }
 
     /**
      * returns the skeleton of this control
@@ -774,27 +736,5 @@ public class SkeletonControl extends AbstractControl implements Cloneable, JmeCl
         }
     }
 
-
-    protected void updateAttachedNode() {
-        spatial.depthFirstTraversal(sx -> {
-            if(!(sx instanceof Node)) return;
-            String attachTo=sx.getUserData("_AttachToBone");
-            Integer attachedTo=sx.getUserData("_AttachedToBone");
-
-            if(attachTo != null&&attachedTo==null){
-                Bone b=skeleton.getBone(attachTo);
-                if(b == null){
-                    for(int i=0;i < skeleton.getBoneCount();i++){
-                        System.out.println("Bone: " + skeleton.getBone(i).getName());
-                    }
-                    throw new IllegalArgumentException("Given bone name does not exist " + "in the skeleton.");
-                }
-                updateTargetsAndMaterials(spatial);
-                int boneIndex=skeleton.getBoneIndex(b);
-                b.setAttachmentsNode(boneIndex,targets,(Node)sx);
-                sx.setUserData("_AttachedToBone",boneIndex);
-            }
-        });
-    }
 
 }

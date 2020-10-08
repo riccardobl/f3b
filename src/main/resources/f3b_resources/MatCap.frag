@@ -1,64 +1,35 @@
-#import "Common/ShaderLib/GLSLCompat.glsllib"
+uniform vec3 g_CameraPosition;
+uniform mat4 g_ViewMatrix;
 
-uniform sampler2D m_DiffuseMap;
+uniform sampler2D m_MatCap;
+uniform vec4 m_Color;
 
-#ifdef NORMALMAP
-    uniform sampler2D m_NormalMap;
-#endif
-#ifdef MULTIPLY_COLOR
-    uniform vec4 m_Multiply_Color;
-#endif
-#ifdef CHESS_SIZE
-    uniform float m_ChessSize;
-#endif
+in vec3 Normal;
+in vec3 Position;
 
-varying vec3 vNormal;
-varying vec2 texCoord;
-varying vec3 vViewDir;
-varying vec3 vPositionM;
+out vec4 outFragColor;
 
-vec3 diffuseColor;
 
-vec2 matcap(vec3 eye, vec3 normal) {
-  vec3 reflected = reflect(eye, normal);
-
-  float m = 2.0 * sqrt(
-    pow(reflected.x, 2.0) +
-    pow(reflected.y, 2.0) +
-    pow(reflected.z + 1.0, 2.0)
-  );
-
-  return reflected.xy / m + 0.5;
-}
-
-void main() {
-
-    vec2 newTexCoord;
-    newTexCoord = texCoord;
-
-    #ifdef NORMALMAP
-        vec3 normal = texture2D(m_NormalMap, newTexCoord).rgb;
-        normal = normalize(normal);
-    #else 
-        vec3 normal = normalize(vNormal);
-    #endif
-
-    vec2 uv = matcap(normalize(-vViewDir), vNormal).xy;
-    vec3 diffuseColor = texture2D(m_DiffuseMap, uv).rgb;
-
-    #ifdef CHESS_SIZE
-        //vec3 v = fract(vPositionM / vec3(m_ChessSize))+vec3(0.01);
-        //vec3 p = smoothstep(vec3(0.495), vec3(0.505), v);
-        vec3 v = cos((vPositionM * 2.0 * 3.14159) / vec3(m_ChessSize));
+#ifdef CHECKBOARD
+    void checkboard(in vec3 pos,in float size,inout vec3 color){
+        vec3 v = cos((pos * 2.0 * 3.14159) / vec3(size));
         vec3 p = smoothstep(vec3(-0.1), vec3(0.1), v);
         p = p * vec3(2.0) + vec3(-1.0);
         float coeff = 0.8 + 0.4 * smoothstep(-0.05, 0.05, p.x * p.y * p.z);
-        diffuseColor.rgb *= coeff;
-    #endif 
-    #ifdef MULTIPLY_COLOR
-        diffuseColor.rgb *= m_Multiply_Color.rgb;
+        color.rgb *= coeff;
+    }
+#endif
+
+void main() {
+    vec3 n=normalize(Normal);
+    #ifndef WORLD_SPACE
+        n=(g_ViewMatrix * vec4(n, 0.0) ).xyz;
+    #endif
+    vec2 muv =n.xy*0.5+vec2(0.5,0.5);
+    outFragColor = texture(m_MatCap, vec2(muv.x,1.0-muv.y));
+
+    #ifdef CHECKBOARD
+        checkboard(Position,CHECKBOARD,outFragColor.rgb);
     #endif
 
-    gl_FragColor.rgb = diffuseColor;
-    gl_FragColor.a = 1.0;
 }

@@ -39,6 +39,10 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.util.TempVars;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+
+import wf.frk.f3banimation.blending.BlendingFunction;
+import wf.frk.f3banimation.blending.TimeFunction;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,9 +75,7 @@ public final class AnimControl extends AbstractControl implements Cloneable, Jme
      * Skeleton object must contain corresponding data for the targets' weight buffers.
      */
     Skeleton skeleton;
-    /** only used for backward compatibility */
-    @Deprecated
-    private SkeletonControl skeletonControl;
+
     /**
      * List of animations
      */
@@ -129,6 +131,8 @@ public final class AnimControl extends AbstractControl implements Cloneable, Jme
         }
         
         this.animationMap = newMap;
+        if(getNumChannels()<1)createChannel();
+        setPose=true;
     }
          
     /**
@@ -273,20 +277,18 @@ public final class AnimControl extends AbstractControl implements Cloneable, Jme
         }
     }
 
+
+
+    boolean setPose=false;
     /**
      * Internal use only.
      */
     @Override
     public void setSpatial(Spatial spatial) {
-        if (spatial == null && skeletonControl != null) {
-            this.spatial.removeControl(skeletonControl);
-        }
-
         super.setSpatial(spatial);
-
-        //Backward compatibility.
-        if (spatial != null && skeletonControl != null) {
-            spatial.addControl(skeletonControl);
+        if(spatial!=null){
+            setPose=true;
+            if(getNumChannels()<1)createChannel();
         }
     }
 
@@ -329,10 +331,12 @@ public final class AnimControl extends AbstractControl implements Cloneable, Jme
      */
     @Override
     protected void controlUpdate(float tpf) {
-        
         if (skeleton != null) {
             skeleton.reset(); // reset skeleton to bind pose
-            
+        if(setPose){
+            setPose=false;
+            if(this.getAnim("_pose")!=null)  getChannel(0).setAction("_pose", TimeFunction.newClamped(()->1f),BlendingFunction.newSimple(()->1f));
+        }
             // int nb=skeleton.getBoneCount();
             // for(int i=0;i<nb;i++){
             //     skeleton.getBone(i).reset();
@@ -390,19 +394,6 @@ public final class AnimControl extends AbstractControl implements Cloneable, Jme
             animationMap = loadedAnimationMap;
         }
 
-        if (im.getFormatVersion() == 0) {
-            // Changed for backward compatibility with j3o files generated 
-            // before the AnimControl/SkeletonControl split.
-
-            // If we find a target mesh array the AnimControl creates the 
-            // SkeletonControl for old files and add it to the spatial.        
-            // When backward compatibility won't be needed anymore this can deleted        
-            Savable[] sav = in.readSavableArray("targets", null);
-            if (sav != null) {
-                // NOTE: allow the targets to be gathered automatically
-                skeletonControl = new SkeletonControl(skeleton);
-                spatial.addControl(skeletonControl);
-            }
-        }
+    
     }
 }

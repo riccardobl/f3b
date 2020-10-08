@@ -69,6 +69,13 @@ public class AnimationGroupControl extends AbstractControl{
         return names;
     }
 
+    public void setUseHardwareSkinning(boolean v){
+        this.spatial.depthFirstTraversal(sx->{
+            SkeletonControl sk=sx.getControl(SkeletonControl.class);
+            if(sk!=null)sk.setHardwareSkinningPreferred(v);
+        });
+    }
+
     public ArrayList<AnimChannel> getOrCreateAnimChannel(String tag){
         return getOrCreateAnimChannel(tag,null);
     }

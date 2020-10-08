@@ -234,11 +234,9 @@ public final class Skeleton implements Savable, JmeCloneable {
      * @return 
      */
     public Matrix4f[] computeSkinningMatrices() {
-        TempVars vars = TempVars.get();
         for (int i = 0; i < boneList.length; i++) {
             boneList[i].getOffsetTransform(skinningMatrixes[i]);
         }
-        vars.release();
         return skinningMatrixes;
     }
 

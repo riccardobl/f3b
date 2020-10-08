@@ -44,34 +44,11 @@ import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * <code>Bone</code> describes a bone in the bone-weight skeletal animation
- * system. A bone contains a name and an index, as well as relevant
- * transformation data.
- * 
- * A bone has 3 sets of transforms :
- * 1. The bind transforms, that are the transforms of the bone when the skeleton
- * is in its rest pose (also called bind pose or T pose in the literature). 
- * The bind transforms are expressed in Local space meaning relatively to the 
- * parent bone.
- * 
- * 2. The Local transforms, that are the transforms of the bone once animation
- * or user transforms has been applied to the bind pose. The local transforms are
- * expressed in Local space meaning relatively to the parent bone.
- * 
- * 3. The Model transforms, that are the transforms of the bone relatives to the 
- * rootBone of the skeleton. Those transforms are what is needed to apply skinning 
- * to the mesh the skeleton controls.
- * Note that there can be several rootBones in a skeleton. The one considered for 
- * these transforms is the one that is an ancestor of this bone.
- *
- * @author Kirill Vainer
- * @author Rémy Bouquet
- */
+
 public final class Bone implements Savable, JmeCloneable {
 
     public static final int SAVABLE_VERSION = 3;
-
+    private float length=0;
     private String name;
     private Bone parent;
     private ArrayList<Bone> children = new ArrayList<Bone>();
@@ -79,15 +56,12 @@ public final class Bone implements Savable, JmeCloneable {
     private Transform restTrLS=new Transform();   
     private Transform restTrMS=new Transform();    
     
-    // just restTrMS inverted, we store it a matrix4f just because it's more convenient later in the code   
     private Matrix4f inversedRestTrMS=new Matrix4f(); 
     
 
     private Transform boneTrLS=new Transform(); 
     private Transform boneTrMS=new Transform();
 
-    private Node attachNode;
-    private Geometry targetGeometry = null;
 
     public Bone(String name) {
         if (name == null)
@@ -143,6 +117,14 @@ public final class Bone implements Savable, JmeCloneable {
         return boneTrLS;
     }
 
+
+    public void setLength(float v){
+        length=v;
+    }
+
+    public float getLength(){
+        return length;
+    }
    
    
    
@@ -160,41 +142,6 @@ public final class Bone implements Savable, JmeCloneable {
         bone.parent = this;
     }
 
-    private void updateAttachNode() {
-        Node attachParent = attachNode.getParent();
-        if (attachParent == null || targetGeometry == null
-                || targetGeometry.getParent() == attachParent
-                && targetGeometry.getLocalTransform().isIdentity()) {
-            /*
-             * The animated meshes are in the same coordinate system as the
-             * attachments node: no further transforms are needed.
-             */
-            attachNode.setLocalTransform(boneTrMS);
-
-        } else if (targetGeometry.isIgnoreTransform()) {
-            /*
-             * The animated meshes ignore transforms: match the world transform
-             * of the attachments node to the bone's transform.
-             */
-            attachNode.setLocalTransform(boneTrMS);
-
-            attachNode.getLocalTransform().combineWithParent(attachNode.getParent().getWorldTransform().invert());
-
-        } else {
-            Spatial loopSpatial = targetGeometry;
-            Transform combined = new Transform().set(boneTrMS);
-            /*
-             * Climb the scene graph applying local transforms until the
-             * attachments node's parent is reached.
-             */
-            while (loopSpatial != attachParent && loopSpatial != null) {
-                Transform localTransform = loopSpatial.getLocalTransform();
-                combined.combineWithParent(localTransform);
-                loopSpatial = loopSpatial.getParent();
-            }
-            attachNode.setLocalTransform(combined);
-        }
-    }
        
 
  
@@ -207,11 +154,17 @@ public final class Bone implements Savable, JmeCloneable {
      * Reset the bone and its children to bind pose.
      */
     public void reset() {
+
         boneTrLS.set(restTrLS);
 
         for (int i = children.size() - 1; i >= 0; i--) {
             children.get(i).reset();
         }
+    }
+
+
+    public void getTransform(Matrix4f outTransform) {
+        boneTrMS.toTransformMatrix(outTransform);
     }
 
      /**
@@ -247,94 +200,29 @@ public final class Bone implements Savable, JmeCloneable {
         }
 
     }
-    // public final void update() {
-    //     update(true);
-    // }
-    public final void update(){//boolean recomputeMs) {
-        // recomputeMs=true;
-        // userSet=false;
-        // if(recomputeMs&&!userSet){
-            if (parent != null) {
-                boneTrMS.set(boneTrLS);
-                boneTrMS.combineWithParent(parent.boneTrMS);
-            } else {
-                boneTrMS.set(boneTrLS);
-            }
-        // }
 
-        // boneTrMS.setRotation(new Quaternion());
 
-        if (attachNode != null) {
-            updateAttachNode();
+    public final void update() {
+        if(parent != null){
+            boneTrMS.set(boneTrLS);
+            boneTrMS.combineWithParent(parent.boneTrMS);
+        }else{
+            boneTrMS.set(boneTrLS);
         }
 
-        for (int i = children.size() - 1; i >= 0; i--) {
+
+        for(int i=children.size() - 1;i >= 0;i--){
             children.get(i).update();
         }
-
     }
 
-    public Node getAttachmentsNode(int boneIndex, SafeArrayList<Geometry> targets) {
-        targetGeometry = null;
-        /*
-         * Search for a geometry animated by this particular bone.
-         */
-        for (Geometry geometry : targets) {
-            Mesh mesh = geometry.getMesh();
-            if (mesh != null && mesh.isAnimatedByBone(boneIndex)) {
-                targetGeometry = geometry;
-                break;
-            }
-        }
 
-        if (attachNode == null) {
-            attachNode = new Node(name + "_attachnode");
-            attachNode.setUserData("AttachedBone", this);
-            //We don't want the node to have a numBone set by a parent node so we force it to null
-            attachNode.addMatParamOverride(new MatParamOverride(VarType.Int, "NumberOfBones", null));
-        }
-
-        return attachNode;
-    }
-
-    public void setAttachmentsNode(int boneIndex, SafeArrayList<Geometry> targets,Node n) {
-        targetGeometry = null;
-        /*
-         * Search for a geometry animated by this particular bone.
-         */
-        for (Geometry geometry : targets) {
-            Mesh mesh = geometry.getMesh();
-            if (mesh != null && mesh.isAnimatedByBone(boneIndex)) {
-                targetGeometry = geometry;
-                break;
-            }
-        }
-
-
-         attachNode=n;
-    }
     public void setLocalTransform(Transform tr){
         boneTrLS.set(tr);
     }
 
-
-    // Transform tmp_boneTrLs=new Transform();
-
     public void blendLocalTransform(Transform tr,float strength) {
         boneTrLS.interpolateTransforms(boneTrLS, tr, strength);
-
-        // Quaternion r1=restTrLS.getRotation().inverse().mult(tr.getRotation());
-        // tmp_boneTrLs.getRotation().set(tr.getRotation());
-        // boneTrLS.getRotation().set(restTrLS.getRotation());//.mult(tr.getRotation()));
-
-        // boneTrLS.getRotation().set(r1.mult(boneTrLS.getRotation()));
-
-        // boneTrLS.getRotation().set(restTrLS.getRotation());//tr.getRotation()); 
-        // boneTrLS.getRotation().multLocal();
-        // boneTrLS.getRotation().multLocal(restTrLS.getRotation());
-        // tmp_boneTrLs.combineWithParent(boneTrLS);
-        // boneTrLS.interpolateTransforms(boneTrLS, tmp_boneTrLs, strength);
-        //  boneTrLS.interpolateTransforms(boneTrLS, tr, strength);
     }
 
     @Override
@@ -352,105 +240,4 @@ public final class Bone implements Savable, JmeCloneable {
 		return boneTrMS.clone();
 	}
 
-
-    @Deprecated
-	public void setLocalRotation(Quaternion v) {
-        Transform tr=getLocalTransform();
-        tr.setRotation(v);
-        setLocalTransform(tr);
-    }
-    
-    
-    @Deprecated
-	public void setLocalTranslation(Vector3f v) {
-        Transform tr=getLocalTransform();
-        tr.setTranslation(v);
-        setLocalTransform(tr);
-    }
-    
-    @Deprecated
-	public Quaternion getLocalRotation() {
-        Transform tr=getLocalTransform();
-        return tr.getRotation();
-    }
-    
-    
-    @Deprecated
-	public Vector3f getLocalTranslation( ) {
-        Transform tr=getLocalTransform();
-        return tr.getTranslation();
-	}
-
-
-    @Deprecated
-	public Quaternion getModelSpaceRotation() {
-		return getModelSpaceTransform().getRotation();
-	}
-    
-
-
-    @Deprecated
-	public Vector3f getModelSpacePosition() {
-		return getModelSpaceTransform().getTranslation();
-	}
-
-
-    @Deprecated
-	public Vector3f getBindPosition() {
-		return getRestTransform().getTranslation();
-    }
-    
-
-    @Deprecated
-	public Quaternion getBindRotation() {
-		return getRestTransform().getRotation();
-    }
-    
-
-    @Deprecated
-	public Vector3f getBindScale() {
-		return getRestTransform().getScale();
-    }
-    final Transform _tmpTr1=new Transform();
-    final Transform _tmpTr2=new Transform();
-    final Matrix4f _tmpMt1=new Matrix4f();
-    // boolean userSet=false;
-    @Deprecated
-    public Transform modelToLocalSpaceTransform(Vector3f translation, Quaternion rotation) {  
-        // this.boneTrMS.setTranslation(translation);
-        // this.boneTrMS.setRotation(rotation);
-        // userSet=true; // TODO remove
-        _tmpTr1.setTranslation(translation);
-        _tmpTr1.setRotation(rotation);
-        _tmpTr1.getScale().set(1,1,1);//new Vector3f(1,1,1));
-        if(parent!=null){
-            _tmpTr2.fromTransformMatrix(parent.getModelSpaceTransform().toTransformMatrix(_tmpMt1).invertLocal());
-            _tmpTr1.combineWithParent(_tmpTr2);
-        }
-        return _tmpTr1;
-        // Transform l=getLocalTransform();
-        // l.setTranslation(_tmpTr1.getTranslation());
-        // l.setRotation(_tmpTr1.getRotation());
-        // // l.setScale(new Vector3f(1,1,1));
-        // // if(l.getTranslation().distance(getLocalTranslation())>0.1)return;
-        // setLocalTransform(l);
-        // update();
-
-    }
-
-    @Deprecated
-	public Transform getCombinedTransform(Vector3f position, Quaternion rotation) {
-        Transform l=getLocalTransform();
-        Vector3f localPos=l.getTranslation();
-        Quaternion localRot=l.getRotation();
-        rotation.mult(localPos, _tmpTr1.getTranslation()).addLocal(position);
-        _tmpTr1.setRotation(rotation).getRotation().multLocal(localRot);
-        return _tmpTr1;
-	}
-
-    @Deprecated
-
-	public Quaternion getModelBindInverseRotation() {
-		return restTrMS.getRotation();
-	}
 }
