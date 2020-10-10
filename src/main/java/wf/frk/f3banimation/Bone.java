@@ -31,19 +31,41 @@
  */
 package wf.frk.f3banimation;
 
-import com.jme3.export.*;
-import com.jme3.material.MatParamOverride;
-import com.jme3.math.*;
-import com.jme3.scene.*;
-import com.jme3.shader.VarType;
-import com.jme3.util.SafeArrayList;
-import com.jme3.util.TempVars;
-import com.jme3.util.clone.Cloner;
-import com.jme3.util.clone.JmeCloneable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
+import com.jme3.math.Matrix4f;
+import com.jme3.math.Transform;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
+/**
+ * <code>Bone</code> describes a bone in the bone-weight skeletal animation
+ * system. A bone contains a name and an index, as well as relevant
+ * transformation data.
+ * 
+ * A bone has 3 sets of transforms :
+ * 1. The bind transforms, that are the transforms of the bone when the skeleton
+ * is in its rest pose (also called bind pose or T pose in the literature). 
+ * The bind transforms are expressed in Local space meaning relatively to the 
+ * parent bone.
+ * 
+ * 2. The Local transforms, that are the transforms of the bone once animation
+ * or user transforms has been applied to the bind pose. The local transforms are
+ * expressed in Local space meaning relatively to the parent bone.
+ * 
+ * 3. The Model transforms, that are the transforms of the bone relatives to the 
+ * rootBone of the skeleton. Those transforms are what is needed to apply skinning 
+ * to the mesh the skeleton controls.
+ * Note that there can be several rootBones in a skeleton. The one considered for 
+ * these transforms is the one that is an ancestor of this bone.
+ *
+ * @author Riccardo Balbo
+ * @author Kirill Vainer
+ * @author Rémy Bouquet
+ */
 
 public final class Bone implements Savable, JmeCloneable {
 

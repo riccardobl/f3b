@@ -31,27 +31,18 @@
  */
 package wf.frk.f3banimation;
 
-import wf.frk.f3banimation.Skeleton;
-import wf.frk.f3banimation.AttachedToBoneControl.Attachment;
-
 import com.jme3.asset.AssetManager;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
 import com.jme3.material.Material;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.util.clone.Cloner;
 
-import java.io.IOException;
-import java.util.Map;
+import wf.frk.f3banimation.AttachedToBoneControl.Attachment;
 
 public class SkeletonViewer extends AbstractControl{
     public static class SkeletonMaterial{

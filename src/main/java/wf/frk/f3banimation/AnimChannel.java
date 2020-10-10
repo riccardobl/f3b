@@ -34,7 +34,6 @@ package wf.frk.f3banimation;
 import java.util.BitSet;
 
 import wf.frk.f3banimation.blending.BlendingFunction;
-import wf.frk.f3banimation.blending.FixedBlendingFunction;
 import wf.frk.f3banimation.utils.TriFunction;
 import com.jme3.util.TempVars;
 
@@ -48,7 +47,7 @@ import com.jme3.util.TempVars;
  * animation channel for its feet, and another for its torso, and
  * the animations for each channel are controlled independently.
  * 
- * @author Kirill Vainer
+ * @author Riccardo Balbo, Kirill Vainer
  */
 public final class AnimChannel {
 

@@ -37,7 +37,6 @@ package wf.frk.f3banimation;
  * 
  * @author Kirill Vainer
  */
-@Deprecated
 public interface AnimEventListener {
 
     /**

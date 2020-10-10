@@ -32,7 +32,6 @@
 package wf.frk.f3banimation;
 
 import com.jme3.export.*;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -48,7 +47,7 @@ import java.io.IOException;
 /**
  * This class represents the track for spatial animation.
  * 
- * @author Marcin Roguski (Kaelthas)
+ * @author Riccardo Balbo, Marcin Roguski (Kaelthas)
  */
 @Deprecated
 public class SpatialTrack implements JmeCloneable, Track {

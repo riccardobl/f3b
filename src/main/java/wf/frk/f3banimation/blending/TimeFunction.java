@@ -11,7 +11,9 @@ import wf.frk.f3banimation.utils.mutables.MutableFloat;
 
 
 /**
- * TimeFunction
+ * Default Time functions
+ * 
+ * @author Riccardo Balbo
  */
 public class TimeFunction {
     public static TriFunction<AnimChannel,Animation,Float,Float> newClamped(Supplier<Float> speed){

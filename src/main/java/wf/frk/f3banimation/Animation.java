@@ -43,7 +43,7 @@ import java.io.IOException;
 /**
  * The animation class updates the animation target with the tracks of a given type.
  * 
- * @author Kirill Vainer, Marcin Roguski (Kaelthas)
+ * @author Riccardo Balbo, Kirill Vainer, Marcin Roguski (Kaelthas)
  */
 public class Animation implements Savable, Cloneable, JmeCloneable {
 

@@ -9,9 +9,10 @@ import wf.frk.f3banimation.Animation;
 import wf.frk.f3banimation.utils.TriFunction;
 import wf.frk.f3banimation.utils.mutables.MutableFloat;
 
-
 /**
- * FadeBlendingFunction
+ * Default Bending functions
+ * 
+ * @author Riccardo Balbo
  */
 public class BlendingFunction {
     public static TriFunction<AnimChannel,Animation,Float,Float> newSimple(Supplier<Float> blend){

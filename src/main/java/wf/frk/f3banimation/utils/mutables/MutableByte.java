@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, Riccardo Balbo
+ * Copyright (c) 2020, Riccardo Balbo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

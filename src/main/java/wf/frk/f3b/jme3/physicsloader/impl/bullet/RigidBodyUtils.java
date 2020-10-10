@@ -51,7 +51,7 @@ public class RigidBodyUtils{
 		rigidbody.setLinearDamping(data.linearDamping);
 		rigidbody.setLinearFactor(data.linearFactor);
 		rigidbody.setAngularFactor(data.angularFactor);
-		rigidbody.setKinematic(data.isKinematic);
+		if(rigidbody.getMass()>0)rigidbody.setKinematic(data.isKinematic);
 		rigidbody.setRestitution(data.restitution);
 		rigidbody.setCollisionGroup(data.collisionGroup);
 		rigidbody.setCollideWithGroups(data.collisionMask);

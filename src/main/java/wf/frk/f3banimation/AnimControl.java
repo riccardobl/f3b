@@ -67,7 +67,7 @@ import java.util.Map;
  * Planned:
  * 1) Morph/Pose animation
  *
- * @author Kirill Vainer
+ * @author Riccardo Balbo, Kirill Vainer
  */
 public final class AnimControl extends AbstractControl implements Cloneable, JmeCloneable {
 

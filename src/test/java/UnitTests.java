@@ -5,24 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Test;
-
-import wf.frk.f3banimation.AnimChannel;
-import wf.frk.f3banimation.AnimControl;
-import wf.frk.f3banimation.AnimationGroupControl;
-import wf.frk.f3banimation.LoopMode;
-import wf.frk.f3banimation.SkeletonControl;
-import wf.frk.f3banimation.SkeletonViewer;
-import wf.frk.f3banimation.blending.BlendingFunction;
-import wf.frk.f3banimation.blending.TimeFunction;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.SceneGraphVisitor;
@@ -30,11 +17,18 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.TangentBinormalGenerator;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
+import org.junit.Test;
+
 import utils.TestHelpers;
 import wf.frk.f3b.jme3.F3bKey;
 import wf.frk.f3b.jme3.debug.Debug;
 import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
 import wf.frk.f3b.jme3.runtime.F3bRuntimeLoader;
+import wf.frk.f3banimation.AnimationGroupControl;
+import wf.frk.f3banimation.SkeletonControl;
+import wf.frk.f3banimation.SkeletonViewer;
+import wf.frk.f3banimation.blending.BlendingFunction;
+import wf.frk.f3banimation.blending.TimeFunction;
 
 public class UnitTests{
 	public boolean headless=false;
