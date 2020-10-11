@@ -47,3 +47,5 @@ format/generated
 **/fake_bpy_modules*
 **/libs/f3b
 .travis.yml
+
+**/__pycache__

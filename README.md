@@ -47,16 +47,16 @@ The  [jMonkeyEngine](https://github.com/jMonkeyEngine/jmonkeyengine)  importer c
 1. Add the repo
 ```gradle
 repositories {
-    maven {url  "https://dl.bintray.com/riccardo/f3b"  }
-    maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
+    maven { url  "https://dl.bintray.com/riccardo/f3b"  }
+    maven { url "http://dl.bintray.com/riccardo/v-hacd" }
     maven { url "https://jitpack.io" }    
 }
 ```
 2. Add the dependencies
 ```gradle
 dependencies{
-    implementation 'com.github.riccardobl:jme3-bullet-vhacd:1.0.2'
-    implementation ("wf.frk.f3b:jme_f3b:1.0")
+    implementation "com.github.riccardobl:jme3-bullet-vhacd:1.0.2"
+    implementation "wf.frk.f3b:jme_f3b:0.9"
 }
 ```
 
@@ -93,9 +93,5 @@ Log4J2: [Apache License, Version 2.0](https://logging.apache.org/log4j/2.x/licen
 V-HACD: [BSD 3-Clause "New" or "Revised" License](https://github.com/kmammou/v-hacd/blob/master/LICENSE)
 
 ---
-
-
-
-## Credits 
 
 The code was originally forked from [xbuf](https://github.com/xbuf) (Xbuf is licensed under public domain)
