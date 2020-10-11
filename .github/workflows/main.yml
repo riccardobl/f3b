@@ -19,7 +19,7 @@ jobs:
 
       - name: Build with gradle
         run: |
-          gradle build install -Dmaven.repo.local="$PWD/dist/maven"
+          gradle build install -xtest -Dmaven.repo.local="$PWD/dist/maven"
 
       - name: Upload maven artifacts
         uses: actions/upload-artifact@master
