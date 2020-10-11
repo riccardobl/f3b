@@ -1,3 +1,11 @@
+################# CONFIGURATIONS #####################################################
+# >> Configure BINTRAY RELEASE & NATIVE SNAPSHOT
+#   Configure the following secrets/variables (customize the values with your own)
+#     BINTRAY_MAVEN_REPO=riccardoblsandbox/jmonkeyengine
+#     BINTRAY_USER=riccardo
+#     BINTRAY_APIKEY=XXXXXX
+#     BINTRAY_LICENSE="BSD 3-Clause"
+#####################################################
 name: Build F3b
 on:
   push:
@@ -22,16 +30,22 @@ jobs:
           gradle build install -xtest -Dmaven.repo.local="$PWD/dist/maven"
 
       - name: Upload maven artifacts
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v2
         with:
           name: maven
           path: dist/maven
 
       - name: Upload blender addon
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v2
         with:
           name: io_scene_f3b_blender
           path: blender_f3b
+
+      - name: Upload blender nodes
+        uses: actions/upload-artifact@v2
+        with:
+          name: f3b_blender_nodes
+          path: f3b_blender_nodes.blend
 
   Deploy:
     needs: [Build]
@@ -44,24 +58,34 @@ jobs:
           fetch-depth: 1
     
       - name: Download maven artifacts
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v2
         with:
           name: maven
           path: dist/maven
       
       - name: Download blender addon
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v2
         with:
           name: io_scene_f3b_blender
           path: dist/blender
+
+      - name: Download blender nodes
+        uses: actions/download-artifact@v2
+        with:
+          name: f3b_blender_nodes
+          path: dist/
       
       - name: Create releases
         run: |
+          ls -l dist
           mkdir -p dist/releases
           cd dist/blender
           zip -r ../releases/io_scene_f3b.zip * 
-          cd ../dist/maven
+          cd ../maven
           zip -r ../releases/jme_f3b.zip * 
+          cd ..
+          zip releases/f3b_blender_nodes.blend.zip f3b_blender_nodes.blend
+
 
       - name: Upload releases
         uses: actions/upload-artifact@master
