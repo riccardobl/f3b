@@ -73,6 +73,48 @@ gradle build -xtest
 gradle install -xtest
 ```
 
+## Usage
+```java
+
+// Initialize the loader (call this only once!)
+F3bLoader.init(assetManager);
+
+// load a model
+Spatial loaded=loadModel(assetManager,bulletAppState,rootNode,"mymodel.f3b");
+// loaded.soSomething();
+
+// load another model
+Spatial loaded2=loadModel(assetManager,bulletAppState,rootNode,"mysecondNode.f3b");
+
+
+void loadModel(
+        AssetManager assetManager,
+        BulletAppState bulletAppState,
+        Node rootNode, 
+        String myModel
+){
+
+    // Define what/how to load
+    F3bKey modelKey=new F3bKey("myModel.f3b");
+    modelKey.usePhysics(new BulletPhysicsLoader()); // enable physics loader
+    modelKey.useEnhancedRigidbodies(true); // improved rigidbody handling
+    // ... more settings ...
+
+    // Prepare runtime loader
+    F3bRuntimeLoader rloader=F3bRuntimeLoader.instance();
+    rloader.attachSceneTo(rootNode); // where to attach the scene
+    rloader.attachLightsTo(rootNode); // where to attach the lights
+    rloader.attachPhysicsTo(bulletAppState.getPhysicsSpace()); // where to attach the physics
+
+    // Load!
+    Spatial loaded=rloader.load(assetManager, modelKey);
+
+    // `loaded` and its lights are already attach to the rootNode by the runtime loader
+
+    return loaded;
+}
+
+```
 
 ## License
 BSD 3-Clause License
