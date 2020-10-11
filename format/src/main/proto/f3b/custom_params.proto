@@ -1,0 +1,23 @@
+package f3b;
+//option optimize_for = LITE_RUNTIME;
+
+import public "f3b/types.proto";
+
+message CustomParamList {
+  required string id = 1;
+  repeated CustomParam params = 2;
+}
+
+message CustomParam {
+  required string name = 1;
+  oneof value {
+    bool vbool = 2;
+    string vstring = 3;
+    float vfloat = 4;
+    int32 vint = 5;
+    vec2 vvec2 = 10;
+    vec3 vvec3 = 11;
+    vec4 vvec4 = 12;
+    qtr vqtr = 13;
+  }
+}

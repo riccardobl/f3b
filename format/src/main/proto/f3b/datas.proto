@@ -1,0 +1,35 @@
+package f3b;// Caveman extension system: this must be the first line
+//option optimize_for = LITE_RUNTIME;
+
+import public "f3b/lights.proto";
+import public "f3b/materials.proto";
+import public "f3b/meshes.proto";
+import public "f3b/types.proto";
+import public "f3b/relations.proto";
+import public "f3b/skeletons.proto";
+import public "f3b/tobjects.proto";
+
+import public "f3b/animations_kf.proto";
+import public "f3b/custom_params.proto";
+import public "f3b/physics.proto";
+import public "f3b/audio.proto";
+
+
+message Data {
+  /// version of the protocol / data format. readonly !! (== the major of the f3b project version)
+  optional uint32 version = 1 [default = 20150914];
+  repeated Relation relations = 2;
+  repeated TObject tobjects = 3;
+  ///@deprecated use meshes directly
+  //repeated Geometry geometries = 4;
+  repeated Material materials = 5;
+  repeated Light lights = 6;
+  repeated Skeleton skeletons = 7;
+  repeated Mesh meshes = 8;
+  repeated CustomParamList custom_params = 9;
+  repeated AnimationKF animations_kf = 10;
+  repeated PhysicsData physics = 11;
+  repeated Speaker speakers = 12;
+
+  
+}// Caveman extension system: this must be the last line. (...no empty lines after...)

@@ -1,0 +1,15 @@
+package f3b;
+
+import public "f3b/types.proto";
+
+message Collection {
+    // collection id
+    required string id=1;
+    // objects id
+    repeated string objects = 2;
+}
+
+message Header {
+    required string sceneRelPath=1;
+    repeated Collection collections=2;
+}

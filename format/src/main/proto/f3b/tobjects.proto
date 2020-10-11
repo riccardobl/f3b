@@ -1,0 +1,18 @@
+package f3b;
+import public "f3b/types.proto";
+
+message TObject {
+  ///@check identifier (id) should be unique and invariant over a set of datas (eg: use uuid) and over time.
+  required string id = 1;
+  // the local transform (relative to its parent)
+  required vec3 translation = 2;
+  required qtr rotation = 3;
+  required vec3 scale = 5;
+
+  optional string name = 4;
+
+  optional string attached_to_bone=6;
+  optional bool attached_to_bone_tail=8;
+
+  optional bool holdout=7;
+}

@@ -1,0 +1,34 @@
+package f3b;
+import public "f3b/types.proto";
+message MatProperty{
+  required string id = 1;
+  oneof value {
+    tx2d texture = 3; 
+    float vfloat = 4;
+    int32 vint = 7;
+    bool vbool = 9;
+    vec2 vvec2 = 5;
+    vec3 vvec3 = 6;  
+    vec4 vvec4 = 8;  
+    vec4 vcolor = 11;  
+    qtr vqtr = 10;  
+  }
+}
+
+
+
+message Material {
+  enum Blending {
+    opaque =1;
+    alpha_clip=2;
+    alpha_blend=3;
+    alpha_dithering=4;    
+  }
+  ///@check identifier (id) should be unique and invariant over a set of datas (eg: use uuid) and over time.
+  required string id = 1;
+  optional string mat_id = 3;
+  optional string name = 4;
+  repeated MatProperty properties = 5;
+  optional bool backfaceCulling = 6;
+  optional Blending blendMode = 7;
+}

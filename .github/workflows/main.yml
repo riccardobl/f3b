@@ -1,0 +1,101 @@
+name: Build F3b
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+  
+jobs:
+  
+  Build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+
+      - name: Clone the repo
+        uses: actions/checkout@v2     
+        with:
+          fetch-depth: 1
+
+      - name: Build with gradle
+        run: |
+          gradle build install -Dmaven.repo.local="$PWD/dist/maven"
+
+      - name: Upload maven artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: maven
+          path: dist/maven
+
+      - name: Upload blender addon
+        uses: actions/upload-artifact@master
+        with:
+          name: io_scene_f3b_blender
+          path: blender_f3b
+
+  Deploy:
+    needs: [Build]
+    name: Deploy
+    runs-on: ubuntu-18.04
+    steps:   
+      - name: Clone the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+    
+      - name: Download maven artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: maven
+          path: dist/maven
+      
+      - name: Download blender addon
+        uses: actions/download-artifact@master
+        with:
+          name: io_scene_f3b_blender
+          path: dist/blender
+      
+      - name: Create releases
+        run: |
+          mkdir -p dist/releases
+          cd dist/blender
+          zip -r ../releases/io_scene_f3b.zip * 
+          cd ../dist/maven
+          zip -r ../releases/jme_f3b.zip * 
+
+      - name: Upload releases
+        uses: actions/upload-artifact@master
+        with:
+          name: release
+          path: dist/releases
+      
+      - name: Deploy to github releases  
+        if: github.event_name == 'release'
+        run: |
+          # We need to get the release id (yeah, it's not the same as the tag)
+          echo "${GITHUB_EVENT_PATH}"
+          cat ${GITHUB_EVENT_PATH}
+          releaseId=$(jq --raw-output '.release.id' ${GITHUB_EVENT_PATH})
+
+          # Now that we have the id, we just upload the release zip from before
+          echo "Upload to release $releaseId"
+          filename="$(ls dist/release/*.zip)"
+          url="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$releaseId/assets?name=$(basename $filename)"
+          echo "Upload to $url"
+          curl -L \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/zip" \
+          --data-binary @"$filename" \
+          "$url"
+            
+      - name: Deploy to bintray
+        if: github.event_name == 'release'
+        run: |
+          source .github/actions/tools/uploadToMaven.sh
+          if [ "${{ secrets.BINTRAY_MAVEN_REPO }}" = "" ];
+          then
+            echo "Configure the following secrets to enable bintray deployment"
+            echo "BINTRAY_MAVEN_REPO, BINTRAY_USER, BINTRAY_APIKEY"
+          else
+            uploadAllToMaven dist/maven/ https://api.bintray.com/maven/${{ secrets.BINTRAY_MAVEN_REPO }} ${{ secrets.BINTRAY_USER }} ${{ secrets.BINTRAY_APIKEY }} "https://github.com/${GITHUB_REPOSITORY}" "${{ secrets.BINTRAY_LICENSE }}"
+          fi

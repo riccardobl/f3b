@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+def v_jme3="3.3.2-stable"
+def g_jme3="org.jmonkeyengine"
+def v_slf4j="1.7.7"
+
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+repositories{
+	jcenter()
+	mavenCentral()
+	maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
+	maven { url "https://jitpack.io" }
+}
+
+javadoc {
+  source = sourceSets.main.allJava
+  classpath = configurations.compileClasspath
+}
+
+task dumper(type: JavaExec) {
+    standardInput = System.in
+    main ='wf.frk.f3b.tools.F3bDumper'
+    classpath file("${rootDir}/build/classes/java/main")
+    classpath  sourceSets.main.compileClasspath
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+dependencies {
+    implementation project(":format")
+	implementation 'com.google.protobuf:protobuf-java:2.6.1'
+	implementation "org.apache.logging.log4j:log4j-api:2.2"
+    implementation "org.apache.logging.log4j:log4j-core:2.2"
+
+    compileOnly 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+    compileOnly "${g_jme3}:jme3-core:${v_jme3}"
+    compileOnly "${g_jme3}:jme3-bullet:${v_jme3}"
+    
+	testCompile "${g_jme3}:jme3-lwjgl:${v_jme3}"
+	testCompile "${g_jme3}:jme3-desktop:${v_jme3}"
+	testCompile "${g_jme3}:jme3-bullet:${v_jme3}"
+	testCompile "${g_jme3}:jme3-bullet-native:${v_jme3}"
+	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+	testCompile 'junit:junit:4.12'
+}
+

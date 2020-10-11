@@ -1,0 +1,58 @@
+package f3b;
+
+message AnimationKF {
+  ///@check identifier (id) should be unique and invariant over a set of datas (eg: use uuid) and over time.
+  required string id = 1;
+  /// display name
+  optional string name = 2;
+  // duration of the animation in ms
+  optional int32 duration = 3;
+  repeated Clip clips = 4;
+
+  enum TargetKind {
+    tobject = 0;
+    skeleton = 1;
+  }
+  optional TargetKind target_kind = 5 [default = tobject];
+
+    optional int32 index = 6;
+
+}
+
+message Clip {
+  oneof keyframes {
+    SampledTransform sampled_transform = 1;
+  }
+}
+
+/// Transformations in the parent space (parent of the tobject or parent of the bone)
+/// beetween eatch 'at', use linear interpolation (lerp) for translation, scale and slerp for rotation
+message SampledTransform {
+  /// timestamp of the keypoint in ms
+  repeated int32 at = 1 [packed=true];
+  //@check length == length(at) or 0
+  repeated float translation_x = 2 [packed=true];
+  //@check length == length(at) or 0
+  repeated float translation_y = 3 [packed=true];
+  //@check length == length(at) or 0
+  repeated float translation_z = 4 [packed=true];
+  //@check length == length(at) or 0
+  repeated float rotation_x = 5 [packed=true];
+  //@check length == length(at) or 0
+  repeated float rotation_y = 6 [packed=true];
+  //@check length == length(at) or 0
+  repeated float rotation_z = 7 [packed=true];
+  //@check length == length(at) or 0
+  repeated float rotation_w = 8 [packed=true];
+  //@check length == length(at) or 0
+  repeated float scale_x = 9 [packed=true];
+  //@check length == length(at) or 0
+  repeated float scale_y = 10 [packed=true];
+  //@check length == length(at) or 0
+  repeated float scale_z = 11 [packed=true];
+
+  /// used with skeleton
+  optional string bone_name = 20;
+}
+
+

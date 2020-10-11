@@ -1,0 +1,13 @@
+package f3b;
+import public "f3b/types.proto";
+
+message Speaker {
+    required string id = 1;
+    required string name=2;
+    required string rpath=3;
+    required float volume =4;
+    required float pitch = 5;
+    required float distance_max=6;
+    required float distance_reference=7;
+    required float attenuation=8;
+}   

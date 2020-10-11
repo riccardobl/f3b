@@ -1,1 +1,3 @@
-rootProject.name = 'jme3_f3b'
+rootProject.name = 'f3b'
+include 'format'
+include 'jme_f3b'

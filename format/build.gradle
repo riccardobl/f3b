@@ -1,0 +1,44 @@
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.13'
+  }
+}
+
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+
+repositories{
+    mavenCentral()
+}
+
+dependencies {
+	compile 'com.google.protobuf:protobuf-java:2.6.1'
+}
+
+protobuf {
+  generatedFilesBaseDir = "$projectDir/generated"
+
+  protoc {
+    artifact = 'com.google.protobuf:protoc:2.6.1'
+  }
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        python {}
+        java {}
+      }
+    }
+  }
+
+}
+
+
+

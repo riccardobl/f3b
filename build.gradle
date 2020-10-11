@@ -1,109 +1,15 @@
-apply plugin: "maven"
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
 
-version= project.hasProperty('in_version') ? project.getProperty('in_version') : '-SNAPSHOT'
-group = "wf.frk.f3b"
-
-
-def v_jme3="3.3.2-stable"
-def g_jme3="org.jmonkeyengine"
-
-def v_slf4j="1.7.7"
-// def v_lombok="1.16.8"
-
-def v_protocol="0.6"
-
-
-if(project.hasProperty('in_v_physicsloader') ){
-	v_physicsloader=project.getProperty('in_v_physicsloader')
-    println("Use physics loader v"+v_physicsloader)
+allprojects{
+    version= project.hasProperty('in_version') ? project.getProperty('in_version') : '-SNAPSHOT'
+    group = "wf.frk.f3b"
 }
 
-if(project.hasProperty('in_v_protocol') ){
-	v_protocol=project.getProperty('in_v_protocol')
-        println("Use protocol v"+v_protocol)
-
+task copyPythonLibInExporter(type: Copy) {
+    println("Copy python format ")
+    from 'format/generated/main/python'
+    into 'blender_f3b/libs/f3b'
 }
 
-if(project.hasProperty('in_g_physicsloader') ){
-	g_physicsloader=project.getProperty('in_g_physicsloader')
-            println("Use physics loader from group "+g_physicsloader)
-
-}
-
-
-targetCompatibility = '1.8'
-sourceCompatibility = '1.8'
-configurations.all {
-	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-repositories{
-	mavenLocal()
-	jcenter()
-	mavenCentral()
-	maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
-	maven{ url "http://dl.bintray.com/riccardo/f3b" }
-	maven { url "https://jitpack.io" }
-}
-
-javadoc {
-  source = sourceSets.main.allJava
-  classpath = configurations.compileClasspath
-}
-
-
-task dumper(type: JavaExec) {
-     standardInput = System.in
-
-    main ='wf.frk.f3b.tools.F3bDumper'
-    classpath file("${rootDir}/build/classes/java/main")
-    classpath  sourceSets.main.compileClasspath
-  
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-task packageJavadoc(type: Jar) {
-    from javadoc
-    classifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        mavenJava (MavenPublication) { 
-            from components.java
-            artifact sourceJar {
-                    classifier "sources"
-            }
-            artifact packageJavadoc
-        }
-    }
-}
-
-
-
-dependencies {
-	compile 'com.google.protobuf:protobuf-java:2.6.1'
-	compile "wf.frk.f3b:f3b:${v_protocol}"
-		
-	compile "org.apache.logging.log4j:log4j-api:2.2"
-    compile "org.apache.logging.log4j:log4j-core:2.2"
-    compile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
-
-    compileOnly "${g_jme3}:jme3-core:${v_jme3}"
-    compileOnly "${g_jme3}:jme3-bullet:${v_jme3}"
-    
-	testCompile "${g_jme3}:jme3-lwjgl:${v_jme3}"
-	testCompile "${g_jme3}:jme3-desktop:${v_jme3}"
-	testCompile "${g_jme3}:jme3-bullet:${v_jme3}"
-	testCompile "${g_jme3}:jme3-bullet-native:${v_jme3}"
-	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
-	testCompile 'junit:junit:4.12'
-}
-
+build.finalizedBy(copyPythonLibInExporter)
