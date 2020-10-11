@@ -27,7 +27,13 @@ jobs:
 
       - name: Build with gradle
         run: |
-          gradle build install -xtest -Dmaven.repo.local="$PWD/dist/maven"
+          export VERSION="`if [[ $GITHUB_REF == refs\/tags* ]]; then echo ${GITHUB_REF//refs\/tags\//}; fi`"
+          if [ "$VERSION" = "" ];
+          then
+            branch="`if [[ $GITHUB_REF == refs\/heads* ]]; then echo ${GITHUB_REF//refs\/heads\//}; fi`"
+            export VERSION="$branch-SNAPSHOT"
+          fi
+          gradle build install -xtest -Pin_version="$VERSION" -Dmaven.repo.local="$PWD/dist/maven"
 
       - name: Upload maven artifacts
         uses: actions/upload-artifact@v2
