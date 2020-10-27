@@ -119,6 +119,33 @@ void loadModel(
 ## Development notes
 Some IDEs can't load protobuf subprojects, so you might need to run  `gradle build -x test`  once before importing this project, and everytime the f3b format definition is changed, this command will build and generate the missing java files in the protobuf subproject.
 
+## F3b Animations
+Animated models imported with f3b use the f3banimations system, a simple animation system built around java8 functional interface.
+This is a quick rundown, better documentation will be written at a later time
+- The system is channel based, newer channels are blended on top of older channels. 
+- In bone animations: Only animated bones influence the animation.
+- There is a blending function specified when swapping the current channel animation, that will blend between the old and new animation
+- There is a blending function to blend inbetween channels
+- There is a time function to define speed, looping, direction etc. of the animation.
+- In bone animations: When importing a model, if it has an armature, the current pose is loaded as a looping `_pose` animation with lowest possible priority (first channel)
+- When using AnimationGroupControl to control the animations (recommented!) a set of channel is created to match the NLA strips in blender, that will be used by default if no channel is specified when playing an animation. Meaning you can just play the animations and they will be blended in the same order that they are blended if you enable their nla strips in blender
+
+Usage:
+
+```java
+AnimationGroupControl c=AnimationGroupControl.of(spatial);
+// spatial: A spatial that has animations somewhere. It doesn't need to be exactly the spatial that has the animations, it can be a parent.
+//          Multiple children can be animated at the same time. It is not recommented and you shouldn't do it, but you could generate an 
+//          AnimationGroupControl out of the rootNode and control all the scene from it. AnimationGroupControl.of() caches the generated control
+//          meaning you can call it multiple times on the same spatial and it will always return the same.
+
+// Set animation
+// This will play with the same priority specified by the order of nla strips in blender
+c.setAction("idle",TimeFunction.newLooping(() -> 1f /*speed*/),BlendingFunction.newSimple(() -> 1f /* replace the old animation immediately */));
+
+```
+That's all. You can look at the `wf.frk.f3banimation.blending.*` for a list of default blending/time functions or create your own.
+
 
 ## License
 BSD 3-Clause License

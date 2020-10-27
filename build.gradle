@@ -1,10 +1,7 @@
 
-
 allprojects{
     apply plugin: 'java'
     apply plugin: 'maven'
-
-
     version= project.hasProperty('in_version') ? project.getProperty('in_version') : '-SNAPSHOT'
     group = "wf.frk.f3b"
 }
