@@ -116,6 +116,10 @@ void loadModel(
 
 ```
 
+## Development notes
+Some IDEs can't load protobuf subprojects, so you might need to run  `gradle build -x test`  once before importing this project, and everytime the f3b format definition is changed, this command will build and generate the missing java files in the protobuf subproject.
+
+
 ## License
 BSD 3-Clause License
 

@@ -12,6 +12,22 @@ configurations.all {
 	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+def generatedProtocolPath="../format/generated/main/java"
+println("Generated protocol is in "+generatedProtocolPath)
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [generatedProtocolPath]
+        }
+    }
+}
+
+jar {
+    exclude('f3b/**')  
+}
+
 repositories{
 	jcenter()
 	mavenCentral()
