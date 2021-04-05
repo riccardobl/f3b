@@ -1,3 +1,7 @@
+plugins {
+    id "io.github.0ffz.github-packages" version "1.2.1"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -29,10 +33,8 @@ jar {
 }
 
 repositories{
-	jcenter()
-	mavenCentral()
-	maven{ url "http://dl.bintray.com/riccardo/v-hacd" }
-	maven { url "https://jitpack.io" }
+    maven githubPackage.invoke("riccardobl")
+    mavenCentral()	
 }
 
 javadoc {
@@ -57,12 +59,12 @@ task packageJavadoc(type: Jar) {
 }
 
 dependencies {
-    implementation project(":format")
+    implementation project(":f3b_format")
 	implementation 'com.google.protobuf:protobuf-java:2.6.1'
 	implementation "org.apache.logging.log4j:log4j-api:2.2"
     implementation "org.apache.logging.log4j:log4j-core:2.2"
 
-    compileOnly 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+    compileOnly 'wf.frk:jme3-bullet-vhacd:1.0.5'
     compileOnly "${g_jme3}:jme3-core:${v_jme3}"
     compileOnly "${g_jme3}:jme3-bullet:${v_jme3}"
     
@@ -70,7 +72,7 @@ dependencies {
 	testCompile "${g_jme3}:jme3-desktop:${v_jme3}"
 	testCompile "${g_jme3}:jme3-bullet:${v_jme3}"
 	testCompile "${g_jme3}:jme3-bullet-native:${v_jme3}"
-	testCompile 'com.github.riccardobl:jme3-bullet-vhacd:-SNAPSHOT'
+	testCompile 'wf.frk:jme3-bullet-vhacd:1.0.5'
 	testCompile 'junit:junit:4.12'
 }
 

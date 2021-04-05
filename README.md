@@ -44,19 +44,24 @@ The  [jMonkeyEngine](https://github.com/jMonkeyEngine/jmonkeyengine)  importer c
 8. Now everytime you open blender it will have a Nodes material containing all the f3b nodes, skip point 7 if you don't want this 
 
 ## Install in jMonkeyEngine
-1. Add the repo
+0. (optional) Add this plugin to use github packages anonymously
+```gradle
+plugins {
+    id "io.github.0ffz.github-packages" version "1.2.1"
+}
+```
+
+1. Use the plugin to add the repo (or add it manually https://github.com/riccardobl?tab=packages)
 ```gradle
 repositories {
-    maven { url  "https://dl.bintray.com/riccardo/f3b"  }
-    maven { url "http://dl.bintray.com/riccardo/v-hacd" }
-    maven { url "https://jitpack.io" }    
+    maven githubPackage.invoke("riccardobl")
 }
 ```
 2. Add the dependencies
 ```gradle
 dependencies{
-    implementation "com.github.riccardobl:jme3-bullet-vhacd:1.0.2"
-    implementation "wf.frk.f3b:jme_f3b:0.9"
+    implementation 'wf.frk:jme3-bullet-vhacd:1.0.5'
+    implementation "wf.frk:jme_f3b:0.92"
 }
 ```
 

@@ -1,3 +1,4 @@
 rootProject.name = 'f3b'
 include 'format'
 include 'jme_f3b'
+project(":format").name = "f3b_format"
