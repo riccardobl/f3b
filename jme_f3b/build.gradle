@@ -53,8 +53,8 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-task packageJavadoc(type: Jar) {
-    from javadoc
+task packageJavadoc(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
     classifier = 'javadoc'
 }
 

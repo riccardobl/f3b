@@ -74,12 +74,10 @@ public class SpatialTrack implements JmeCloneable, Track {
      * 
      * @param times
      *            a float array with the time of each frame
-     * @param translations
-     *            the translation of the bone for each frame
-     * @param rotations
-     *            the rotation of the bone for each frame
-     * @param scales
-     *            the scale of the bone for each frame
+     * @param frames
+     *            the Transform of the bone for each frame
+ 
+ 
      */
     public SpatialTrack(float[] times, Transform frames[]) {
         setKeyframes(times, frames);
@@ -176,12 +174,10 @@ public class SpatialTrack implements JmeCloneable, Track {
      * 
      * @param times
      *            a float array with the time of each frame
-     * @param translations
-     *            the translation of the bone for each frame
-     * @param rotations
-     *            the rotation of the bone for each frame
-     * @param scales
-     *            the scale of the bone for each frame
+     * @param frames
+     *            the Transform of the bone for each frame
+ 
+ 
      */
     public void setKeyframes(float[] times, Transform[] frames) {
         if (times.length == 0) {

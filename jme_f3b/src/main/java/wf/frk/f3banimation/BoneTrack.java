@@ -75,8 +75,7 @@ public class BoneTrack implements JmeCloneable, Track {
      * Creates a bone track for the given bone index
      * @param targetBoneIndex the bone index
      * @param times a float array with the time of each frame
-     * @param translations the translation of the bone for each frame
-     * @param rotations the rotation of the bone for each frame
+     * @param frames the Transform of the bone for each frame
      */
     public BoneTrack(int targetBoneIndex, float[] times, Transform frames[]) {
         this.targetBoneIndex = targetBoneIndex;
@@ -122,10 +121,8 @@ public class BoneTrack implements JmeCloneable, Track {
      *
      * @param times the time of each frame, measured from the start of the track
      * (not null, length&gt;0)
-     * @param translations the translation of the bone for each frame (not null,
+     * @param frames the Transform of the bone for each frame (not null,
      * same length as times)
-     * @param rotations the rotation of the bone for each frame (not null, same
-     * length as times)
      */
     public void setKeyframes(float[] times, Transform[] frames) {
         if (times.length == 0) {
