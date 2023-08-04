@@ -60,7 +60,7 @@ task packageJavadoc(type: Jar, dependsOn: javadoc) {
 
 dependencies {
     implementation project(":f3b_format")
-	implementation 'io.chandler:protobuf-java:3.7.1-teavm1'
+	implementation 'io.chandler:protobuf-java:3.7.1-teavm2'
 
     compileOnly 'wf.frk:jme3-bullet-vhacd:1.0.5'
     compileOnly "${g_jme3}:jme3-core:${v_jme3}"

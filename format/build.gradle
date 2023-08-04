@@ -19,7 +19,7 @@ repositories{
 }
 
 dependencies {
-	implementation 'io.chandler:protobuf-java:3.7.1-teavm1'
+	implementation 'io.chandler:protobuf-java:3.7.1-teavm2'
 }
 
 protobuf {
