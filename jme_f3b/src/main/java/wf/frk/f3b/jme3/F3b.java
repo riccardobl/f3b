@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.ExtensionRegistryLite;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
@@ -31,7 +33,7 @@ import wf.frk.f3b.jme3.mergers.SkeletonsMerger;
 public class F3b{
 
 
-	public final ExtensionRegistry extensions;
+	public final ExtensionRegistryLite extensions;
 	public final List<Merger> mergers;
 	public final RelationsMerger relations;
 

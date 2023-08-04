@@ -46,7 +46,7 @@ public class F3bDumper{
 		Data data=Data.parseFrom(bi);
 		bi.close();
 
-		String human_data=TextFormat.printToString(data);
+		String human_data="";//TextFormat.printToString(data); FIXME
 		
 		String out_file=findArg(args,"o");
 		if(out_file==null) out.println(human_data);
