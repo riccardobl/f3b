@@ -6,6 +6,8 @@ import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.logging.Level;
+
 import wf.frk.f3banimation.AnimControl;
 import wf.frk.f3banimation.Skeleton;
 import wf.frk.f3banimation.SkeletonControl;
@@ -22,7 +24,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 
 public class SkeletonToSpatial implements Linker {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(SkeletonToSpatial.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(SkeletonToSpatial.class.getName());
 	// see http://hub.jmonkeyengine.org/t/skeletoncontrol-or-animcontrol-to-host-skeleton/31478/4
 	protected long LAST_CLONE_ID = 0;
 
@@ -71,7 +73,7 @@ public class SkeletonToSpatial implements Linker {
 					String matref = data.key.getContext().idOf(m);
 					if (matref == null) {
 						// should never happen!
-						log.error("Mat is not referred?");
+						log.log(Level.SEVERE,"Mat is not referred?");
 						return;
 					}
 //					String refusage="G~usage~"+matref;

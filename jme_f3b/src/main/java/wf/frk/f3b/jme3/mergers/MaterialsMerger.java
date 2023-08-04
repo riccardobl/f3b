@@ -4,6 +4,8 @@ package wf.frk.f3b.jme3.mergers;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
@@ -21,7 +23,7 @@ import wf.frk.f3b.jme3.F3bKey;
 
 public class MaterialsMerger implements Merger{
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log=org.apache.logging.log4j.LogManager.getLogger(MaterialsMerger.class);
+	private static final java.util.logging.Logger log= java.util.logging.Logger.getLogger(MaterialsMerger.class.getName());
 	protected final AssetManager assetManager;
 	protected Material defaultMaterial;
 
@@ -69,7 +71,7 @@ public class MaterialsMerger implements Merger{
 		mat=new Material(assetManager,m.getMatId());
 		out.mat=mat;
 		mat.setName(m.hasName()?m.getName():m.getId());
-		log.debug("Material loaded {}",mat.getName());
+		log.log(Level.FINE,"Material loaded {0}",mat.getName());
 		
 		boolean backfaceCulling=!m.hasBackfaceCulling()||m.getBackfaceCulling();
 		mat.getAdditionalRenderState().setFaceCullMode(backfaceCulling?FaceCullMode.Back:FaceCullMode.Off);
@@ -123,13 +125,13 @@ public class MaterialsMerger implements Merger{
 					}
 				}
 				if(param==null){
-					log.warn("Parameter {}  is not available for material  {}. Skip.",name,m.getMatId());
+					log.log(Level.WARNING,"Parameter {0}  is not available for material  {1}. Skip.",new Object[]{name,m.getMatId()});
 					StringBuilder sb=new StringBuilder();
 					sb.append("Available parameters:\n");
 					for(Entry<String,MatParam> e:mat.getParamsMap().entrySet()){
 						sb.append(e.getKey()).append(", ");
 					}
-					log.warn(sb.toString());
+					log.log(Level.WARNING,sb.toString());
 					continue;
 				}
 				switch(param.getVarType()){
@@ -196,7 +198,7 @@ public class MaterialsMerger implements Merger{
 
 				}
 			}catch(Exception e){
-				log.debug("Can\'t load material",e);
+				log.log(Level.FINE, "Can\'t load material",e);
 				sett=new JMEMaterialSettings();
 
 				sett.mat=newDefaultMaterial();

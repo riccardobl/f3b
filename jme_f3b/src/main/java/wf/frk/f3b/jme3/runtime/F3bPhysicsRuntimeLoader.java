@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.PhysicsJoint;
@@ -23,14 +25,14 @@ import wf.frk.f3b.jme3.F3bPhysicsLoaderSettings;
 
 public class F3bPhysicsRuntimeLoader {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bPhysicsRuntimeLoader.class);
+	private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(F3bPhysicsRuntimeLoader.class.getName());
 
 	public static void unload(Spatial scene, final PhysicsSpace space) {
 		space.removeAll(scene);
 	}
 
 	public static void load(F3bPhysicsLoaderSettings settings, Spatial scene, final PhysicsSpace space) {
-		log.debug("Load physics for {}", scene);
+		log.log(Level.FINE,"Load physics for {0}", scene);
 		final Map<String, List<?>> constraints = new HashMap<String, List<?>>();
 		// Extract constraint definitions
 		scene.depthFirstTraversal(new SceneGraphVisitor() {
@@ -79,19 +81,19 @@ public class F3bPhysicsRuntimeLoader {
 				}
 			}
 		});
-		log.debug("Found {} constraints", constraintsXspatials.size());
+		log.log(Level.FINE,"Found {0} constraints", constraintsXspatials.size());
 		// Finally apply constraints to rbs...
 		for (Entry<List<?>, List<Spatial>> entity : constraintsXspatials.entrySet()) {
 			List<?> ct = entity.getKey();
 			List<Spatial> spatials = entity.getValue();
 			if (spatials.size() > 2) {
-				log.warn("Constraint with more or less than 2 spatials? EXTERMINATE!1!");
+				log.log(Level.WARNING,"Constraint with more or less than 2 spatials? EXTERMINATE!1!");
 				return;
 			}
 			RigidBodyControl rb1 = spatials.get(0).getControl(RigidBodyControl.class);
 			RigidBodyControl rb2 = spatials.get(1).getControl(RigidBodyControl.class);
 			if (rb1 == null || rb2 == null) {
-				log.warn("Constraint not supported for this physics object.");
+				log.log(Level.WARNING,"Constraint not supported for this physics object.");
 				return;
 			}
 			Class<?>[] map = settings.getSupportedConstraints();
@@ -106,10 +108,10 @@ public class F3bPhysicsRuntimeLoader {
 					c.read(bis);
 					Object ctg = settings.getPhysicsLoader().loadConstraint(settings, rb1, rb2, c);
 					// Only rb support for now
-					if (!(ctg instanceof PhysicsJoint)) log.warn("Constraint type not supported. {}", ctg.getClass());
+					if (!(ctg instanceof PhysicsJoint)) log.log(Level.WARNING,"Constraint type not supported. {0}", ctg.getClass());
 					PhysicsJoint pj = (PhysicsJoint) ctg;
 					space.add(pj);
-				} else log.warn("Constraint type not supported. Id: {}", cid);
+				} else log.log(Level.WARNING,"Constraint type not supported. Id: {0}", cid);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

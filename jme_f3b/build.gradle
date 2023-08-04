@@ -3,11 +3,11 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-def v_jme3="3.3.2-stable"
+ 
+def v_jme3="3.6.1-stable"
 def g_jme3="org.jmonkeyengine"
-def v_slf4j="1.7.7"
 
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
@@ -60,19 +60,34 @@ task packageJavadoc(type: Jar) {
 
 dependencies {
     implementation project(":f3b_format")
-	implementation 'com.google.protobuf:protobuf-java:2.6.1'
-	implementation "org.apache.logging.log4j:log4j-api:2.2"
-    implementation "org.apache.logging.log4j:log4j-core:2.2"
+	implementation 'io.chandler:protobuf-java:3.7.1-teavm1'
 
     compileOnly 'wf.frk:jme3-bullet-vhacd:1.0.5'
     compileOnly "${g_jme3}:jme3-core:${v_jme3}"
-    compileOnly "${g_jme3}:jme3-bullet:${v_jme3}"
+    compileOnly "${g_jme3}:jme3-jbullet:${v_jme3}"
     
-	testCompile "${g_jme3}:jme3-lwjgl:${v_jme3}"
-	testCompile "${g_jme3}:jme3-desktop:${v_jme3}"
-	testCompile "${g_jme3}:jme3-bullet:${v_jme3}"
-	testCompile "${g_jme3}:jme3-bullet-native:${v_jme3}"
-	testCompile 'wf.frk:jme3-bullet-vhacd:1.0.5'
-	testCompile 'junit:junit:4.12'
+	testImplementation "${g_jme3}:jme3-lwjgl:${v_jme3}"
+	testImplementation "${g_jme3}:jme3-desktop:${v_jme3}"
+	testImplementation "${g_jme3}:jme3-jbullet:${v_jme3}"
+	testImplementation 'wf.frk:jme3-bullet-vhacd:1.0.5'
+	testImplementation 'junit:junit:4.12'
 }
 
+publishing {
+  publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'local'
+            url = uri("${project.projectDir}/../dist/maven")
+        }
+    }
+}

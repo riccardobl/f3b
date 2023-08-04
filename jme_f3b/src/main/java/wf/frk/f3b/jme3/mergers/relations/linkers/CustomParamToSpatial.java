@@ -3,6 +3,9 @@ package wf.frk.f3b.jme3.mergers.relations.linkers;
 
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef1;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
+
+import java.util.logging.Level;
+
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import f3b.CustomParams.CustomParam;
@@ -13,7 +16,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 
 public class CustomParamToSpatial implements Linker {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(CustomParamToSpatial.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(CustomParamToSpatial.class.getName());
 
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
@@ -64,7 +67,7 @@ public class CustomParamToSpatial implements Linker {
 			break;
 
 		default: 
-			log.warn("Material doesn\'t support parameter : {} of type {}", name, p.getValueCase().name());
+			log.log(Level.WARNING,"Material doesn\'t support parameter : {0} of type {1}", new Object[]{name, p.getValueCase().name()});
 		}
 		return dst;
 	}

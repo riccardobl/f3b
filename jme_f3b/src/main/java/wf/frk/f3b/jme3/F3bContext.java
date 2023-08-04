@@ -8,11 +8,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 @SuppressWarnings("unchecked")
 public class F3bContext {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bContext.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(F3bContext.class.getName());
 
 
 	private Map<String, Object> storage = new HashMap<String, Object>();
@@ -40,14 +41,14 @@ public class F3bContext {
 
 	public  <T> T put(String ref, Object val) {
 		T t = (T) storage.put(ref, val);
-		log.debug("Add  {} to context", ref);
+		log.log(Level.FINE,"Add  {0} to context", ref);
 		return t;
 	}
 
 	public  <T> T put(String ref, Object val, String link_to) {
 		T out = put(ref, val);
 		linkedRefs(link_to).add(ref);
-		log.debug("Link  {} to {}", ref, link_to);
+		log.log(Level.FINE,"Link  {0} to {1}",new Object[]{ ref, link_to});
 		return out;
 	}
 

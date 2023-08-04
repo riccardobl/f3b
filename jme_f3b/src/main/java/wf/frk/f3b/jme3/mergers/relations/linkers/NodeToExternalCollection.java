@@ -4,6 +4,7 @@ import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef1;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 
 import java.util.Collection;
+import java.util.logging.Level;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
@@ -19,7 +20,7 @@ import wf.frk.f3b.jme3.mergers.relations.RefData;
 
 public class NodeToExternalCollection implements Linker{
 
-	private static final org.apache.logging.log4j.Logger LOGGER=org.apache.logging.log4j.LogManager.getLogger();
+	private static final java.util.logging.Logger LOGGER=java.util.logging.Logger.getLogger(NodeToExternalCollection.class.getName());
 	
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
@@ -32,7 +33,7 @@ public class NodeToExternalCollection implements Linker{
 		CollectionData col=headers.getCollectionFromId(data.ref2);
 		if(col==null){
 			System.out.println("Can't link "+data.ref2);
-			LOGGER.error("Can't link {}",data.ref2);
+			LOGGER.log(Level.SEVERE,"Can't link {0}",data.ref2);
 			return false;
 		}
 
@@ -40,7 +41,7 @@ public class NodeToExternalCollection implements Linker{
 		linkedK.setName(col.scene);
 		linkedK.resolveAllHeaders(false);
 
-		LOGGER.debug("Link {}",linkedK);
+		LOGGER.log(Level.FINE,"Link {0}",linkedK);
 		Spatial link=am.loadModel(col.scene);
 		Collection<Spatial> sps=col.filter(link);
 		for(Spatial sp:sps){

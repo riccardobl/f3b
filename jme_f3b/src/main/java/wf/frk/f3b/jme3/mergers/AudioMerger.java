@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
+
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -20,7 +22,7 @@ import wf.frk.f3b.jme3.F3bKey;
 
 public class AudioMerger implements Merger {
     @java.lang.SuppressWarnings("all")
-    private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(AudioMerger.class);
+    private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(AudioMerger.class.getName());
     AssetManager AM;
 
     public AudioMerger(AssetManager assetManager) {
@@ -60,11 +62,11 @@ public class AudioMerger implements Merger {
                 try {
                     Method attm = AudioNode.class.getDeclaredMethod("setAttenuation", float.class);
                     if (attm != null) {
-                        log.debug("Set audio node attenuation {}", attenuation);
+                        log.log(Level.FINE,"Set audio node attenuation {0}", attenuation);
                         attm.invoke(an, attenuation);
-                    } else log.debug("Can\'t set audio node attenuation {} - not available in source", attenuation);
+                    } else log.log(Level.FINE,"Can\'t set audio node attenuation {0} - not available in source", attenuation);
                 } catch (Exception e) {
-                    log.debug("Can\'t set audio node attenuation {} - not available in source", attenuation);
+                    log.log(Level.FINE,"Can\'t set audio node attenuation {0} - not available in source", attenuation);
                 }
             }
             // if(inner_angle!=360&&outer_angle!=360){

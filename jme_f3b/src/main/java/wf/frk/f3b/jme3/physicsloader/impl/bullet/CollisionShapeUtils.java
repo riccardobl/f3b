@@ -23,7 +23,6 @@ import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
-import com.jme3.bullet.util.DebugMeshCallback;
 import com.jme3.bullet.util.DebugShapeFactory;
 import com.jme3.math.Vector3f;
 import wf.frk.f3b.jme3.physicsloader.PhysicsLoaderSettings;
@@ -36,7 +35,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
 
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 public class CollisionShapeUtils{
 	public static CollisionShape buildCollisionShape(final PhysicsLoaderSettings settings, final Spatial spatial,PhysicsShape pshape,final boolean dynamic,final boolean useCompoundCapsule,Logger logger){
@@ -68,76 +67,77 @@ public class CollisionShapeUtils{
 							Mesh mesh=g.getMesh();
 							CollisionShape shape=null;
 							if(!dynamic){
-								if(settings.useVHACDForStaticCollisions()&&vhacd_factoryf!=null){
-									com.jme3.bullet.vhacd.VHACDCollisionShapeFactory f=(com.jme3.bullet.vhacd.VHACDCollisionShapeFactory)vhacd_factoryf;
+								// if(settings.useVHACDForStaticCollisions()&&vhacd_factoryf!=null){
+								// 	com.jme3.bullet.vhacd.VHACDCollisionShapeFactory f=(com.jme3.bullet.vhacd.VHACDCollisionShapeFactory)vhacd_factoryf;
 										
-									// Load from cache
-									CompoundCollisionShape cnt;
-									for(com.jme3.bullet.vhacd.cache.Caching c:f.cachingQueue()){
-										cnt=c.load(g.getMesh(),f.getParameters());
-										if(cnt!=null){
-											List<ChildCollisionShape> children=cnt.getChildren();
-											if(children.size()>0){
-												ChildCollisionShape c1=children.get(0);
-												if(c1.shape instanceof MeshCollisionShape){
-													shape= c1.shape;
-												}
-											}
-										}
-									}
+								// 	// Load from cache
+								// 	CompoundCollisionShape cnt;
+								// 	for(com.jme3.bullet.vhacd.cache.Caching c:f.cachingQueue()){
+								// 		cnt=c.load(g.getMesh(),f.getParameters());
+								// 		if(cnt!=null){
+								// 			List<ChildCollisionShape> children=cnt.getChildren();
+								// 			if(children.size()>0){
+								// 				ChildCollisionShape c1=children.get(0);
+								// 				if(c1.shape instanceof MeshCollisionShape){
+								// 					shape= c1.shape;
+								// 				}
+								// 			}
+								// 		}
+								// 	}
 									
-									if(shape==null){// Not in cache -> generate									
-										FloatBuffer vb=(FloatBuffer)mesh.getBuffer(Type.Position).getData();
-										Buffer ib=mesh.getBuffer(Type.Index).getData();
-										vb.rewind();
-										ib.rewind();
+								// 	if(shape==null){// Not in cache -> generate									
+								// 		FloatBuffer vb=(FloatBuffer)mesh.getBuffer(Type.Position).getData();
+								// 		Buffer ib=mesh.getBuffer(Type.Index).getData();
+								// 		vb.rewind();
+								// 		ib.rewind();
 	
-										float positions[]=new float[vb.limit()];
-										int indexes[]=new int[ib.limit()];
+								// 		float positions[]=new float[vb.limit()];
+								// 		int indexes[]=new int[ib.limit()];
 	
-										for(int i=0;i<positions.length;i++)	positions[i]=vb.get(i);
-										for(int i=0;i<indexes.length;i++){
-											if(ib instanceof IntBuffer){
-												indexes[i]=(int)((IntBuffer)ib).get(i);
-											}else{
-												indexes[i]=(int)((ShortBuffer)ib).get(i);
-											}
-										}
+								// 		for(int i=0;i<positions.length;i++)	positions[i]=vb.get(i);
+								// 		for(int i=0;i<indexes.length;i++){
+								// 			if(ib instanceof IntBuffer){
+								// 				indexes[i]=(int)((IntBuffer)ib).get(i);
+								// 			}else{
+								// 				indexes[i]=(int)((ShortBuffer)ib).get(i);
+								// 			}
+								// 		}
 										
 										
-										vhacd.VHACDResults results=vhacd.VHACD.compute(positions,indexes,f.getParameters());
-										int np=0;
-										int ni=0;
-										for(vhacd.VHACDHull hull:results){
-											np+=hull.positions.length;
-											ni+=hull.indexes.length;
-										}
+								// 		vhacd.VHACDResults results=vhacd.VHACD.compute(positions,indexes,f.getParameters());
+								// 		int np=0;
+								// 		int ni=0;
+								// 		for(vhacd.VHACDHull hull:results){
+								// 			np+=hull.positions.length;
+								// 			ni+=hull.indexes.length;
+								// 		}
 											
-										ByteBuffer positionso=BufferUtils.createByteBuffer(np*4);
-										ByteBuffer indexeso=BufferUtils.createByteBuffer(ni*4);
+								// 		ByteBuffer positionso=BufferUtils.createByteBuffer(np*4);
+								// 		ByteBuffer indexeso=BufferUtils.createByteBuffer(ni*4);
 										
-										int j=0;
-										for(vhacd.VHACDHull hull:results){
+								// 		int j=0;
+								// 		for(vhacd.VHACDHull hull:results){
 											
-											for(float x:hull.positions)positionso.putFloat(x);
+								// 			for(float x:hull.positions)positionso.putFloat(x);
 											
-											for(int k=0;k<hull.indexes.length;k++){
-												indexeso.putInt(hull.indexes[k]+j);
+								// 			for(int k=0;k<hull.indexes.length;k++){
+								// 				indexeso.putInt(hull.indexes[k]+j);
 												
-											}
-											j+=hull.positions.length/3;
+								// 			}
+								// 			j+=hull.positions.length/3;
 										
-										}
+								// 		}
 
 										
-										shape=new MeshCollisionShape(indexeso,positionso,true);
-										cnt=new CompoundCollisionShape();
-										cnt.addChildShape(shape,Vector3f.ZERO);
-										for(com.jme3.bullet.vhacd.cache.Caching c:f.cachingQueue()){
-											c.save(g.getMesh(),cnt,f.getParameters());
-										}
-									}
-								}else shape=new MeshCollisionShape(mesh);
+								// 		shape=new MeshCollisionShape(indexeso,positionso,true);
+								// 		cnt=new CompoundCollisionShape();
+								// 		cnt.addChildShape(shape,Vector3f.ZERO);
+								// 		for(com.jme3.bullet.vhacd.cache.Caching c:f.cachingQueue()){
+								// 			c.save(g.getMesh(),cnt,f.getParameters());
+								// 		}
+								// 	}
+								// }else  FIXME: unsupported in jbullet
+								shape=new MeshCollisionShape(mesh);
 							}else{
 								if(vhacd_factoryf!=null){
 									com.jme3.bullet.vhacd.VHACDCollisionShapeFactory f=(com.jme3.bullet.vhacd.VHACDCollisionShapeFactory)vhacd_factoryf;
@@ -209,7 +209,7 @@ public class CollisionShapeUtils{
 				break;
 			default:
 				// Should never happen.
-				logger.warn("{} unsupported",pshape);
+				logger.log(Level.WARNING,"{0} unsupported",pshape);
 		}
 		
 		if(settings.getCacher()!=null&&pshape!=PhysicsShape.MESH){

@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
@@ -20,7 +21,7 @@ import f3b.Meshes.VertexArray;
 
 public class F3bMesh {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bMesh.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(F3bMesh.class.getName());
 	public final f3b.Meshes.Mesh src;
 	public final Material material;
 
@@ -41,9 +42,9 @@ public class F3bMesh {
 				vb.setupData(Usage.Static, va.getFloats().getStep(), Format.Float, BufferUtils.createFloatBuffer(wf.frk.f3b.jme3.ext.f3b.FloatBufferExt.array(va.getFloats())));
 				dst.setBuffer(vb);
 				//dst.setBuffer(type,va.getFloats().getStep(),va.getFloats().array());
-				log.debug("add {}", dst.getBuffer(type));
+				log.log(Level.FINE,"add {0}", dst.getBuffer(type));
 			} catch (IllegalArgumentException ex) {
-				log.warn("{} not supported. Skip.", va.getAttrib());
+				log.log(Level.WARNING,"{0} not supported. Skip.", va.getAttrib());
 			}
 		}
 		for (IndexArray va : src.getIndexArraysList()) {
@@ -99,7 +100,7 @@ public class F3bMesh {
 			}
 			while(ww.size()<4)ww.add(new BoneXWeight(0,0));
 			ww.sort((a,b)->a.weight>b.weight?-1:(a.weight==b.weight?0:1));
-			if(ww.size()>4)log.warn("More than 4 weights for bone. Trim");
+			if(ww.size()>4)log.log(Level.WARNING,"More than 4 weights for bone. Trim");
 			List<BoneXWeight> ww2=ww.subList(0,4);
 
 			assert ww2.get(0).weight>=ww2.get(1).weight&&ww2.get(1).weight>=ww2.get(2).weight&&ww2.get(2).weight>=ww2.get(3).weight : "Wrong order!"; 

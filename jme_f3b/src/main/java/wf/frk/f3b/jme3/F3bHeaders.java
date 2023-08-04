@@ -34,9 +34,9 @@ public class F3bHeaders {
 		private transient AssetKey key;
 		
 		@Override
-		public Object clone(){
+		public CloneableSmartAsset clone(){
 			try{
-				return super.clone();
+				return (CloneableSmartAsset)super.clone();
 			}catch(Exception e){
 				throw new RuntimeException(e);
 			}

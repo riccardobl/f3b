@@ -2,8 +2,8 @@
 package wf.frk.f3b.jme3;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import java.util.logging.Level;
 
 import com.jme3.asset.AssetManager;
 
@@ -14,7 +14,7 @@ import wf.frk.f3b.jme3.physicsloader.impl.bullet.BulletPhysicsLoader;
 
 public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsLoaderSettings {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bKey.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(F3bKey.class.getName());
 	protected NodeBuilder NODE_BUILDER = new DefaultNodeBuilder();
 
 	protected WeakReference<F3bContext> context=null;
@@ -87,7 +87,7 @@ public class F3bKey extends PhysicsLoaderModelKey<F3bKey> implements F3bPhysicsL
 	@Override
 	public F3bKey usePhysics(PhysicsLoader<?, ?> l) {
 		if (l != null && !(l instanceof BulletPhysicsLoader)) {
-			log.warn("Cannot use {}, physicsloader not supported", l.getClass());
+			log.log(Level.WARNING,"Cannot use {0}, physicsloader not supported", l.getClass());
 			return this;
 		}
 		super.usePhysics(l);

@@ -3,6 +3,9 @@ package wf.frk.f3b.jme3.mergers.relations.linkers;
 
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef1;
 import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
+
+import java.util.logging.Level;
+
 import com.jme3.light.Light;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -14,14 +17,14 @@ import wf.frk.f3b.jme3.scene.F3bLightControl;
 
 public class LightToNode implements Linker {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(LightToNode.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(LightToNode.class.getName());
 
 	@Override
 	public boolean doLink(RelationsMerger loader, RefData data) {
 		Light op1 = getRef1(data, Light.class);
 		Spatial op2 = getRef2(data, Spatial.class);
 		if (op1 == null || op2 == null) return false;
-		if (op2 instanceof Geometry) log.warn("Do you really want to add this light to a Geometry? [{}]", data.ref1);
+		if (op2 instanceof Geometry) log.log(Level.WARNING,"Do you really want to add this light to a Geometry? [{0}]", data.ref1);
 		//		if(data.context.getSettings().useLightControls()){
 		////			F3bLightControl lc=new F3bLightControl();
 		////			lc.setLight(op1);

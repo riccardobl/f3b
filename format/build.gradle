@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'com.google.protobuf'
+apply plugin: 'maven-publish'
 
 targetCompatibility = '1.7'
 sourceCompatibility = '1.7'
@@ -18,14 +19,14 @@ repositories{
 }
 
 dependencies {
-	compile 'com.google.protobuf:protobuf-java:2.6.1'
+	implementation 'io.chandler:protobuf-java:3.7.1-teavm1'
 }
 
 protobuf {
   generatedFilesBaseDir = "$projectDir/generated"
 
   protoc {
-    artifact = 'com.google.protobuf:protoc:2.6.1'
+    artifact = 'com.google.protobuf:protoc:3.7.1'
   }
   generateProtoTasks {
     all().each { task ->
@@ -39,4 +40,21 @@ protobuf {
 }
 
 
+publishing {
+  publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'local'
+            url = uri("${project.projectDir}/../dist/maven")
+        }
+    }
+}

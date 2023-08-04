@@ -3,6 +3,8 @@ package wf.frk.f3b.jme3.mergers;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
+
 import com.jme3.scene.Node;
 import f3b.Datas.Data;
 import f3b.Relations.Relation;
@@ -24,7 +26,7 @@ import wf.frk.f3b.jme3.mergers.relations.linkers.SkeletonToSpatial;
 
 public class RelationsMerger implements Merger {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(RelationsMerger.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(RelationsMerger.class.getName());
 	protected final MaterialsMerger matMerger;
 	protected final Collection<Linker> linkers;
 
@@ -51,7 +53,7 @@ public class RelationsMerger implements Merger {
 
 	protected void merge(RefData data) {
 		if (data.ref1.equals(data.ref2)) {
-			log.warn("can\'t link {} to itself", data.ref1);
+			log.log(Level.WARNING,"can\'t link {0} to itself", data.ref1);
 			return;
 		}
 		boolean linked = false;
@@ -71,13 +73,13 @@ public class RelationsMerger implements Merger {
 				for (Linker linker : linkers) {
 					if (linker.doLink(this, data)) {
 						linked = true;
-						log.info("{} linked to {} with {} [original ref  {} -> {}]", data.ref1, data.ref2, linker.getClass(), r1, r2);
+						log.log(Level.FINE,"{0} linked to {1} with {2} [original ref  {3} -> {4}]",new Object[]{ data.ref1, data.ref2, linker.getClass(), r1, r2});
 						break;
 					}
 				}
 			}
 		}
-		if(!linked) log.warn("can\'t link:   {}({}) -- {}({})\n",data.ref1,data.key.getContext().get(data.ref1),data.ref2,data.key.getContext().get(data.ref2));
+		if(!linked) log.log(Level.WARNING,"can\'t link:   {0}({1}) -- {2}({3})\n",new Object[]{data.ref1,data.key.getContext().get(data.ref1),data.ref2,data.key.getContext().get(data.ref2)});
 	}
 
 	@java.lang.SuppressWarnings("all")

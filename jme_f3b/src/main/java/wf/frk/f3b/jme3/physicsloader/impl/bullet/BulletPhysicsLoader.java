@@ -17,11 +17,11 @@ import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBody;
 import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBodyType;
 import com.jme3.scene.Spatial;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Logger;
 
 public class BulletPhysicsLoader implements PhysicsLoader<PhysicsControl,PhysicsJoint>{
-	private static final Logger logger=LogManager.getLogger(BulletPhysicsLoader.class);
+	private static final java.util.logging.Logger logger=java.util.logging.Logger.getLogger(BulletPhysicsLoader.class.getName());
 
 	protected boolean useCompoundCapsule=false;
 	protected Runner runner;

@@ -2,6 +2,8 @@
 package wf.frk.f3b.jme3.runtime;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+
 import com.jme3.light.Light;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
@@ -9,7 +11,7 @@ import wf.frk.f3b.jme3.scene.F3bLightControl;
 
 public class F3bLightRuntimeLoader {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(F3bLightRuntimeLoader.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(F3bLightRuntimeLoader.class.getName());
 
 	public static void unload(final Spatial rootNode, Spatial scene) {
 		final ArrayList<F3bLightControl> controls = new ArrayList<F3bLightControl>();
@@ -30,7 +32,7 @@ public class F3bLightRuntimeLoader {
 	}
 
 	public static void load(final Spatial rootNode, Spatial scene) {
-		log.debug("Load lights for {}", scene);
+		log.log(Level.FINE,"Load lights for {0}", scene);
 		scene.depthFirstTraversal(new SceneGraphVisitor() {
 			@Override
 			public void visit(Spatial s) {

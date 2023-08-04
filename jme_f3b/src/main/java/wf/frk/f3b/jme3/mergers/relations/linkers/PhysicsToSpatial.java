@@ -6,6 +6,8 @@ import static wf.frk.f3b.jme3.mergers.relations.LinkerHelpers.getRef2;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+
 import com.jme3.export.Savable;
 import wf.frk.f3b.jme3.physicsloader.ConstraintData;
 import wf.frk.f3b.jme3.physicsloader.PhysicsLoader;
@@ -24,7 +26,7 @@ import wf.frk.f3b.jme3.runtime.F3bPhysicsRuntimeLoader;
 
 public class PhysicsToSpatial implements Linker {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(PhysicsToSpatial.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(PhysicsToSpatial.class.getName());
 	protected long LAST_CLONE_ID = 0;
 
 	@Override
@@ -40,7 +42,7 @@ public class PhysicsToSpatial implements Linker {
 		PhysicsLoader<Savable, Savable> loader = (PhysicsLoader<Savable,Savable>)data.key.getContext().getSettings().getPhysicsLoader();
 		if (loader != null) {
 			Savable pc = loader.load(data.key.getContext().getSettings(), op2, op1);
-			log.debug("Load rigidbody {}", data.ref1);
+			log.log(Level.FINE,"Load rigidbody {0}", data.ref1);
 			if(pc!=null&&pc instanceof Control){
 				loader.attachToSpatial(pc,op2);
 				String linkRef = "G~slink4phy~" + (LAST_CLONE_ID++) + "~" + data.ref1;
@@ -61,10 +63,10 @@ public class PhysicsToSpatial implements Linker {
 					if (!(i == 0 ? c.getARef() : c.getBRef()).equals(phy1Ref)) continue;
 					String phy2Ref = i == 1 ? c.getARef() : c.getBRef();
 					if (ctx.get(phy2Ref) == null) {
-						log.debug("Found constraint element {}, second element is missing... skip...", phy1Ref);
+						log.log(Level.FINE,"Found constraint element {0}, second element is missing... skip...", phy1Ref);
 						continue;
 					}
-					log.debug("Found constraint elements {} - {}", phy1Ref, phy2Ref);
+					log.log(Level.FINE,"Found constraint elements {0} - {1}", new Object[]{phy1Ref, phy2Ref});
 					List<String> linked = ctx.linkedRefs(phy2Ref);
 					for (String l : linked) {
 						if (l.startsWith("G~slink4phy~")) {
@@ -88,7 +90,7 @@ public class PhysicsToSpatial implements Linker {
 				}
 			}
 		} else {
-			log.debug("Constraints map not found.");
+			log.log(Level.FINE,"Constraints map not found.");
 		}
 	}
 
@@ -109,11 +111,11 @@ public class PhysicsToSpatial implements Linker {
 			ct_data = generic_ct;
 		} // else if ... [Only one type.]
 		if (ct_data == null) {
-			log.warn("Constraint {} not supported", ct);
+			log.log(Level.WARNING,"Constraint {0} not supported", ct);
 			return;
 		}
 		try {
-			log.debug("Store constraint {} [{}-{}] in scene", ct_data, a, b);
+			log.log(Level.FINE,"Store constraint {0} [{1}-{2}] in scene", new Object[]{ct_data, a, b});
 			Spatial constraint_node = F3bPhysicsRuntimeLoader.storeConstraintInScene(ctx.getSettings(), a, b, ct_data);
 			root.attachChild(constraint_node);
 		} catch (Exception e) {

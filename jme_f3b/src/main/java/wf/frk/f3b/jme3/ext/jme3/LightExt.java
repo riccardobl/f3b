@@ -9,7 +9,7 @@ import com.jme3.math.Vector3f;
 
 public class LightExt {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(LightExt.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(LightExt.class.getName());
 
 	public static void setPosition(Light light, Vector3f pos) {
 		if (light instanceof PointLight) {

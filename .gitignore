@@ -32,14 +32,12 @@ hs_err_pid*.log
 *.blend1
 *.jme3_vhacd_cache
 
-gradlew
 .gradle/
 .vscode/
 bin/
 build/
 cache/
 gradle/
-gradlew.bat
 dist/
 
 

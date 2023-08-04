@@ -16,7 +16,7 @@ import wf.frk.f3b.jme3.scene.F3bMesh;
 
 public class MeshLinker implements Linker{
 	protected long LAST_CLONE_ID=0;
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(MeshLinker.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(MeshLinker.class.getName());
 
 
 	

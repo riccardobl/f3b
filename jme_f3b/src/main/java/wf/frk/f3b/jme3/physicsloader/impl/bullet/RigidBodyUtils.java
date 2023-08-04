@@ -12,7 +12,7 @@ import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBody;
 import wf.frk.f3b.jme3.physicsloader.rigidbody.RigidBodyType;
 import com.jme3.scene.Spatial;
 
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 public class RigidBodyUtils{
 	public static PhysicsJoint applyRBConstraint(final PhysicsLoaderSettings settings, final RigidBodyControl a,  final RigidBodyControl b, final ConstraintData data,Logger logger) {
@@ -49,8 +49,9 @@ public class RigidBodyUtils{
 		rigidbody.setFriction(data.friction);
 		rigidbody.setAngularDamping(data.angularDamping);
 		rigidbody.setLinearDamping(data.linearDamping);
-		rigidbody.setLinearFactor(data.linearFactor);
-		rigidbody.setAngularFactor(data.angularFactor);
+		// rigidbody.setLinearFactor(data.linearFactor); FIXME: unsupported in jbullet
+		// rigidbody.setAngularFactor(data.angularFactor); FIXME: unsupported in jbullet
+		rigidbody.setAngularFactor(data.angularFactor.y);
 		if(rigidbody.getMass()>0)rigidbody.setKinematic(data.isKinematic);
 		rigidbody.setRestitution(data.restitution);
 		rigidbody.setCollisionGroup(data.collisionGroup);

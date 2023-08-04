@@ -2,16 +2,17 @@
 package wf.frk.f3b.jme3.ext.jme3;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 import wf.frk.f3banimation.AnimControl;
 import wf.frk.f3banimation.Skeleton;
 
 public class AnimControlExt {
 	@java.lang.SuppressWarnings("all")
-	private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(AnimControlExt.class);
+	private static final java.util.logging.Logger log =java.util.logging.Logger.getLogger(AnimControlExt.class.getName());
 
 	public static void setSkeleton(AnimControl ac, Skeleton sk) {
-		log.debug("Set skeleton {} to {}", sk, ac);
+		log.log(Level.FINE,"Set skeleton {0} to {1}", new Object[]{sk, ac});
 		Field field = null;
 		// We can't rely on field name, or obfuscation will break the code.
 		Field[] fields = AnimControl.class.getDeclaredFields();
@@ -22,7 +23,7 @@ public class AnimControlExt {
 			}
 		}
 		if (field == null) {
-			log.error("Something went bad, can\'t find Skeleton field in AnimControl.class!");
+			log.log(Level.SEVERE,"Something went bad, can\'t find Skeleton field in AnimControl.class!");
 			return;
 		}
 		field.setAccessible(true);

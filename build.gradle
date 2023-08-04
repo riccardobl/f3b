@@ -1,8 +1,9 @@
 
 allprojects{
     apply plugin: 'java'
-    apply plugin: 'maven'
-    version= project.hasProperty('in_version') ? project.getProperty('in_version') : '-SNAPSHOT'
+    apply plugin: 'maven-publish'
+
+    version = project.hasProperty('in_version') ? project.property('in_version') : '-SNAPSHOT'
     group = "wf.frk"
 }
 
@@ -11,6 +12,7 @@ task copyPythonLibInExporter(type: Copy, dependsOn: subprojects*.build) {
     from 'format/generated/main/python'
     into 'blender_f3b/libs/f3b'
 }
+
 
 copyPythonLibInExporter.dependsOn(subprojects.build)
 build.dependsOn(copyPythonLibInExporter)

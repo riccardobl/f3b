@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import com.google.protobuf.CodedInputStream;
 import com.jme3.asset.AssetInfo;
@@ -20,7 +21,7 @@ import wf.frk.f3b.jme3.mergers.relations.Linker;
 public class F3bLoader implements AssetLoader{
 	public static LinkedList<Merger> mergers=new LinkedList<Merger>();
 	public static LinkedList<Linker> linkers=new LinkedList<Linker>();
-	private static final org.apache.logging.log4j.Logger LOGGER=org.apache.logging.log4j.LogManager.getLogger();
+	private static final java.util.logging.Logger LOGGER=java.util.logging.Logger.getLogger(F3bLoader.class.getName());
 
 	
 	public static void init(AssetManager am){
@@ -47,7 +48,7 @@ public class F3bLoader implements AssetLoader{
 	}
 
 	protected void loadHeader(AssetManager am,F3bKey key,String path){
-		LOGGER.debug("Load header {}",path);
+		LOGGER.log(Level.FINE,"Load header {0}",path);
 		System.out.println("Load header {}"+path);
 
 		F3bKey k=(F3bKey)key.clone();

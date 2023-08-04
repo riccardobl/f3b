@@ -33,7 +33,7 @@ jobs:
             branch="`if [[ $GITHUB_REF == refs\/heads* ]]; then echo ${GITHUB_REF//refs\/heads\//}; fi`"
             export VERSION="$branch-SNAPSHOT"
           fi
-          gradle build install -xtest -Pin_version="$VERSION" -Dmaven.repo.local="$PWD/dist/maven"
+          gradle  build publish  -xtest -Pin_version="$VERSION" 
 
       - name: Upload maven artifacts
         uses: actions/upload-artifact@v2
