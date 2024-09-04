@@ -64,19 +64,19 @@ jobs:
           fetch-depth: 1
     
       - name: Download maven artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: maven
           path: dist/maven
       
       - name: Download blender addon
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: io_scene_f3b_blender
           path: dist/blender
 
       - name: Download blender nodes
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: f3b_blender_nodes
           path: dist/
